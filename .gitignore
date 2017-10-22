@@ -1,5 +1,4 @@
 BUILD/
-*.o
 *.elf
 *.log
 *.d
