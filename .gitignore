@@ -1,11 +1,9 @@
 BUILD/
-*.o
 *.elf
 *.log
 *.d
 *.obj
 *.so
 *.so.*
-*.a
 *.lib
 */.hg/
