@@ -2,6 +2,7 @@
 #include "TS_DISCO_F469NI.h"
 #include "LCD_DISCO_F469NI.h"
 #include "SD_DISCO_F469NI.h"
+#include "neopixel.h"
 
 SD_DISCO_F469NI sd;
 LCD_DISCO_F469NI lcd;
@@ -46,7 +47,7 @@ int main()
     wait(1);
     lcd.SetBackColor(LCD_COLOR_BLUE);
     lcd.SetTextColor(LCD_COLOR_WHITE);
-    
+    np::render_segment(np::INNER_0);    
     while(1)
     {
       
