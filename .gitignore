@@ -5,6 +5,5 @@ BUILD/
 *.obj
 *.so
 *.so.*
-*.a
 *.lib
 */.hg/
