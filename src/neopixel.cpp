@@ -3,14 +3,14 @@
 struct strip_cfg {
     uint8_t pin;
     uint8_t length;
-    unsigned int dma_channel;
+    unsigned int pin;
 };
 
 struct np::strip {
     uint8_t pixels[MAX_SEGMENT_SIZE*3u];
 };
 
-strip_cfg configs[np::SEGMENT_COUNT] = {{0,0, DMA_CHANNEL_1}};
+strip_cfg configs[np::SEGMENT_COUNT] = {{0,0,0}};
 
 np::strip buffer[np::SEGMENT_COUNT];
 
