@@ -10,8 +10,11 @@ extern "C" {
 #endif
 #include "stdint.h"
 #include "stddef.h"
+#include "mbed.h"
+#include "InterruptManager.h"
 
-#define MAX_SEGMENT_SIZE 16u
+
+#define MAX_SEGMENT_SIZE 26u
 
 namespace np {
 
@@ -27,7 +30,7 @@ namespace np {
         SEGMENT_COUNT
     };
     /**
-     * Initialise all Neopixel strips and accompanying DMA
+     * Initialise all Neopixel strips and interrupts
      */
     bool init_all();
     /**

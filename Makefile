@@ -443,6 +443,8 @@ $(PROJECT).bin: $(PROJECT).elf
 $(PROJECT).hex: $(PROJECT).elf
 	$(ELF2BIN) -O ihex $< $@
 
+flash: $(PROJECT).bin
+	st-flash --reset write $(PROJECT).bin 0x8000000
 
 # Rules
 ###############################################################################

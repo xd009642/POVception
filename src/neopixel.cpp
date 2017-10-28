@@ -1,16 +1,22 @@
 #include "neopixel.h"
+#include "PinNames.h"
+#include "gpio_object.h"
+#include "gpio_api.h"
 
 struct strip_cfg {
-    uint8_t pin;
+    PinName pin;
     uint8_t length;
-    unsigned int pin;
+    uint8_t irq;
+  //  IRQn_Type irq;
 };
 
 struct np::strip {
+    gpio_t handle;
     uint8_t pixels[MAX_SEGMENT_SIZE*3u];
 };
 
-strip_cfg configs[np::SEGMENT_COUNT] = {{0,0,0}};
+// lets use D10 (P13 PH6
+strip_cfg configs[np::SEGMENT_COUNT] = {{D10,26,0}};
 
 np::strip buffer[np::SEGMENT_COUNT];
 
@@ -19,7 +25,14 @@ bool np::init_all()
 {
     for(int i=0; i<np::SEGMENT_COUNT; i++) 
     {
-         
+        if(configs[i].irq != 0) 
+        {
+            //InterruptManager::get()->add_handler(configs ...
+        }
+        if(configs[i].pin != 0)
+        {
+            gpio_init_out(&buffer[i].handle, configs[i].pin);
+        }
     }
     return true;
 }
@@ -44,7 +57,26 @@ void np::write_pixels(const np::segment_id id,
     }
 }
 
+void write_bit(gpio_t* handle, bool value)
+{
+    gpio_write(handle, 0);
+    gpio_write(handle, value);
+    gpio_write(handle, 1);
+}
+
 bool np::render_segment(const segment_id id) 
 {
-    return false;
+    np::strip* strip = &buffer[id];
+    int b=0;
+    uint8_t data=0;
+    for(int i=0; i<configs[i].length*3; i++)
+    {
+        data = strip->pixels[i];
+        for(b=0; b<8; b++) 
+        {
+            write_bit(&strip->handle, (data)&0x01);
+            data = data >> 1;
+        }
+    }
+    return true;
 }
