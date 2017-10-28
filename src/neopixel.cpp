@@ -16,7 +16,7 @@ struct np::strip {
 };
 
 // lets use D10 (P13 PH6
-strip_cfg configs[np::SEGMENT_COUNT] = {{D10,26,0}};
+strip_cfg configs[np::SEGMENT_COUNT] = {{D0, 1 ,0}};
 
 np::strip buffer[np::SEGMENT_COUNT];
 
@@ -32,6 +32,9 @@ bool np::init_all()
         if(configs[i].pin != 0)
         {
             gpio_init_out(&buffer[i].handle, configs[i].pin);
+            for(int j=0; j<configs[i].length*3; j++) {
+                buffer[i].pixels[j] = 0;
+            }
         }
     }
     return true;
@@ -57,19 +60,20 @@ void np::write_pixels(const np::segment_id id,
     }
 }
 
-void write_bit(gpio_t* handle, bool value)
+inline void write_bit(gpio_t* handle, const bool value)
 {
     gpio_write(handle, 0);
     gpio_write(handle, value);
     gpio_write(handle, 1);
 }
 
-bool np::render_segment(const segment_id id) 
+int np::render_segment(const segment_id id) 
 {
+    int res = 0;
     np::strip* strip = &buffer[id];
     int b=0;
     uint8_t data=0;
-    for(int i=0; i<configs[i].length*3; i++)
+    for(int32_t i=0; i<configs[id].length*3; i++)
     {
         data = strip->pixels[i];
         for(b=0; b<8; b++) 
@@ -77,6 +81,7 @@ bool np::render_segment(const segment_id id)
             write_bit(&strip->handle, (data)&0x01);
             data = data >> 1;
         }
+        res++;
     }
-    return true;
+    return res;
 }

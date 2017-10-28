@@ -7,17 +7,12 @@
 SD_DISCO_F469NI sd;
 LCD_DISCO_F469NI lcd;
 TS_DISCO_F469NI ts;
-
+Timer t;
 int main()
 {
-    TS_StateTypeDef TS_State;
-    uint16_t x, y;
-    uint8_t text[30];
+    //TS_StateTypeDef TS_State;
     uint8_t status;
-    uint8_t idx;
-    uint8_t cleared = 0;
-    uint8_t prev_nb_touches = 0;
-  
+    uint8_t text[30]; 
     sd.Init();
     if(sd.IsDetected()) {
         // Load gui elements!    
@@ -32,7 +27,7 @@ int main()
     lcd.SetBackColor(LCD_COLOR_BLUE);
     lcd.SetTextColor(LCD_COLOR_WHITE);
     uint8_t colours[] = {
-        255, 0, 0, 
+        0, 255, 0, 
         0, 255, 0, 
         0, 0, 255,
         255, 255, 0,
@@ -40,8 +35,13 @@ int main()
         0, 255, 255,
         255, 255, 255
     };
-    np::write_pixels(np::INNER_0, colours, 0, 7);
-    np::render_segment(np::INNER_0);    
+    np::init_all();
+    np::write_pixels(np::INNER_0, colours, 0, 1);
+    t.start();
+    int bytes = np::render_segment(np::INNER_0);
+    t.stop();
+    sprintf((char*)text, "Rendered %d bytes in %fs", bytes, t.read());
+    lcd.DisplayStringAt(0, LINE(10), text, CENTER_MODE);
     while(1)
     {
       
