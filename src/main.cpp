@@ -41,8 +41,8 @@ int main()
         t.start();
         int bytes = np::render_segment(np::INNER_0);
         t.stop();
-        sprintf((char*)text, "Rendered %d bytes in %fs", bytes, np::toggle_time());
+        sprintf((char*)text, "Rendered %d bytes in %fs", bytes, t.read());
+        t.reset();
         lcd.DisplayStringAt(0, LINE(10), text, CENTER_MODE);
-        wait_us(16666);
     }
 }

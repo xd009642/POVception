@@ -30,7 +30,6 @@ namespace np {
         OUTER_3,
         SEGMENT_COUNT
     };
-    float toggle_time();
     /**
      * Initialise all Neopixel strips and interrupts
      */

@@ -17,20 +17,9 @@ struct np::strip {
 };
 
 // lets use D10 (P13 PH6
-strip_cfg configs[np::SEGMENT_COUNT] = {{D8, 6,0}};
+strip_cfg configs[np::SEGMENT_COUNT] = {{D8, 26,0}};
 
 np::strip buffer[np::SEGMENT_COUNT];
-
-float np::toggle_time()
-{
-    Timer t;
-    gpio_t* hnd = &buffer[0].handle; 
-    gpio_write(&buffer[0].handle, 1);
-    t.start();
-    gpio_write(hnd, 0);
-    t.stop();
-    return t.read();
-}
 
 bool np::init_all()
 {
@@ -45,7 +34,7 @@ bool np::init_all()
             gpio_init_out(&buffer[i].handle, configs[i].pin);
             buffer[i].handle.gpio->OSPEEDR |=  0xffffffff;
             for(int j=0; j<configs[i].length*NP_COLOUR_DEPTH; j++) {
-                buffer[i].pixels[j] = 0;
+                buffer[i].pixels[j] = 0xCC;
             }
         }
     }
@@ -80,14 +69,14 @@ inline void write_bit(gpio_t* handle, const bool value)
     if(value) 
     {
         gpio_write(handle, 1);
-        ct::delay(140);
+        ct::delay(110);
         gpio_write(handle, 0);
-        ct::delay(120);
+        ct::delay(90);
     }else {
         gpio_write(handle, 1);
-        ct::delay(70);
+        ct::delay(40);
         gpio_write(handle, 0);
-        ct::delay(160);
+        ct::delay(120);
     }
 }
 
