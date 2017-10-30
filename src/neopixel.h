@@ -15,6 +15,7 @@ extern "C" {
 
 
 #define MAX_SEGMENT_SIZE 26u
+#define NP_COLOUR_DEPTH 3u
 
 namespace np {
 
@@ -29,6 +30,7 @@ namespace np {
         OUTER_3,
         SEGMENT_COUNT
     };
+    float toggle_time();
     /**
      * Initialise all Neopixel strips and interrupts
      */

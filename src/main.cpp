@@ -11,8 +11,8 @@ Timer t;
 int main()
 {
     //TS_StateTypeDef TS_State;
+    uint8_t text[30];
     uint8_t status;
-    uint8_t text[30]; 
     sd.Init();
     if(sd.IsDetected()) {
         // Load gui elements!    
@@ -27,23 +27,22 @@ int main()
     lcd.SetBackColor(LCD_COLOR_BLUE);
     lcd.SetTextColor(LCD_COLOR_WHITE);
     uint8_t colours[] = {
-        0, 255, 0, 
-        0, 255, 0, 
-        0, 0, 255,
-        255, 255, 0,
-        255, 0, 255,
-        0, 255, 255,
-        255, 255, 255
+        255, 255, 255,
+        0, 255, 0,
+        255, 0, 0,
+        0, 0, 255, 
+        0, 0, 0,
+        255, 255, 0
     };
     np::init_all();
-    np::write_pixels(np::INNER_0, colours, 0, 1);
-    t.start();
-    int bytes = np::render_segment(np::INNER_0);
-    t.stop();
-    sprintf((char*)text, "Rendered %d bytes in %fs", bytes, t.read());
-    lcd.DisplayStringAt(0, LINE(10), text, CENTER_MODE);
+    np::write_pixels(np::INNER_0, (uint8_t*)colours, 0, 6);
     while(1)
     {
-      
+        t.start();
+        int bytes = np::render_segment(np::INNER_0);
+        t.stop();
+        sprintf((char*)text, "Rendered %d bytes in %fs", bytes, np::toggle_time());
+        lcd.DisplayStringAt(0, LINE(10), text, CENTER_MODE);
+        wait_us(16666);
     }
 }
