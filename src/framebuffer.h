@@ -25,6 +25,7 @@ namespace render
         const size_t& n_col() const;
         //! Clear the image and fill with the given colour. 
         void clear(const uint32_t& clear_colour);
+        void fill_rect(const size_t& x, const size_t y, const size_t w, const size_t h, const uint32_t c);
     private:
         uint32_t* render_buffer;
         uint32_t* proc_buffer;

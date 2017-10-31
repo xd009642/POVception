@@ -1,7 +1,6 @@
 #include "framebuffer.h"
 #include "string.h"
 
-
 render::framebuffer::framebuffer(const size_t& width, const size_t& height):
     width(width),
     height(height)
@@ -42,6 +41,28 @@ void render::framebuffer::clear(const uint32_t& clear)
     for(size_t i=0; i<width*height; i++)
     {
         proc_buffer[i] = clear;
+    }
+}
+
+
+void render::framebuffer::fill_rect(const size_t& x, const size_t y, 
+                                    const size_t w, const size_t h, 
+                                    const uint32_t c)
+{
+    size_t xend = x+w;
+    if(xend>width) { 
+        xend= width;
+    }
+    size_t yend = y+h;
+    if(yend>height) { 
+        yend= height;
+    }
+    for(int xp=x; xp<xend; xp++)
+    {
+        for(int yp=y; yp<yend; yp++)
+        {
+            pixel_at(xp, yp) = c;
+        }
     }
 }
 

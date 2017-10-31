@@ -34,16 +34,16 @@ int main()
         lcd.DisplayStringAt(0, LINE(15), (uint8_t*)"BUFFER NOT ALLOCATED", CENTER_MODE);
     }
     buffer.clear(0x00000000);
-    for(size_t i=0; i<26; i++)
+    for(size_t i=0; i<26; i++) 
     {
-        buffer.pixel_at(i,i) = 0; 
+        buffer.pixel_at(i,i)= 30;
     }
+    buffer.fill_rect(5, 0, 2, 5, 0x0000FF00);
     buffer.swap();
     np::init_all();
 
     size_t col = 0;
     lcd.DisplayStringAt(0, LINE(7), (uint8_t*) "STARTING", CENTER_MODE);
-    uint32_t colour = 0x0000FF00;
     while(1)
     {
         t.start();

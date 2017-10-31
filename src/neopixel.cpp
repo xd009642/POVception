@@ -48,7 +48,7 @@ inline void write_bit(gpio_t* handle, const bool value)
         ct::delay(95);
     }else {
         gpio_write(handle, 1);
-        ct::delay(40);
+        ct::delay(50);
         gpio_write(handle, 0);
         ct::delay(120);
     }
@@ -69,9 +69,8 @@ int np::render_segment(const segment_id id,
     ct::reset();
     int res = 0;
     np::strip* strip = &buffer[id];
-    int b=0;
     uint32_t temp=0;
-    for(int32_t i=0; i<len; i++)
+    for(uint32_t i=0; i<len; i++)
     {
         temp = data[i];
         write_byte(&strip->handle, temp&0xFF);
