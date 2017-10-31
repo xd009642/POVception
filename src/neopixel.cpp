@@ -13,7 +13,6 @@ struct strip_cfg {
 };
 struct np::strip {
     gpio_t handle;
-    uint8_t pixels[MAX_SEGMENT_SIZE*NP_COLOUR_DEPTH];
 };
 
 // lets use D10 (P13 PH6
@@ -33,36 +32,11 @@ bool np::init_all()
         {
             gpio_init_out(&buffer[i].handle, configs[i].pin);
             buffer[i].handle.gpio->OSPEEDR |=  0xffffffff;
-            for(int j=0; j<configs[i].length*NP_COLOUR_DEPTH; j++) {
-                buffer[i].pixels[j] = 0xCC;
-            }
         }
     }
     return true;
 }
 
-
-void np::write_pixels(const np::segment_id id, 
-        const uint8_t* rgb, 
-        const size_t start,
-        const size_t n_pixels) 
-{
-    if(start >= MAX_SEGMENT_SIZE) {
-        return;
-    } else {
-        size_t count = (n_pixels+start)<=MAX_SEGMENT_SIZE ? n_pixels:(MAX_SEGMENT_SIZE-start);
-        count *= NP_COLOUR_DEPTH;
-        for(size_t i=start; i<count; i+=NP_COLOUR_DEPTH) 
-        {
-            buffer[id].pixels[i] = rgb[i];
-            buffer[id].pixels[i+1] = rgb[i+1];
-            buffer[id].pixels[i+2] = rgb[i+2];
-            if( NP_COLOUR_DEPTH == 4) {
-                buffer[id].pixels[i+3] = rgb[i+3];
-            }
-        }
-    }
-}
 
 inline void write_bit(gpio_t* handle, const bool value)
 {
@@ -71,7 +45,7 @@ inline void write_bit(gpio_t* handle, const bool value)
         gpio_write(handle, 1);
         ct::delay(110);
         gpio_write(handle, 0);
-        ct::delay(90);
+        ct::delay(95);
     }else {
         gpio_write(handle, 1);
         ct::delay(40);
@@ -80,23 +54,32 @@ inline void write_bit(gpio_t* handle, const bool value)
     }
 }
 
-int np::render_segment(const segment_id id) 
+inline void write_byte(gpio_t* handle, uint8_t data)
+{
+    for(uint8_t b=0; b<8; b++) 
+    {
+        write_bit(handle, (data)&0x01);
+        data = data >> 1;
+    }
+}
+
+int np::render_segment(const segment_id id, 
+        uint32_t* data, const size_t len) 
 {
     ct::reset();
     int res = 0;
     np::strip* strip = &buffer[id];
     int b=0;
-    uint8_t data=0;
-    for(int32_t i=0; i<configs[id].length*NP_COLOUR_DEPTH; i++)
+    uint32_t temp=0;
+    for(int32_t i=0; i<len; i++)
     {
-        data = strip->pixels[i];
-        for(b=0; b<8; b++) 
-        {
-            write_bit(&strip->handle, (data)&0x01);
-            data = data >> 1;
-        }
+        temp = data[i];
+        write_byte(&strip->handle, temp&0xFF);
+        temp >>= 8;
+        write_byte(&strip->handle, temp&0xFF);
+        temp >>= 8;
+        write_byte(&strip->handle, temp&0xFF);
         res++;
     }
-    wait_us(50);
     return res;
 }

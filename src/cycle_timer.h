@@ -13,7 +13,7 @@ namespace ct
         static constexpr uint32_t CYCLE_COUNT = 0xE0001004;
     
         static constexpr uint32_t DEMCR_TRCENA = 0x01000000;
-        static constexpr uint32_t COUNT_ENABLE = 0x2;
+        static constexpr uint32_t COUNT_ENABLE = 0x1;
     }
 
     void reset() 

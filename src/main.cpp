@@ -3,6 +3,8 @@
 #include "LCD_DISCO_F469NI.h"
 #include "SD_DISCO_F469NI.h"
 #include "neopixel.h"
+#include "framebuffer.h"
+
 
 SD_DISCO_F469NI sd;
 LCD_DISCO_F469NI lcd;
@@ -26,23 +28,35 @@ int main()
     status = ts.Init(lcd.GetXSize(), lcd.GetYSize());
     lcd.SetBackColor(LCD_COLOR_BLUE);
     lcd.SetTextColor(LCD_COLOR_WHITE);
-    uint8_t colours[] = {
-        255, 255, 255,
-        0, 255, 0,
-        255, 0, 0,
-        0, 0, 255, 
-        0, 0, 0,
-        255, 255, 0
-    };
+    render::framebuffer buffer(26, 26);
+    if(buffer.is_valid() == false)
+    {
+        lcd.DisplayStringAt(0, LINE(15), (uint8_t*)"BUFFER NOT ALLOCATED", CENTER_MODE);
+    }
+    buffer.clear(0x00000000);
+    for(size_t i=0; i<26; i++)
+    {
+        buffer.pixel_at(i,i) = 0; 
+    }
+    buffer.swap();
     np::init_all();
-    np::write_pixels(np::INNER_0, (uint8_t*)colours, 0, 6);
+
+    size_t col = 0;
+    lcd.DisplayStringAt(0, LINE(7), (uint8_t*) "STARTING", CENTER_MODE);
+    uint32_t colour = 0x0000FF00;
     while(1)
     {
         t.start();
-        int bytes = np::render_segment(np::INNER_0);
+        int bytes = np::render_segment(np::INNER_0, buffer.get_render_column(col), 26);
         t.stop();
         sprintf((char*)text, "Rendered %d bytes in %fs", bytes, t.read());
         t.reset();
-        lcd.DisplayStringAt(0, LINE(10), text, CENTER_MODE);
+        lcd.DisplayStringAt(0, LINE(10), text, LEFT_MODE);
+        buffer.pixel_at(col,col)+=20;
+        col++;
+        if(col==26) {
+            buffer.swap();
+            col = 0;
+        }
     }
 }
