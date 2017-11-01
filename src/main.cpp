@@ -1,12 +1,12 @@
 #include "mbed.h"
 #include "TS_DISCO_F469NI.h"
 #include "LCD_DISCO_F469NI.h"
-#include "SD_DISCO_F469NI.h"
 #include "neopixel.h"
 #include "framebuffer.h"
+#include "SDFileSystem.h"
 
-
-SD_DISCO_F469NI sd;
+//Do I need to set the alt functions for the pins?
+SDFileSystem sd(PC_9, PC_8, PC_12, PC_11, "sd");
 LCD_DISCO_F469NI lcd;
 TS_DISCO_F469NI ts;
 Timer t;
@@ -15,19 +15,39 @@ int main()
     //TS_StateTypeDef TS_State;
     uint8_t text[30];
     uint8_t status;
-    sd.Init();
-    if(sd.IsDetected()) {
-        // Load gui elements!    
-    }
-  
+     
     BSP_LCD_SetFont(&Font24);
-  
+    lcd.SetTextColor(LCD_COLOR_WHITE);
+    status = ts.Init(lcd.GetXSize(), lcd.GetYSize());
+    
+    if(sd.disk_initialize())
+    {
+        lcd.DisplayStringAt(0, LINE(0), (uint8_t*)"FAILED TO FIND SD CARD", CENTER_MODE);
+    }
+    else
+    {
+        lcd.DisplayStringAt(0, LINE(0), (uint8_t*)"SD card initialised", CENTER_MODE);
+        FILE* background = fopen("/sd/background.bmp", "rb");
+        if(background)
+        {
+            fseek(background, 0, SEEK_END);
+            auto length = ftell(background);
+            fseek(background, 0, SEEK_SET);
+            char temp[30];
+            sprintf((char*)temp, "Loaded %d bytes", length);
+            lcd.DisplayStringAt(0, LINE(2),  (uint8_t*)temp, CENTER_MODE);
+            uint8_t* img = new uint8_t[length];
+            if(length == fread(img, 1, length, background))
+            {
+                lcd.DrawBitmap(0,0,img);
+            }
+            delete [] img;
+            fclose(background);
+        }
+    }
     lcd.DisplayStringAt(0, LINE(5), (uint8_t *)"XMAS CHALLENGE", CENTER_MODE);
     wait(1);
   
-    status = ts.Init(lcd.GetXSize(), lcd.GetYSize());
-    lcd.SetBackColor(LCD_COLOR_BLUE);
-    lcd.SetTextColor(LCD_COLOR_WHITE);
     render::framebuffer buffer(26, 26);
     if(buffer.is_valid() == false)
     {
