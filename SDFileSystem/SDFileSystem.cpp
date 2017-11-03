@@ -77,7 +77,7 @@ int SDFileSystem::unmount()
 {
     //Unmount the filesystem
     FATFileSystem::unmount();
-
+    sd.DeInit();
     //Change the status to not initialized, and the card type to unknown
     m_Status |= STA_NOINIT;
     m_CardType = CARD_UNKNOWN;
@@ -97,15 +97,17 @@ int SDFileSystem::disk_initialize()
     if (!(m_Status & STA_NOINIT))
         return m_Status;
 
-    sd.Init();
-    HAL_SD_CardInfoTypeDef info;
-    sd.GetCardInfo(&info);
-    //The card is now initialized
-    m_Status &= ~STA_NOINIT;
-    m_CardType =static_cast<SDFileSystem::CardType>( info.CardType);
-    // Card connected cause got this far. But type not supported.
-    if(m_CardType > CARD_MMC) {
-        m_CardType = CARD_UNKNOWN;
+    if(MSD_OK == sd.Init())
+    {
+        HAL_SD_CardInfoTypeDef info;
+        sd.GetCardInfo(&info);
+        //The card is now initialized
+        m_Status &= ~STA_NOINIT;
+        m_CardType =static_cast<SDFileSystem::CardType>( info.CardType);
+        // Card connected cause got this far. But type not supported.
+        if(m_CardType > CARD_MMC) {
+            m_CardType = CARD_UNKNOWN;
+        }
     }
     //Return the disk status
     return m_Status;
@@ -227,7 +229,7 @@ inline bool SDFileSystem::readBlocks(char* buffer, unsigned int lba, unsigned in
 {
     //Try to read each block up to 3 times
     for (int f = 0; f < 3;) {
-        if(MSD_OK == sd.ReadBlocks((uint32_t*)buffer, lba, count, 2000))
+        if(MSD_OK == sd.ReadBlocks_DMA((uint32_t*)buffer, lba, count))
         {
             return true;
         }
@@ -245,7 +247,7 @@ inline bool SDFileSystem::writeBlocks(const char* buffer, unsigned int lba, unsi
 {
     //Try to write each block up to 3 times
     for (int f = 0; f < 3;) {
-        if(MSD_OK == sd.WriteBlocks((uint32_t*)buffer, lba, count, 2000))
+        if(MSD_OK == sd.WriteBlocks_DMA((uint32_t*)buffer, lba, count))
         {
             return true;
         }

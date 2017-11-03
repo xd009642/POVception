@@ -6,7 +6,6 @@
 #include "framebuffer.h"
 #include "SDFileSystem.h"
 
-SD_DISCO_F469NI sd;
 //Do I need to set the alt functions for the pins?
 LCD_DISCO_F469NI lcd;
 TS_DISCO_F469NI ts;
@@ -19,24 +18,15 @@ int main()
     lcd.SetBackColor(LCD_COLOR_BLUE);
     BSP_LCD_SetFont(&Font24);
     status = ts.Init(lcd.GetXSize(), lcd.GetYSize());
-    lcd.DisplayStringAt(0, LINE(0), (uint8_t*)"GO", CENTER_MODE);
-    if(MSD_OK == sd.Init())
-    {
-        lcd.DisplayStringAt(0, LINE(0), (uint8_t*)"NICE", CENTER_MODE);
-    }
-    // PC9 D1 | PC8 D0 | PC11 D3 | PC10 D2 | PC12 CLK | PD2 CMD | PG2 Detect
-    // ARGS are:mosi, miso, clk, cs, NAME, cd ..  
     SDFileSystem sd("sd");
-    lcd.DisplayStringAt(0, LINE(0), (uint8_t*)"GONE", CENTER_MODE);
-    //TS_StateTypeDef TS_State;
-     
-    
+    // 0 means good, non-zero is error code. 
     if(sd.disk_initialize())
     {
         lcd.DisplayStringAt(0, LINE(0), (uint8_t*)"FAILED TO FIND SD CARD", CENTER_MODE);
     }
     else
     {
+        uint8_t* img = nullptr;
         lcd.DisplayStringAt(0, LINE(0), (uint8_t*)"SD card initialised", CENTER_MODE);
         FILE* background = fopen("/sd/background.bmp", "rb");
         if(background)
@@ -47,13 +37,25 @@ int main()
             char temp[30];
             sprintf((char*)temp, "Loaded %d bytes", length);
             lcd.DisplayStringAt(0, LINE(2),  (uint8_t*)temp, CENTER_MODE);
-            uint8_t* img = new uint8_t[length];
-            if(length == fread(img, 1, length, background))
-            {
-                lcd.DrawBitmap(0,0,img);
-            }
+            wait(10);
+            img = new uint8_t[length];
+            fread(img, 1, length, background);
+        } 
+        else
+        {
+        }
+        fclose(background);
+        sd.unmount();
+        if(nullptr != img)
+        {
+            lcd.DisplayStringAt(0, LINE(3),  (uint8_t*)"ABOUT TO DRAW BMP", CENTER_MODE);
+            wait(0);
+            lcd.DrawBitmap(0,0,img);
             delete [] img;
-            fclose(background);
+        }
+        else
+        {
+            lcd.DisplayStringAt(0, LINE(4),  (uint8_t*)"SOMETHING WENT WRONG :(", CENTER_MODE);
         }
     }
     lcd.DisplayStringAt(0, LINE(5), (uint8_t *)"XMAS CHALLENGE", CENTER_MODE);
