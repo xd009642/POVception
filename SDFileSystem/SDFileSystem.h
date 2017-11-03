@@ -20,6 +20,7 @@
 #include "mbed.h"
 #include "FATFileSystem.h"
 
+#include "SD_DISCO_F469NI.h"
 /** SDFileSystem class.
  *  Used for creating a virtual file system for accessing SD/MMC cards via SPI.
  *
@@ -82,11 +83,11 @@ public:
     /** Represents the different SD/MMC card types
      */
     enum CardType {
-        CARD_NONE,      /**< No card is present */
-        CARD_MMC,       /**< MMC card */
-        CARD_SD,        /**< Standard capacity SD card */
-        CARD_SDHC,      /**< High capacity SD card */
-        CARD_UNKNOWN    /**< Unknown or unsupported card */
+        CARD_SD = 1,        /**< Standard capacity SD card */
+        CARD_SDHC= 2,      /**< High capacity SD card */
+        CARD_MMC = 3,       /**< MMC card */
+        CARD_NONE = 8,      /**< No card is present */
+        CARD_UNKNOWN = 9    /**< Unknown or unsupported card */
     };
 
     /** Create a virtual file system for accessing SD/MMC cards via SPI
@@ -100,7 +101,7 @@ public:
      * @param cdtype The type of card detect switch.
      * @param hz The SPI bus frequency (defaults to 1MHz).
      */
-    SDFileSystem(PinName mosi, PinName miso, PinName sclk, PinName cs, const char* name, PinName cd = NC, SwitchType cdtype = SWITCH_NONE, int hz = 1000000);
+    SDFileSystem(const char* name);
 
     /** Determine whether or not a card is present
      *
@@ -117,20 +118,6 @@ public:
      * @note Valid after the filesystem has been mounted.
      */
     SDFileSystem::CardType card_type();
-
-    /** Get whether or not CRC is enabled for commands and data
-     *
-     * @returns
-     *   'true' if CRC is enabled for commands and data,
-     *   'false' if CRC is disabled for commands and data.
-     */
-    bool crc();
-
-    /** Set whether or not CRC is enabled for commands and data
-     *
-     * @param enabled Whether or not to enable CRC for commands and data.
-     */
-    void crc(bool enabled);
 
     /** Get whether or not 16-bit frames are enabled for data read/write operations
      *
@@ -194,13 +181,8 @@ private:
 
     //Member variables
     Timer m_Timer;
-    SPI m_Spi;
-    DigitalOut m_Cs;
-    InterruptIn m_Cd;
-    int m_CdAssert;
-    const int m_FREQ;
+    SD_DISCO_F469NI sd;
     SDFileSystem::CardType m_CardType;
-    bool m_Crc;
     bool m_LargeFrames;
     bool m_WriteValidation;
     int m_Status;
@@ -209,17 +191,12 @@ private:
     void onCardRemoval();
     void checkSocket();
     bool waitReady(int timeout);
-    bool select();
-    void deselect();
-    char commandTransaction(char cmd, unsigned int arg, unsigned int* resp = NULL);
-    char writeCommand(char cmd, unsigned int arg, unsigned int* resp = NULL);
     bool readData(char* buffer, int length);
     char writeData(const char* buffer, char token);
     bool readBlock(char* buffer, unsigned int lba);
     bool readBlocks(char* buffer, unsigned int lba, unsigned int count);
     bool writeBlock(const char* buffer, unsigned int lba);
     bool writeBlocks(const char* buffer, unsigned int lba, unsigned int count);
-    bool enableHighSpeedMode();
 };
 
 #endif

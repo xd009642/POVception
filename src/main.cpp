@@ -1,24 +1,35 @@
 #include "mbed.h"
 #include "TS_DISCO_F469NI.h"
 #include "LCD_DISCO_F469NI.h"
+#include "SD_DISCO_F469NI.h"
 #include "neopixel.h"
 #include "framebuffer.h"
 #include "SDFileSystem.h"
 
+SD_DISCO_F469NI sd;
 //Do I need to set the alt functions for the pins?
-SDFileSystem sd(PC_9, PC_8, PC_12, PC_11, "sd");
 LCD_DISCO_F469NI lcd;
 TS_DISCO_F469NI ts;
 Timer t;
 int main()
 {
-    //TS_StateTypeDef TS_State;
     uint8_t text[30];
     uint8_t status;
-     
-    BSP_LCD_SetFont(&Font24);
     lcd.SetTextColor(LCD_COLOR_WHITE);
+    lcd.SetBackColor(LCD_COLOR_BLUE);
+    BSP_LCD_SetFont(&Font24);
     status = ts.Init(lcd.GetXSize(), lcd.GetYSize());
+    lcd.DisplayStringAt(0, LINE(0), (uint8_t*)"GO", CENTER_MODE);
+    if(MSD_OK == sd.Init())
+    {
+        lcd.DisplayStringAt(0, LINE(0), (uint8_t*)"NICE", CENTER_MODE);
+    }
+    // PC9 D1 | PC8 D0 | PC11 D3 | PC10 D2 | PC12 CLK | PD2 CMD | PG2 Detect
+    // ARGS are:mosi, miso, clk, cs, NAME, cd ..  
+    SDFileSystem sd("sd");
+    lcd.DisplayStringAt(0, LINE(0), (uint8_t*)"GONE", CENTER_MODE);
+    //TS_StateTypeDef TS_State;
+     
     
     if(sd.disk_initialize())
     {
