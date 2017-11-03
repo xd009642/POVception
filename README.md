@@ -10,6 +10,9 @@ To build the project and program the board in one go run the following command:
 ```
 make flash
 ```
+## Autogenerating code
+
+Bitmaps can only be rendered if stored in internal flash using the STM32 HAL. With this in mind if you have python and xxd on your system path the python codegen script will replace `src/background.h`. However, use RGB565 as an export. Bitmaps are wide and varied and the STM32 HAL seems to have trouble supporting RGB888 and ARGB8888
 
 ## Links and Resources
 

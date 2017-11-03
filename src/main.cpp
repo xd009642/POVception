@@ -5,61 +5,47 @@
 #include "neopixel.h"
 #include "framebuffer.h"
 #include "SDFileSystem.h"
+#include "background.h"
 
 //Do I need to set the alt functions for the pins?
 LCD_DISCO_F469NI lcd;
 TS_DISCO_F469NI ts;
+SDFileSystem sd("sd");
 Timer t;
+
+static constexpr uint32_t BACKGROUND_COLOUR = 0xFFED0000;
+static constexpr uint32_t SCREEN_WIDTH = 800;
+static constexpr uint32_t SCREEN_HEIGHT = 480;
+// These are approximates just to give decent spacing
+static constexpr uint32_t BORDER_HEIGHT = 60;
+static constexpr uint32_t BORDER_WIDTH = 120;
+bool init_sd_card() {
+    return sd.disk_initialize() == 0;
+}
+
+void prepare_background()
+{
+    const uint32_t margin = 30;
+    const uint32_t spacing = 5;
+    for(uint32_t i=margin; i<SCREEN_WIDTH-margin; i+=(spacing+BORDER_WIDTH))
+    {
+        lcd.DrawBitmap(i, margin, resources_border_top_bmp);
+        lcd.DrawBitmap(i, SCREEN_HEIGHT-BORDER_HEIGHT-margin, resources_border_bottom_bmp);
+    }
+}
+
 int main()
 {
     uint8_t text[30];
     uint8_t status;
     lcd.SetTextColor(LCD_COLOR_WHITE);
-    lcd.SetBackColor(LCD_COLOR_BLUE);
+    lcd.Clear(BACKGROUND_COLOUR);
+    lcd.SetBackColor(BACKGROUND_COLOUR);
     BSP_LCD_SetFont(&Font24);
     status = ts.Init(lcd.GetXSize(), lcd.GetYSize());
-    SDFileSystem sd("sd");
+    prepare_background();
     // 0 means good, non-zero is error code. 
-    if(sd.disk_initialize())
-    {
-        lcd.DisplayStringAt(0, LINE(0), (uint8_t*)"FAILED TO FIND SD CARD", CENTER_MODE);
-    }
-    else
-    {
-        uint8_t* img = nullptr;
-        lcd.DisplayStringAt(0, LINE(0), (uint8_t*)"SD card initialised", CENTER_MODE);
-        FILE* background = fopen("/sd/background.bmp", "rb");
-        if(background)
-        {
-            fseek(background, 0, SEEK_END);
-            auto length = ftell(background);
-            fseek(background, 0, SEEK_SET);
-            char temp[30];
-            sprintf((char*)temp, "Loaded %d bytes", length);
-            lcd.DisplayStringAt(0, LINE(2),  (uint8_t*)temp, CENTER_MODE);
-            wait(10);
-            img = new uint8_t[length];
-            fread(img, 1, length, background);
-        } 
-        else
-        {
-        }
-        fclose(background);
-        sd.unmount();
-        if(nullptr != img)
-        {
-            lcd.DisplayStringAt(0, LINE(3),  (uint8_t*)"ABOUT TO DRAW BMP", CENTER_MODE);
-            wait(0);
-            lcd.DrawBitmap(0,0,img);
-            delete [] img;
-        }
-        else
-        {
-            lcd.DisplayStringAt(0, LINE(4),  (uint8_t*)"SOMETHING WENT WRONG :(", CENTER_MODE);
-        }
-    }
     lcd.DisplayStringAt(0, LINE(5), (uint8_t *)"XMAS CHALLENGE", CENTER_MODE);
-    wait(1);
   
     render::framebuffer buffer(26, 26);
     if(buffer.is_valid() == false)
