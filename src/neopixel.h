@@ -37,13 +37,7 @@ namespace np {
     /**
      * Render given Neopixel strip
      */
-    int render_segment(const segment_id id);
-    /**
-     * Write rgb tuplets into memory. Indexes and sizes are given by pixel not 
-     * byte.
-     */
-    void write_pixels(const segment_id id, const uint8_t* rgb, 
-            const size_t start, const size_t n_pixels);
+    int render_segment(const segment_id id, uint32_t* data, const size_t len);
 }
 
 
