@@ -1,73 +1,90 @@
 #include "pong.h"
 #include "display_settings.h"
 
-
-struct pong_state
+app::pong::pong(render::framebuffer& buffer):graphics(buffer)
 {
-    size_t player1_score;
-    size_t player2_score;
-    size_t player1_y;
-    size_t player2_y;
-    app::point2i ball;
-    app::point2i ball_velocity;
-    size_t paddle_width;
-};
+    p1.paddle_width = 0.2*graphics.get_height();
+    p2.paddle_width = 0.2*graphics.get_height();
+    reset();
+}
 
-#define PONG_RESET {0,0,0,0,{30,30},{0,0},10}
-
-pong_state state = PONG_RESET;
-
-bool collides_with_player()
+bool app::pong::collides_with_player()
 {
-    if(state.ball.x == 0)
+    if(ball.pos.x == 0)
     {
-        return state.ball.x < state.player1_y || 
-            (state.ball.x > state.player1_y + state.paddle_width);
+        return ball.pos.x < p1.pos.y || 
+            (ball.pos.x > p1.pos.y + p1.paddle_width);
     }
-    else if(state.ball.x == OUTER_WIDTH)
+    else if(ball.pos.x == static_cast<int16_t>(graphics.get_width()))
     {
-        return state.ball.x<state.player2_y || 
-            (state.ball.x > state.player2_y + state.paddle_width);
+        return ball.pos.x<p2.pos.y || 
+            (ball.pos.x > p2.pos.y + p2.paddle_width);
     }
     return false;
 }
 
-bool collides_with_wall()
+bool app::pong::collides_with_wall()
 {
-    return state.ball.y < 1 || state.ball.y > (OUTER_HEIGHT -1 );
+    return ball.pos.y < 1 || ball.pos.y > static_cast<int16_t>(graphics.get_height() -1 );
 }
 
-bool ball_out() 
+bool app::pong::ball_out() 
 {
-    return state.ball.x < 0 || state.ball.x > OUTER_WIDTH;
+    return ball.pos.x < 0 || ball.pos.x >static_cast<int16_t>(graphics.get_width());
 }
 
-void update() 
+void app::pong::update() 
 {
-    if(state.ball_velocity.zero())
+    if(ball.vel.zero())
     {
-        state.ball_velocity = {1,-1};
+        ball.vel.set(1,-1);
     }
-    state.ball += state.ball_velocity;
     if(collides_with_player())
     {
-        state.ball_velocity.x *= -1;
+        ball.vel.x *= -1;
     } 
     else if(collides_with_wall()) 
     {
-        state.ball_velocity.y *= -1;
+        ball.vel.y *= -1;
     } 
     else if(ball_out()) {
-        if(state.ball.x < 0)
-            state.player2_score++;
+        if(ball.pos.x < 0)
+            p2.score++;
         else 
-            state.player1_score++;
+            p1.score++;
+        reset_positions();
     }
+    render();
+    ball.pos += ball.vel;
 }
 
 
-void reset() 
+void app::pong::render()
 {
-    state = PONG_RESET;
+    // Blank where I might be drawing (super simple right now)
+    graphics.fill_rect(0,p1.pos.y,2, graphics.get_height(), 0);
+    graphics.fill_rect(graphics.get_width()-2, 0, 2, graphics.get_height(), 0);
+    graphics.fill_rect(ball.pos.x-ball.size, ball.pos.y-ball.size, ball.size*2,ball.size*2, 0);
+
+    // Draw!
+    graphics.fill_rect(p1.pos.x, p1.pos.y, 2, p1.paddle_width, 0xFFFFFFFF);
+    graphics.fill_rect(p2.pos.x, p2.pos.y, 2, p2.paddle_width, 0xFFFFFFFF);
+    graphics.fill_rect(ball.pos.x, ball.pos.y, ball.size, ball.size, 0xFFFFFFFF);
 }
 
+
+void app::pong::reset() 
+{
+    p1.score = 0;
+    p2.score = 0;
+    reset_positions();
+}
+
+
+void app::pong::reset_positions()
+{
+    auto y_pos = graphics.get_height()/2;
+    p1.pos.set(0, y_pos);
+    p2.pos.set(graphics.get_width()-1, y_pos);
+    ball.pos.set(graphics.get_width()/2, y_pos);
+}

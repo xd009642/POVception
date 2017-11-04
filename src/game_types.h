@@ -5,18 +5,26 @@
 
 namespace app
 {
-    struct point2i
+    template<typename T>
+    struct point2
     {
-        int32_t x;
-        int32_t y;
+        T x;
+        T y;
 
         bool zero() const 
         {
             return (x==0) && (y==0);
         }
+        
+        void set(T _x, T _y)
+        {
+            x=_x;
+            y=_y;
+        }
     };
 
-    void operator+=(point2i& lhs, const point2i& rhs)
+    template<typename T>
+    void operator+=(point2<T>& lhs, const point2<T>& rhs)
     {
         lhs.x += rhs.x;
         lhs.y += rhs.y;
