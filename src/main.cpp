@@ -6,6 +6,7 @@
 #include "framebuffer.h"
 #include "SDFileSystem.h"
 #include "background.h"
+#include "gui.h"
 
 //Do I need to set the alt functions for the pins?
 LCD_DISCO_F469NI lcd;
@@ -34,8 +35,14 @@ void prepare_background()
     }
 }
 
+void launch_pong()
+{
+    lcd.DisplayStringAt(0, LINE(10), (uint8_t*)"PLAYING PONG", RIGHT_MODE);
+}
+
 int main()
 {
+    TS_StateTypeDef touch;
     uint8_t text[30];
     uint8_t status;
     lcd.SetTextColor(LCD_COLOR_WHITE);
@@ -60,17 +67,30 @@ int main()
     buffer.fill_rect(5, 0, 2, 5, 0x0000FF00);
     buffer.swap();
     np::init_all();
+    
+    // Assume 3 apps and hack out a button
+    gui::button btn;
+    btn.x = 330;
+    btn.y = 200;
+    btn.width = 150;
+    btn.height = 100;
+    btn.border = LCD_COLOR_GREEN;
+    btn.text_colour = LCD_COLOR_WHITE;
+    btn.text = "PONG";
+    btn.action = launch_pong;
+    btn.render(lcd);
 
     size_t col = 0;
-    lcd.DisplayStringAt(0, LINE(7), (uint8_t*) "STARTING", CENTER_MODE);
     while(1)
     {
+        ts.GetState(&touch);
+        btn.poll_event(touch);
         t.start();
         int bytes = np::render_segment(np::INNER_0, buffer.get_render_column(col), 26);
         t.stop();
         sprintf((char*)text, "Rendered %d bytes in %fs", bytes, t.read());
         t.reset();
-        lcd.DisplayStringAt(0, LINE(10), text, LEFT_MODE);
+        lcd.DisplayStringAt(0, LINE(15), text, LEFT_MODE);
         buffer.pixel_at(col,col)+=20;
         col++;
         if(col==26) {
