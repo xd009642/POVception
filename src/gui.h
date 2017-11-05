@@ -33,6 +33,8 @@ namespace gui
 
         bool poll_event(const TS_StateTypeDef& touch)
         {
+            if(!action)
+                return false;
             if(touch.touchDetected == 1)
             {
                 if(touch.touchX[0] > x && touch.touchX[0] < (x+width) &&

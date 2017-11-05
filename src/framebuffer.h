@@ -3,6 +3,8 @@
 
 #include "stdint.h"
 #include <cstdlib>
+#include "game_types.h"
+
 
 namespace render
 {
@@ -26,6 +28,9 @@ namespace render
         //! Clear the image and fill with the given colour. 
         void clear(const uint32_t& clear_colour);
         void fill_rect(const size_t& x, const size_t y, const size_t w, const size_t h, const uint32_t c);
+        app::point2<size_t> size() const;
+        size_t get_width() const; 
+        size_t get_height() const; 
     private:
         uint32_t* render_buffer;
         uint32_t* proc_buffer;

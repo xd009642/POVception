@@ -57,9 +57,9 @@ void render::framebuffer::fill_rect(const size_t& x, const size_t y,
     if(yend>height) { 
         yend= height;
     }
-    for(int xp=x; xp<xend; xp++)
+    for(size_t xp=x; xp<xend; xp++)
     {
-        for(int yp=y; yp<yend; yp++)
+        for(size_t yp=y; yp<yend; yp++)
         {
             pixel_at(xp, yp) = c;
         }
@@ -82,3 +82,20 @@ const size_t& render::framebuffer::n_col() const
 bool render::framebuffer::is_valid() const {
     return valid;
 }
+        
+
+app::point2<size_t> render::framebuffer::size() const
+{
+    return {width, height};
+}
+
+size_t render::framebuffer::get_width() const 
+{
+    return width;
+}
+
+size_t render::framebuffer::get_height() const 
+{
+    return height;
+}
+

@@ -76,6 +76,8 @@ OBJECTS += SDFileSystem/SDFileSystem.o
 OBJECTS += src/main.o
 OBJECTS += src/neopixel.o
 OBJECTS += src/framebuffer.o
+OBJECTS += src/pong.o
+OBJECTS += src/joystick.o
 
  SYS_OBJECTS += mbed/TARGET_DISCO_F469NI/TOOLCHAIN_GCC_ARM/stm32f4xx_hal_flash_ramfunc.o
  SYS_OBJECTS += mbed/TARGET_DISCO_F469NI/TOOLCHAIN_GCC_ARM/PeripheralPins.o
@@ -303,7 +305,7 @@ C_FLAGS += -DARM_MATH_CM4
 C_FLAGS += -include
 C_FLAGS += mbed_config.h
 
-CXX_FLAGS += -std=gnu++11
+CXX_FLAGS += -std=gnu++14
 CXX_FLAGS += -fno-rtti
 CXX_FLAGS += -Wvla
 CXX_FLAGS += -D__MBED__=1
