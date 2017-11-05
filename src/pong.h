@@ -5,6 +5,8 @@
 #include "stddef.h"
 #include "stdint.h"
 #include "framebuffer.h"
+#include "joystick.h"
+
 
 namespace app
 {
@@ -35,6 +37,7 @@ namespace app
         void reset();
         void reset_positions();
     protected:
+        void update_player(player_state& player, joystick& stick);
         bool collides_with_player();
         bool collides_with_wall();
         bool ball_out();

@@ -2,7 +2,6 @@
 
 
 
-
 app::pong::pong(render::framebuffer& buffer):graphics(buffer)
 {
     p1.paddle_width = 0.2*graphics.get_height();
@@ -38,6 +37,8 @@ bool app::pong::ball_out()
 
 void app::pong::update() 
 {
+    update_player(p1, app::stick_1);
+    update_player(p2, app::stick_2);
     graphics.fill_rect(ball.pos.x, ball.pos.y, ball.size, ball.size, 0xFF000000);
     ball.pos += ball.vel;
     if(ball.vel.zero())
@@ -63,11 +64,26 @@ void app::pong::update()
 }
 
 
+void app::pong::update_player(app::player_state& player, app::joystick& stick)
+{
+    //Apply controls \todo may need to actually apply a larger delta than 1
+    auto state = stick.y_state();
+    if(state == app::y_motion::down && player.pos.y>0)
+    {
+        player.pos.y++;
+    } 
+    else if(state == app::y_motion::up && (player.pos.y+player.paddle_width)<graphics.get_height())
+    {
+        player.pos.y--;
+    }
+}
+
+
 void app::pong::render()
 {
     // Blank where I might be drawing (super simple right now)
-    graphics.fill_rect(0,p1.pos.y,2, graphics.get_height(), 0xFF000000);
-    graphics.fill_rect(graphics.get_width()-2, 0, 2, graphics.get_height(), 0xFF000000);
+    graphics.fill_rect(0, 0, p1.paddle_depth, graphics.get_height(), 0xFF000000);
+    graphics.fill_rect(graphics.get_width()-p2.paddle_depth, 0, p2.paddle_depth, graphics.get_height(), 0xFF000000);
 
     // Draw!
     graphics.fill_rect(p1.pos.x, p1.pos.y, 2, p1.paddle_width, 0xFFFFFFFF);
