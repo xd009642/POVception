@@ -17,7 +17,8 @@ namespace app
     {
         uint16_t score;
         point2<uint16_t> pos;
-        uint16_t paddle_width;
+        uint8_t paddle_width;
+        uint8_t paddle_depth;
     };
     struct ball_state
     {
@@ -34,10 +35,10 @@ namespace app
         void reset();
         void reset_positions();
     protected:
-        void render();
         bool collides_with_player();
         bool collides_with_wall();
         bool ball_out();
+        void render();
     private:
         render::framebuffer& graphics; 
         player_state p1;

@@ -1,24 +1,27 @@
 #include "pong.h"
-#include "display_settings.h"
+
+
+
 
 app::pong::pong(render::framebuffer& buffer):graphics(buffer)
 {
     p1.paddle_width = 0.2*graphics.get_height();
+    p1.paddle_depth = 2;
     p2.paddle_width = 0.2*graphics.get_height();
+    p2.paddle_depth = 2;
+    ball.size = 1;
     reset();
 }
 
 bool app::pong::collides_with_player()
 {
-    if(ball.pos.x == 0)
+    if(ball.pos.x == p1.paddle_depth)
     {
-        return ball.pos.x < p1.pos.y || 
-            (ball.pos.x > p1.pos.y + p1.paddle_width);
+        return (ball.pos.y >= p1.pos.y) && (ball.pos.y <= p1.pos.y+p1.paddle_width);
     }
-    else if(ball.pos.x == static_cast<int16_t>(graphics.get_width()))
+    else if(ball.pos.x == graphics.get_width()-p2.paddle_depth)
     {
-        return ball.pos.x<p2.pos.y || 
-            (ball.pos.x > p2.pos.y + p2.paddle_width);
+        return (ball.pos.y >= p2.pos.y) && (ball.pos.y <= p2.pos.y+p2.paddle_width);
     }
     return false;
 }
@@ -35,9 +38,11 @@ bool app::pong::ball_out()
 
 void app::pong::update() 
 {
+    graphics.fill_rect(ball.pos.x, ball.pos.y, ball.size, ball.size, 0xFF000000);
+    ball.pos += ball.vel;
     if(ball.vel.zero())
     {
-        ball.vel.set(1,-1);
+        ball.vel.set(-1,1);
     }
     if(collides_with_player())
     {
@@ -55,16 +60,14 @@ void app::pong::update()
         reset_positions();
     }
     render();
-    ball.pos += ball.vel;
 }
 
 
 void app::pong::render()
 {
     // Blank where I might be drawing (super simple right now)
-    graphics.fill_rect(0,p1.pos.y,2, graphics.get_height(), 0);
-    graphics.fill_rect(graphics.get_width()-2, 0, 2, graphics.get_height(), 0);
-    graphics.fill_rect(ball.pos.x-ball.size, ball.pos.y-ball.size, ball.size*2,ball.size*2, 0);
+    graphics.fill_rect(0,p1.pos.y,2, graphics.get_height(), 0xFF000000);
+    graphics.fill_rect(graphics.get_width()-2, 0, 2, graphics.get_height(), 0xFF000000);
 
     // Draw!
     graphics.fill_rect(p1.pos.x, p1.pos.y, 2, p1.paddle_width, 0xFFFFFFFF);
@@ -85,6 +88,6 @@ void app::pong::reset_positions()
 {
     auto y_pos = graphics.get_height()/2;
     p1.pos.set(0, y_pos);
-    p2.pos.set(graphics.get_width()-1, y_pos);
+    p2.pos.set(graphics.get_width()-p2.paddle_depth, y_pos);
     ball.pos.set(graphics.get_width()/2, y_pos);
 }
