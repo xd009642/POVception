@@ -3,6 +3,7 @@
 #include "LCD_DISCO_F469NI.h"
 #include "SD_DISCO_F469NI.h"
 #include "neopixel.h"
+#include "dotstar.h"
 #include "framebuffer.h"
 #include "SDFileSystem.h"
 #include "background.h"
@@ -79,8 +80,9 @@ int main()
     btn.text = "PONG";
     btn.action = launch_pong;
     btn.render(lcd);
-
     size_t col = 0;
+    ds::init();
+    wait(16);
     while(1)
     {
         ts.GetState(&touch);
