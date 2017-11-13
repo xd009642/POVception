@@ -88,7 +88,9 @@ int main()
         ts.GetState(&touch);
         btn.poll_event(touch);
         t.start();
-        int bytes = np::render_segment(np::INNER_0, buffer.get_render_column(col), 26);
+        ds::display(ds::ring::outer);
+        int bytes = 23*sizeof(uint32_t);
+        //int bytes = np::render_segment(np::INNER_0, buffer.get_render_column(col), 26);
         t.stop();
         sprintf((char*)text, "Rendered %d bytes in %fs", bytes, t.read());
         t.reset();

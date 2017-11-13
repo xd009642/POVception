@@ -5,8 +5,8 @@
 
 // Made up resolution constants for rings.
 
-static constexpr size_t OUTER_WIDTH  = 26;
-static constexpr size_t OUTER_HEIGHT = 26;
+static constexpr size_t OUTER_WIDTH  = 23;
+static constexpr size_t OUTER_HEIGHT = 23;
 
 static constexpr size_t INNER_HEIGHT = 20;
 static constexpr size_t INNER_WIDTH  = 20;

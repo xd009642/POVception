@@ -12,6 +12,7 @@ namespace ds
     };
 
     void init();
+    void display(const ring id);
     void render_segment(const ring id, uint32_t* data, const size_t len);
 
 
