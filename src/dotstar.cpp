@@ -13,70 +13,46 @@ static constexpr uint32_t DOTSTAR_FREQUENCY = 45'000'000;
 static constexpr size_t HEADER_SIZE = 1;
 static constexpr size_t FOOTER_SIZE = 0;
 
-static constexpr size_t OUTER_BUFFER_SIZE = OUTER_HEIGHT + HEADER_SIZE + FOOTER_SIZE;
-static constexpr size_t INNER_BUFFER_SIZE = INNER_HEIGHT + HEADER_SIZE + FOOTER_SIZE;
+static constexpr size_t OUTER_BUFFER_SIZE = (2u * OUTER_HEIGHT) + HEADER_SIZE + FOOTER_SIZE;
+static constexpr size_t INNER_BUFFER_SIZE = (2u * INNER_HEIGHT) + HEADER_SIZE + FOOTER_SIZE;
 
 // Force it to be full brightness at the same time.
 static constexpr uint32_t LED_ENABLE = 0xE1000000u;
 
-// Set the display to show something at startup just for debugging
-static uint32_t outer_buffer [OUTER_BUFFER_SIZE];
-static uint32_t inner_buffer [INNER_BUFFER_SIZE];
 
-
-
-
-void ds::init()
+ds::ring::ring(render::framebuffer& buffer, const ds::strip_cfg& cfg):
+    buffer(buffer),
+    strip(cfg.mosi, cfg.miso, cfg.clk)
 {
-    outer_ring.frequency(DOTSTAR_FREQUENCY);
-//    outer_ring.set_dma_usage(DMA_USAGE_OPPORTUNISTIC);
-    inner_ring.frequency(DOTSTAR_FREQUENCY);
-//    inner_ring.set_dma_usage(DMA_USAGE_OPPORTUNISTIC);
-    for(size_t i=0; i<HEADER_SIZE; i++) 
+    strip.frequency(DOTSTAR_FREQUENCY);
+    payload_length = buffer.n_row() * 2;
+    length = HEADER_SIZE + payload_length + FOOTER_SIZE;
+    ring_buffer = new uint32_t[length];
+    for(size_t i=0; i<HEADER_SIZE+FOOTER_SIZE+payload_length; i++)
     {
-        outer_buffer[i] = 0x00000000;
-        inner_buffer[i] = 0x00000000;
+        ring_buffer[i] = 0;
     }
-    for(size_t i=HEADER_SIZE; i<(OUTER_HEIGHT+HEADER_SIZE); i++)
-    {
-        outer_buffer[i] = LED_ENABLE | 0xFF0000;
-    }
-    for(size_t i=0; i<FOOTER_SIZE; i++)
-    {
-        outer_buffer[HEADER_SIZE+OUTER_HEIGHT + i] = 0xFFFFFFFFu;
-        inner_buffer[HEADER_SIZE+INNER_HEIGHT + i] = 0xFFFFFFFFu;
-    }
+    ready = true;
 }
 
-void ds::display(const ds::ring id) 
+ds::ring::~ring()
 {
-    if(id == ds::ring::outer)
-    {
-        outer_ring.write((const char*)outer_buffer, sizeof(uint32_t)*OUTER_BUFFER_SIZE, nullptr, 0); 
-    } 
-    else if(id == ds::ring::inner)
-    {
-        inner_ring.write((const char*)inner_buffer, sizeof(uint32_t)*INNER_BUFFER_SIZE, nullptr, 0); 
-    }
+    delete [] ring_buffer;
 }
 
-// No DMA support
-void ds::render_segment(const ds::ring id, uint32_t* data, const size_t len)
+void ds::ring::display(const size_t col) 
 {
-    if(id == ds::ring::outer)
+    const size_t opposite_col = (col+buffer.n_col()/2)%buffer.n_col();
+    const size_t row_byte_count = sizeof(uint32_t)*buffer.n_row();
+    const size_t BACK_START = buffer.n_row() + HEADER_SIZE;
+    memcpy(&ring_buffer[HEADER_SIZE], buffer.get_render_column(col), row_byte_count);
+    for(size_t i=0; i<buffer.n_row(); i++)
     {
-        if(len <= OUTER_HEIGHT)
-        {
-            memcpy(reinterpret_cast<void*>(outer_buffer + HEADER_SIZE), reinterpret_cast<void*>(data), len);
-        }
-    } 
-    else if (id == ds::ring::inner)
-    {
-        if(len <= INNER_HEIGHT)
-        {
-            memcpy(reinterpret_cast<void*>(inner_buffer + HEADER_SIZE), reinterpret_cast<void*>(data), len);
-        }
-        
+        ring_buffer[BACK_START+i] = buffer.pixel_at(opposite_col, 
+            buffer.n_row()-i-1);
     }
-    ds::display(id);
+    strip.write((const char*)ring_buffer, 
+        length*sizeof(uint32_t), 
+        nullptr, 
+        0);
 }
