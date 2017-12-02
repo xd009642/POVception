@@ -48,7 +48,7 @@ void ds::ring::display(const size_t col)
     memcpy(&ring_buffer[HEADER_SIZE], buffer.get_render_column(col), row_byte_count);
     for(size_t i=0; i<buffer.n_row(); i++)
     {
-        ring_buffer[BACK_START+i] = buffer.pixel_at(opposite_col, 
+        ring_buffer[BACK_START+i] = LED_ENABLE | buffer.pixel_at(opposite_col, 
             buffer.n_row()-i-1);
     }
     strip.write((const char*)ring_buffer, 

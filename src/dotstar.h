@@ -17,7 +17,7 @@ namespace ds
     };
 
     static constexpr strip_cfg outer{SPI_MOSI, SPI_MISO, SPI_SCK};
-    static constexpr strip_cfg inner{SPI_MOSI, SPI_MISO, SPI_SCK};
+    static constexpr strip_cfg inner{PB_5, PB_4, PA_5};
 
     class ring
     {
