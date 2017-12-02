@@ -3,6 +3,7 @@
 #include "LCD_DISCO_F469NI.h"
 #include "SD_DISCO_F469NI.h"
 #include "neopixel.h"
+#include "dotstar.h"
 #include "framebuffer.h"
 #include "SDFileSystem.h"
 #include "background.h"
@@ -42,6 +43,7 @@ void launch_pong()
 
 int main()
 {
+    t.start();
     TS_StateTypeDef touch;
     uint8_t text[30];
     uint8_t status;
@@ -55,6 +57,7 @@ int main()
     lcd.DisplayStringAt(0, LINE(5), (uint8_t *)"XMAS CHALLENGE", CENTER_MODE);
   
     render::framebuffer buffer(26, 26);
+    ds::ring outer(buffer, ds::outer); 
     if(buffer.is_valid() == false)
     {
         lcd.DisplayStringAt(0, LINE(15), (uint8_t*)"BUFFER NOT ALLOCATED", CENTER_MODE);
@@ -79,14 +82,18 @@ int main()
     btn.text = "PONG";
     btn.action = launch_pong;
     btn.render(lcd);
-
     size_t col = 0;
+    sprintf((char*)text, "Startup time %fs", t.read());
+    lcd.DisplayStringAt(0, LINE(14), text, LEFT_MODE);
+    t.reset();
     while(1)
     {
         ts.GetState(&touch);
         btn.poll_event(touch);
         t.start();
-        int bytes = np::render_segment(np::INNER_0, buffer.get_render_column(col), 26);
+        outer.display(col);
+        int bytes = 23*sizeof(uint32_t);
+        //int bytes = np::render_segment(np::INNER_0, buffer.get_render_column(col), 26);
         t.stop();
         sprintf((char*)text, "Rendered %d bytes in %fs", bytes, t.read());
         t.reset();
