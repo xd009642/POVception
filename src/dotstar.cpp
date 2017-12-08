@@ -8,13 +8,13 @@ SPI outer_ring(SPI_MOSI, SPI_MISO, SPI_SCK);
 // Male connectors on CN12
 SPI inner_ring(PB_5, PB_4, PA_5);
 
-static constexpr uint32_t DOTSTAR_FREQUENCY = 45'000'000;
+static constexpr uint32_t DOTSTAR_FREQUENCY = 2'000'000;
 
 static constexpr size_t HEADER_SIZE = 1;
 static constexpr size_t FOOTER_SIZE = 0;
 
-static constexpr size_t OUTER_BUFFER_SIZE = (2u * OUTER_HEIGHT) + HEADER_SIZE + FOOTER_SIZE;
-static constexpr size_t INNER_BUFFER_SIZE = (2u * INNER_HEIGHT) + HEADER_SIZE + FOOTER_SIZE;
+static constexpr size_t INNER_BUFFER_SIZE = (2u * OUTER_HEIGHT) + HEADER_SIZE + FOOTER_SIZE;
+static constexpr size_t OUTER_BUFFER_SIZE = (2u * INNER_HEIGHT) + HEADER_SIZE + FOOTER_SIZE;
 
 // Force it to be full brightness at the same time.
 static constexpr uint32_t LED_ENABLE = 0xE1000000u;
@@ -48,7 +48,7 @@ void ds::ring::display(const size_t col)
     memcpy(&ring_buffer[HEADER_SIZE], buffer.get_render_column(col), row_byte_count);
     for(size_t i=0; i<buffer.n_row(); i++)
     {
-        ring_buffer[BACK_START+i] = LED_ENABLE | buffer.pixel_at(opposite_col, 
+        ring_buffer[BACK_START+i] = buffer.pixel_at(opposite_col, 
             buffer.n_row()-i-1);
     }
     strip.write((const char*)ring_buffer, 

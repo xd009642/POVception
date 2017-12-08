@@ -9,6 +9,8 @@ extern "C" {
 }
 #endif
 #include "stdint.h"
+#include "gpio_object.h"
+#include "gpio_api.h"
 #include "stddef.h"
 #include "mbed.h"
 #include "InterruptManager.h"
@@ -21,15 +23,6 @@ namespace np {
 
     struct strip;
 
-    enum segment_id {
-        INNER_0 = 0u,
-        INNER_1,
-        OUTER_0,
-        OUTER_1,
-        OUTER_2,
-        OUTER_3,
-        SEGMENT_COUNT
-    };
     /**
      * Initialise all Neopixel strips and interrupts
      */
@@ -37,7 +30,8 @@ namespace np {
     /**
      * Render given Neopixel strip
      */
-    int render_segment(const segment_id id, uint32_t* data, const size_t len);
+    int render_segment(uint32_t* data, const size_t len);
+    void write_byte(gpio_t* handle, uint8_t data);
 }
 
 

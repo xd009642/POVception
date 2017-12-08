@@ -8,6 +8,7 @@
 #include "SDFileSystem.h"
 #include "background.h"
 #include "gui.h"
+#include "display_settings.h"
 
 //Do I need to set the alt functions for the pins?
 LCD_DISCO_F469NI lcd;
@@ -71,13 +72,36 @@ int main()
     status = ts.Init(lcd.GetXSize(), lcd.GetYSize());
     prepare_background();
     // 0 means good, non-zero is error code. 
-    lcd.DisplayStringAt(0, LINE(2), (uint8_t *)"XMAS CHALLENGE", CENTER_MODE);
+    lcd.DisplayStringAt(0, LINE(2), (uint8_t *)"XMAS CHALLENGE SPIN", CENTER_MODE);
     auto a0 = AnalogIn(A0);
     auto a1 = AnalogIn(A1);
     auto a2 = AnalogIn(A2);
     auto a3 = AnalogIn(A3);
+    auto he1 = DigitalIn(D2);
+    auto he2 = DigitalIn(D3);
+    np::init_all();
+    uint32_t np_leds[16] ={0xFF00u};
+    int pwmwid = 0;
+    int delta = 2;
+    int maxpwm = 1400;
+    auto m1 = PwmOut(D5);
+    auto m2 = PwmOut(D6);
+    wait_ms(1500);
+    m1.period_ms(20);
+    m2.period_ms(20);
+    m1.pulsewidth_us(pwmwid);
+    m2.pulsewidth_us(pwmwid);
+    render::framebuffer outer_buffer(OUTER_WIDTH, OUTER_HEIGHT);
+    render::framebuffer inner_buffer(INNER_WIDTH, INNER_HEIGHT);
+    ds::ring outer(inner_buffer, ds::outer); 
+    ds::ring inner(outer_buffer, ds::inner); 
+    inner_buffer.clear(0x00FFFFFF);
+    outer_buffer.clear(0x00FFFFFF);
+    outer_buffer.swap();
+    inner_buffer.swap();
     while(1)
     {
+        np::render_segment(np_leds, 16);
         sprintf((char*)text, "A0 = %f", a0.read());
         lcd.DisplayStringAt(0, LINE(3), (uint8_t*)text, LEFT_MODE);
         sprintf((char*)text, "A1 = %f", a1.read());
@@ -86,22 +110,35 @@ int main()
         lcd.DisplayStringAt(0, LINE(5), (uint8_t*)text, LEFT_MODE);
         sprintf((char*)text, "A3 = %f", a3.read());
         lcd.DisplayStringAt(0, LINE(6), (uint8_t*)text, LEFT_MODE);
+        if(he1.read())
+        {
+            lcd.DisplayStringAt(0, LINE(7), (uint8_t*)"Hall effect 1 high", LEFT_MODE);
+        }
+        else
+        {
+            lcd.DisplayStringAt(0, LINE(7), (uint8_t*)"Hall effect 1 low", LEFT_MODE);
+        }
+        if(he2.read())
+        {
+            lcd.DisplayStringAt(0, LINE(8), (uint8_t*)"Hall effect 2 high", LEFT_MODE);
+        }
+        else
+        {
+            lcd.DisplayStringAt(0, LINE(8), (uint8_t*)"Hall effect 2 low", LEFT_MODE);
+        }
+        outer.display(0);
+        inner.display(0);
+        if(pwmwid == maxpwm || (pwmwid + delta == 0))
+        {
+            delta *= -1;
+        }
+        pwmwid += delta;
+        sprintf((char*)text, "PWM width is %dus", pwmwid);
+        lcd.DisplayStringAt(0, LINE(9), text, LEFT_MODE);
+        m1.pulsewidth_us(pwmwid);
+        m2.pulsewidth_us(pwmwid);
         wait_ms(16);
     }
-    render::framebuffer buffer(26, 26);
-    ds::ring outer(buffer, ds::outer); 
-    if(buffer.is_valid() == false)
-    {
-        lcd.DisplayStringAt(0, LINE(15), (uint8_t*)"BUFFER NOT ALLOCATED", CENTER_MODE);
-    }
-    buffer.clear(0x00000000);
-    for(size_t i=0; i<26; i++) 
-    {
-        buffer.pixel_at(i,i)= 30;
-    }
-    buffer.fill_rect(5, 0, 2, 5, 0x0000FF00);
-    buffer.swap();
-    np::init_all();
     
     // Assume 3 apps and hack out a button
     gui::button btn;
@@ -137,10 +174,10 @@ int main()
         }
         t.reset();
         lcd.DisplayStringAt(0, LINE(15), text, LEFT_MODE);
-        buffer.pixel_at(col,col)+=20;
+        outer_buffer.pixel_at(col,col)+=20;
         col++;
         if(col==26) {
-            buffer.swap();
+            outer_buffer.swap();
             col = 0;
         }
     }
