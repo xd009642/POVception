@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_switch'.
  *
- * Model version                  : 1.568
+ * Model version                  : 1.587
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sat Dec 09 21:23:31 2017
+ * C/C++ source code generated on : Sat Dec 09 22:33:48 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -58,32 +58,32 @@ void bldc_motor_controller_switch_step(void)
     rtDW.is_active_c3_bldc_motor_control = 1U;
 
     /* Entry Internal: Outer Motor Controller/Motor Controller */
-    /* Transition: '<S7>:16' */
+    /* Transition: '<S6>:16' */
     rtDW.is_c3_bldc_motor_controller_swi = IN_idle;
 
-    /* Entry 'idle': '<S7>:15' */
-    /* '<S7>:15:1' count_load = true; */
+    /* Entry 'idle': '<S6>:15' */
+    /* '<S6>:15:1' count_load = true; */
     rtDW.count_load = true;
 
-    /* '<S7>:15:1' motor_state = 0; */
+    /* '<S6>:15:1' motor_state = 0; */
     rtDW.motor_state = 0U;
   } else {
     switch (rtDW.is_c3_bldc_motor_controller_swi) {
      case IN_arm_motor:
       rtDW.motor_state = 1U;
 
-      /* During 'arm_motor': '<S7>:18' */
-      /* '<S7>:17:1' sf_internal_predicateOutput = ... */
-      /* '<S7>:17:1' hallEffectTrig; */
-      if (rtU.hall_effect_trig != 0.0) {
-        /* Transition: '<S7>:17' */
+      /* During 'arm_motor': '<S6>:18' */
+      /* '<S6>:17:1' sf_internal_predicateOutput = ... */
+      /* '<S6>:17:1' hallEffectTrig; */
+      if (rtU.hall_effect_trig) {
+        /* Transition: '<S6>:17' */
         rtDW.is_c3_bldc_motor_controller_swi = IN_trig_idle;
 
-        /* Entry 'trig_idle': '<S7>:1' */
-        /* '<S7>:1:1' motor_state = 2; */
+        /* Entry 'trig_idle': '<S6>:1' */
+        /* '<S6>:1:1' motor_state = 2; */
         rtDW.motor_state = 2U;
 
-        /* '<S7>:1:1' count_load = false; */
+        /* '<S6>:1:1' count_load = false; */
         rtDW.count_load = false;
       }
       break;
@@ -92,15 +92,15 @@ void bldc_motor_controller_switch_step(void)
       rtDW.count_load = true;
       rtDW.motor_state = 0U;
 
-      /* During 'idle': '<S7>:15' */
-      /* '<S7>:19:1' sf_internal_predicateOutput = ... */
-      /* '<S7>:19:1' arm_motor_req == 1; */
+      /* During 'idle': '<S6>:15' */
+      /* '<S6>:19:1' sf_internal_predicateOutput = ... */
+      /* '<S6>:19:1' arm_motor_req == 1; */
       if (rtU.arm_motor_req) {
-        /* Transition: '<S7>:19' */
+        /* Transition: '<S6>:19' */
         rtDW.is_c3_bldc_motor_controller_swi = IN_arm_motor;
 
-        /* Entry 'arm_motor': '<S7>:18' */
-        /* '<S7>:18:1' motor_state = 1; */
+        /* Entry 'arm_motor': '<S6>:18' */
+        /* '<S6>:18:1' motor_state = 1; */
         rtDW.motor_state = 1U;
 
         /* exit: motor_state = 2; */
@@ -110,42 +110,42 @@ void bldc_motor_controller_switch_step(void)
      case IN_halt_motor:
       rtDW.motor_state = 3U;
 
-      /* During 'halt_motor': '<S7>:23' */
-      /* '<S7>:26:1' sf_internal_predicateOutput = ... */
-      /* '<S7>:26:1' halt_motor_req == 0 && count_in <= 1060; */
+      /* During 'halt_motor': '<S6>:23' */
+      /* '<S6>:26:1' sf_internal_predicateOutput = ... */
+      /* '<S6>:26:1' halt_motor_req == 0 && count_in <= 1060; */
       if ((!rtU.halt_motor_req) && (rtDW.X_l <= 1060.0)) {
-        /* Transition: '<S7>:26' */
+        /* Transition: '<S6>:26' */
         rtDW.is_c3_bldc_motor_controller_swi = IN_idle;
 
-        /* Entry 'idle': '<S7>:15' */
-        /* '<S7>:15:1' count_load = true; */
+        /* Entry 'idle': '<S6>:15' */
+        /* '<S6>:15:1' count_load = true; */
         rtDW.count_load = true;
 
-        /* '<S7>:15:1' motor_state = 0; */
+        /* '<S6>:15:1' motor_state = 0; */
         rtDW.motor_state = 0U;
       }
       break;
 
      case IN_interrupt_trigger:
-      /* During 'interrupt_trigger': '<S7>:5' */
-      /* Transition: '<S7>:11' */
+      /* During 'interrupt_trigger': '<S6>:5' */
+      /* Transition: '<S6>:11' */
       rtDW.is_c3_bldc_motor_controller_swi = IN_speed_calc_done;
 
-      /* Entry 'speed_calc_done': '<S7>:10' */
-      /* '<S7>:10:1' count_load = true; */
+      /* Entry 'speed_calc_done': '<S6>:10' */
+      /* '<S6>:10:1' count_load = true; */
       rtDW.count_load = true;
       break;
 
      case IN_speed_calc_done:
-      /* During 'speed_calc_done': '<S7>:10' */
-      /* Transition: '<S7>:7' */
+      /* During 'speed_calc_done': '<S6>:10' */
+      /* Transition: '<S6>:7' */
       rtDW.is_c3_bldc_motor_controller_swi = IN_trig_idle;
 
-      /* Entry 'trig_idle': '<S7>:1' */
-      /* '<S7>:1:1' motor_state = 2; */
+      /* Entry 'trig_idle': '<S6>:1' */
+      /* '<S6>:1:1' motor_state = 2; */
       rtDW.motor_state = 2U;
 
-      /* '<S7>:1:1' count_load = false; */
+      /* '<S6>:1:1' count_load = false; */
       rtDW.count_load = false;
       break;
 
@@ -153,36 +153,36 @@ void bldc_motor_controller_switch_step(void)
       rtDW.count_load = false;
       rtDW.motor_state = 2U;
 
-      /* During 'trig_idle': '<S7>:1' */
-      /* '<S7>:24:1' sf_internal_predicateOutput = ... */
-      /* '<S7>:24:1' halt_motor_req == 1; */
+      /* During 'trig_idle': '<S6>:1' */
+      /* '<S6>:24:1' sf_internal_predicateOutput = ... */
+      /* '<S6>:24:1' halt_motor_req == 1; */
       if (rtU.halt_motor_req) {
-        /* Transition: '<S7>:24' */
+        /* Transition: '<S6>:24' */
         rtDW.is_c3_bldc_motor_controller_swi = IN_halt_motor;
 
-        /* Entry 'halt_motor': '<S7>:23' */
-        /* '<S7>:23:1' motor_state = 3; */
+        /* Entry 'halt_motor': '<S6>:23' */
+        /* '<S6>:23:1' motor_state = 3; */
         rtDW.motor_state = 3U;
       } else {
-        /* '<S7>:25:1' sf_internal_predicateOutput = ... */
-        /* '<S7>:25:1' hallEffectTrig; */
-        if (rtU.hall_effect_trig != 0.0) {
-          /* Transition: '<S7>:25' */
+        /* '<S6>:25:1' sf_internal_predicateOutput = ... */
+        /* '<S6>:25:1' hallEffectTrig; */
+        if (rtU.hall_effect_trig) {
+          /* Transition: '<S6>:25' */
           rtDW.is_c3_bldc_motor_controller_swi = IN_interrupt_trigger;
 
           /* Outputs for Function Call SubSystem: '<S1>/Motor Count Condition' */
-          /* Gain: '<S8>/Gearing Ratio' incorporates:
-           *  Constant: '<S13>/Increment'
-           *  Constant: '<S8>/rps to rpm'
-           *  Gain: '<S8>/Clock Period'
-           *  Product: '<S8>/Divide'
-           *  Sum: '<S13>/Sum'
-           *  UnitDelay: '<S13>/X'
+          /* Gain: '<S7>/Gearing Ratio' incorporates:
+           *  Constant: '<S11>/Increment'
+           *  Constant: '<S7>/rps to rpm'
+           *  Gain: '<S7>/Clock Period'
+           *  Product: '<S7>/Divide'
+           *  Sum: '<S11>/Sum'
+           *  UnitDelay: '<S11>/X'
            */
-          /* Entry 'interrupt_trigger': '<S7>:5' */
-          /* '<S7>:5:1' trigOut; */
-          /* Event: '<S7>:9' */
-          rtDW.GearingRatio = 60.0 / ((1.0 + rtDW.X_i) * 5.56E-9) *
+          /* Entry 'interrupt_trigger': '<S6>:5' */
+          /* '<S6>:5:1' trigOut; */
+          /* Event: '<S6>:9' */
+          rtDW.GearingRatio = 60.0 / ((1.0 + rtDW.X_p) * 5.56E-9) *
             0.26666666666666666;
 
           /* End of Outputs for SubSystem: '<S1>/Motor Count Condition' */
@@ -197,28 +197,28 @@ void bldc_motor_controller_switch_step(void)
   /* If: '<S1>/If' */
   if (rtDW.motor_state != 2) {
     /* Outputs for IfAction SubSystem: '<S1>/Motor Halt and Arm' incorporates:
-     *  ActionPort: '<S9>/Action Port'
+     *  ActionPort: '<S8>/Action Port'
      */
-    /* Switch: '<S14>/Switch1' incorporates:
-     *  Constant: '<S14>/Decrement'
-     *  Constant: '<S14>/Increment'
-     *  Constant: '<S5>/Constant'
-     *  RelationalOperator: '<S5>/Compare'
+    /* Switch: '<S12>/Switch1' incorporates:
+     *  Constant: '<S12>/Decrement'
+     *  Constant: '<S12>/Increment'
+     *  Constant: '<S4>/Constant'
+     *  RelationalOperator: '<S4>/Compare'
      */
     if (rtDW.motor_state == 3) {
-      tmp = 10;
-    } else {
       tmp = -10;
+    } else {
+      tmp = 10;
     }
 
-    /* End of Switch: '<S14>/Switch1' */
+    /* End of Switch: '<S12>/Switch1' */
 
-    /* Sum: '<S14>/Sum' incorporates:
-     *  UnitDelay: '<S14>/X'
+    /* Sum: '<S12>/Sum' incorporates:
+     *  UnitDelay: '<S12>/X'
      */
     rtb_FilterCoefficient = (real_T)tmp + rtDW.X_h;
 
-    /* Saturate: '<S9>/Saturation1' */
+    /* Saturate: '<S8>/Saturation1' */
     if (rtb_FilterCoefficient > 1196.0) {
       rtb_Add = 1196.0;
     } else if (rtb_FilterCoefficient < 0.0) {
@@ -227,55 +227,55 @@ void bldc_motor_controller_switch_step(void)
       rtb_Add = rtb_FilterCoefficient;
     }
 
-    /* End of Saturate: '<S9>/Saturation1' */
+    /* End of Saturate: '<S8>/Saturation1' */
 
-    /* Switch: '<S14>/Switch' incorporates:
-     *  Constant: '<S6>/Constant'
-     *  RelationalOperator: '<S6>/Compare'
+    /* Switch: '<S12>/Switch' incorporates:
+     *  Constant: '<S5>/Constant'
+     *  RelationalOperator: '<S5>/Compare'
      */
     if (rtDW.motor_state == 0) {
-      /* Update for UnitDelay: '<S14>/X' incorporates:
-       *  Constant: '<S14>/load_var'
+      /* Update for UnitDelay: '<S12>/X' incorporates:
+       *  Constant: '<S12>/load_var'
        */
       rtDW.X_h = 0.0;
     } else {
-      /* Update for UnitDelay: '<S14>/X' */
+      /* Update for UnitDelay: '<S12>/X' */
       rtDW.X_h = rtb_FilterCoefficient;
     }
 
-    /* End of Switch: '<S14>/Switch' */
+    /* End of Switch: '<S12>/Switch' */
     /* End of Outputs for SubSystem: '<S1>/Motor Halt and Arm' */
   } else {
     /* Outputs for IfAction SubSystem: '<S1>/Motor PID Controlelr' incorporates:
-     *  ActionPort: '<S11>/Action Port'
+     *  ActionPort: '<S9>/Action Port'
      */
-    /* Gain: '<S16>/Filter Coefficient' incorporates:
-     *  DiscreteIntegrator: '<S16>/Filter'
-     *  Gain: '<S16>/Derivative Gain'
-     *  Sum: '<S16>/Sum3'
-     *  Sum: '<S16>/SumD'
+    /* Gain: '<S14>/Filter Coefficient' incorporates:
+     *  DiscreteIntegrator: '<S14>/Filter'
+     *  Gain: '<S14>/Derivative Gain'
+     *  Sum: '<S14>/Sum3'
+     *  Sum: '<S14>/SumD'
      */
     rtb_FilterCoefficient = ((213.33333333333334 - rtDW.GearingRatio) * 0.0 -
       rtDW.Filter_DSTATE) * 100.0;
 
-    /* Sum: '<S15>/Add' incorporates:
-     *  Constant: '<S15>/PWM Offset Factor'
-     *  DiscreteIntegrator: '<S16>/Integrator'
-     *  Gain: '<S15>/PWM Gain Factor'
-     *  Sum: '<S16>/Sum'
-     *  Sum: '<S16>/Sum1'
+    /* Sum: '<S13>/Add' incorporates:
+     *  Constant: '<S13>/PWM Offset Factor'
+     *  DiscreteIntegrator: '<S14>/Integrator'
+     *  Gain: '<S13>/PWM Gain Factor'
+     *  Sum: '<S14>/Sum'
+     *  Sum: '<S14>/Sum1'
      */
     rtb_Add = (((213.33333333333334 - rtDW.GearingRatio) +
                 rtDW.Integrator_DSTATE) + rtb_FilterCoefficient) * 0.1709 +
       1060.0;
 
     /* Outport: '<Root>/motor_speed_flag' incorporates:
-     *  Constant: '<S11>/Terminal'
-     *  RelationalOperator: '<S11>/RelOpt'
+     *  Constant: '<S9>/Terminal'
+     *  RelationalOperator: '<S9>/RelOpt'
      */
     rtY.motor_speed_flag = (1093.0 <= rtb_Add);
 
-    /* Saturate: '<S11>/Saturation' */
+    /* Saturate: '<S9>/Saturation' */
     if (rtb_Add > 1860.0) {
       rtb_Add = 1860.0;
     } else {
@@ -284,14 +284,14 @@ void bldc_motor_controller_switch_step(void)
       }
     }
 
-    /* End of Saturate: '<S11>/Saturation' */
+    /* End of Saturate: '<S9>/Saturation' */
 
-    /* Update for DiscreteIntegrator: '<S16>/Integrator' incorporates:
-     *  Sum: '<S16>/Sum2'
+    /* Update for DiscreteIntegrator: '<S14>/Integrator' incorporates:
+     *  Sum: '<S14>/Sum2'
      */
     rtDW.Integrator_DSTATE += (213.33333333333334 - rtDW.GearingRatio) * 0.001;
 
-    /* Update for DiscreteIntegrator: '<S16>/Filter' */
+    /* Update for DiscreteIntegrator: '<S14>/Filter' */
     rtDW.Filter_DSTATE += 0.001 * rtb_FilterCoefficient;
 
     /* End of Outputs for SubSystem: '<S1>/Motor PID Controlelr' */
@@ -306,34 +306,34 @@ void bldc_motor_controller_switch_step(void)
   rtY.outer_motor_pwm = rtb_Add / 20000.0;
 
   /* Outport: '<Root>/ring_position_ratio' incorporates:
-   *  Constant: '<S12>/Clock Period Const'
-   *  Constant: '<S13>/Increment'
-   *  Product: '<S12>/Divide'
-   *  Product: '<S12>/Divide1'
-   *  Sum: '<S13>/Sum'
-   *  UnitDelay: '<S13>/X'
+   *  Constant: '<S11>/Increment'
+   *  Product: '<S10>/Divide'
+   *  Product: '<S10>/Divide1'
+   *  Sum: '<S11>/Sum'
+   *  UnitDelay: '<S11>/X'
    */
-  rtY.ring_position_ratio = (1.0 + rtDW.X_i) / (rtDW.GearingRatio / 5.56E-9);
+  rtY.ring_position_ratio = (real32_T)((1.0 + rtDW.X_p) / (real32_T)
+    (rtDW.GearingRatio / 5.5600000159472529E-9));
 
   /* Update for UnitDelay: '<S1>/X' */
   rtDW.X_l = rtb_Add;
 
-  /* Switch: '<S13>/Switch' */
+  /* Switch: '<S11>/Switch' */
   if (rtDW.count_load) {
-    /* Update for UnitDelay: '<S13>/X' incorporates:
-     *  Constant: '<S13>/Load'
+    /* Update for UnitDelay: '<S11>/X' incorporates:
+     *  Constant: '<S11>/Load'
      */
-    rtDW.X_i = 0.0;
+    rtDW.X_p = 0.0;
   } else {
-    /* Update for UnitDelay: '<S13>/X' incorporates:
-     *  Constant: '<S13>/Increment'
-     *  Sum: '<S13>/Sum'
-     *  UnitDelay: '<S13>/X'
+    /* Update for UnitDelay: '<S11>/X' incorporates:
+     *  Constant: '<S11>/Increment'
+     *  Sum: '<S11>/Sum'
+     *  UnitDelay: '<S11>/X'
      */
-    rtDW.X_i++;
+    rtDW.X_p++;
   }
 
-  /* End of Switch: '<S13>/Switch' */
+  /* End of Switch: '<S11>/Switch' */
 }
 
 /* Model initialize function */

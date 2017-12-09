@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_switch'.
  *
- * Model version                  : 1.568
+ * Model version                  : 1.587
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sat Dec 09 21:23:31 2017
+ * C/C++ source code generated on : Sat Dec 09 22:33:48 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
