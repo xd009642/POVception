@@ -81,6 +81,7 @@ OBJECTS += src/joystick.o
 OBJECTS += src/dotstar.o
 OBJECTS += src/gui.o
 OBJECTS += MATLAB/03_motor_controller_full/bldc_motor_controller_switch.o
+OBJECTS += MATLAB/03_motor_controller_full/SysTickScheduler.o
 
  SYS_OBJECTS += mbed/TARGET_DISCO_F469NI/TOOLCHAIN_GCC_ARM/stm32f4xx_hal_flash_ramfunc.o
  SYS_OBJECTS += mbed/TARGET_DISCO_F469NI/TOOLCHAIN_GCC_ARM/PeripheralPins.o
