@@ -79,7 +79,13 @@ int main()
     ds::ring outer(outer_buffer, ds::outer); 
     ds::ring inner(inner_buffer, ds::inner); 
     inner_buffer.clear(ds::RED);
-    outer_buffer.clear(ds::WHITE);
+    outer_buffer.clear(ds::BLUE);
+    for(int i=0; i<OUTER_WIDTH; i++)
+    {
+        outer_buffer.pixel_at(i, 25) = ds::GREEN; 
+        outer_buffer.pixel_at(i, 26) = ds::GREEN; 
+        outer_buffer.pixel_at(i, 27) = ds::GREEN; 
+    }
     int outer_col = 0;
     int inner_col = 0;
     outer_buffer.swap();
@@ -104,7 +110,7 @@ int main()
         ui.render_all();
         ui.update(touch);
         outer.display(outer_col);
-        inner.display(inner_col);
+    //    inner.display(inner_col);
         inner_col++;
         outer_col++;
         if(outer_col == OUTER_WIDTH) {

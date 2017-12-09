@@ -9,10 +9,10 @@
 
 namespace ds
 {
-    static constexpr uint32_t WHITE = 0xE00F0F0F;
-    static constexpr uint32_t BLUE = 0xE07A0101;
-    static constexpr uint32_t GREEN = 0xE007A00A;
-    static constexpr uint32_t RED = 0xE001017A;
+    static constexpr uint32_t WHITE = 0xE0424242;
+    static constexpr uint32_t BLUE = 0xE0740000;
+    static constexpr uint32_t GREEN = 0xE0072000;
+    static constexpr uint32_t RED = 0xE0000074;
     static constexpr uint32_t BLACK = 0xE0010101;
 
     struct strip_cfg
