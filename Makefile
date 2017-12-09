@@ -80,6 +80,7 @@ OBJECTS += src/pong.o
 OBJECTS += src/joystick.o
 OBJECTS += src/dotstar.o
 OBJECTS += src/gui.o
+OBJECTS += src/motor_control.o
 OBJECTS += MATLAB/04_motor_controller_full_no_exti/bldc_motor_controller_switch.o
 
  SYS_OBJECTS += mbed/TARGET_DISCO_F469NI/TOOLCHAIN_GCC_ARM/stm32f4xx_hal_flash_ramfunc.o

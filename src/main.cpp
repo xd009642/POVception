@@ -9,9 +9,7 @@
 #include "background.h"
 #include "gui.h"
 #include "display_settings.h"
-extern "C" {
-#include "bldc_motor_controller_second.h"
-}
+#include "motor_control.h"
 
 //Do I need to set the alt functions for the pins?
 LCD_DISCO_F469NI lcd;
@@ -49,22 +47,20 @@ void launch_pong()
 void halt_motor()
 {
     lcd.DisplayStringAt(0, LINE(10), (uint8_t*)"HALTING ", RIGHT_MODE);
-    bldc_motor_controller_second_U.halt_motor_req = 1.0;
+    motors::set_state(motors::state::stop);
 }
 
 
 void spin_up()
 {
     lcd.DisplayStringAt(0, LINE(10), (uint8_t*)"SPINNING", RIGHT_MODE);
-    bldc_motor_controller_second_U.arm_motor_req = 1.0;
-    bldc_motor_controller_second_U.halt_motor_req = 0.0;
+    motors::set_state(motors::state::spin);
 }
 
 
 int main()
 {
     TS_StateTypeDef touch;
-    uint8_t text[30];
     lcd.SetTextColor(LCD_COLOR_WHITE);
     lcd.Clear(BACKGROUND_COLOUR);
     lcd.SetBackColor(BACKGROUND_COLOUR);
@@ -98,12 +94,8 @@ int main()
     ui.get_button(1).action = spin_up;
     ui.get_button(2).text = "Halt";
     ui.get_button(2).action = halt_motor;
-    
-    bldc_motor_controller_second_initialize();
-    PwmOut m1(D5);
-    m1.period_us(bldc_motor_controller_second_P.PWMPeriodus_Value);
-    m1.write(0.0f);
-    PwmOut m2(D6);
+    motors::set_lcd(&lcd);
+    motors::init(); 
     while(1)
     {
         ts.GetState(&touch);
@@ -121,9 +113,7 @@ int main()
             inner_buffer.swap();
             inner_col = 0;
         }
-        bldc_motor_controller_second_step();
-        m1.write(bldc_motor_controller_second_Y.motor_pwm);
-        sprintf((char*)text, "PWM %lf", bldc_motor_controller_second_Y.motor_pwm);
-        lcd.DisplayStringAt(0, LINE(14), text, LEFT_MODE);
+
+        motors::update();
     }
 }
