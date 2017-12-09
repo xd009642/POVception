@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_switch'.
  *
- * Model version                  : 1.568
+ * Model version                  : 1.587
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sat Dec 09 21:23:31 2017
+ * C/C++ source code generated on : Sat Dec 09 22:33:48 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -41,12 +41,12 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T GearingRatio;                 /* '<S8>/Gearing Ratio' */
+  real_T GearingRatio;                 /* '<S7>/Gearing Ratio' */
   real_T X_l;                          /* '<S1>/X' */
-  real_T X_i;                          /* '<S13>/X' */
-  real_T Integrator_DSTATE;            /* '<S16>/Integrator' */
-  real_T Filter_DSTATE;                /* '<S16>/Filter' */
-  real_T X_h;                          /* '<S14>/X' */
+  real_T X_p;                          /* '<S11>/X' */
+  real_T Integrator_DSTATE;            /* '<S14>/Integrator' */
+  real_T Filter_DSTATE;                /* '<S14>/Filter' */
+  real_T X_h;                          /* '<S12>/X' */
   uint8_T motor_state;                 /* '<S1>/Motor Controller' */
   uint8_T is_active_c3_bldc_motor_control;/* '<S1>/Motor Controller' */
   uint8_T is_c3_bldc_motor_controller_swi;/* '<S1>/Motor Controller' */
@@ -57,15 +57,14 @@ typedef struct {
 typedef struct {
   boolean_T arm_motor_req;             /* '<Root>/arm_motor_req' */
   boolean_T halt_motor_req;            /* '<Root>/halt_motor_req' */
-  real_T hall_effect_trig;             /* '<Root>/hall_effect_trig' */
+  boolean_T hall_effect_trig;          /* '<Root>/hall_effect_trig' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with auto storage) */
 typedef struct {
   real_T outer_motor_pwm;              /* '<Root>/outer_motor_pwm' */
   boolean_T motor_speed_flag;          /* '<Root>/motor_speed_flag' */
-  real_T ring_position_ratio;          /* '<Root>/ring_position_ratio' */
-  real_T hallEffectTrigDebug;          /* '<Root>/hallEffectTrigDebug' */
+  real32_T ring_position_ratio;        /* '<Root>/ring_position_ratio' */
 } ExtY;
 
 /* Real-time Model Data Structure */
@@ -92,15 +91,15 @@ extern RT_MODEL *const rtM;
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
- * Block '<S14>/RelOpt' : Unused code path elimination
- * Block '<S14>/Terminal' : Unused code path elimination
- * Block '<S13>/RelOpt' : Unused code path elimination
- * Block '<S13>/Terminal' : Unused code path elimination
+ * Block '<S12>/RelOpt' : Unused code path elimination
+ * Block '<S12>/Terminal' : Unused code path elimination
+ * Block '<S11>/RelOpt' : Unused code path elimination
+ * Block '<S11>/Terminal' : Unused code path elimination
  * Block '<S3>/Rate Transition' : Eliminated since input and output rates are identical
- * Block '<S16>/Integral Gain' : Eliminated nontunable gain of 1
- * Block '<S16>/Proportional Gain' : Eliminated nontunable gain of 1
- * Block '<S16>/Setpoint Weighting (Derivative)' : Eliminated nontunable gain of 1
- * Block '<S16>/Setpoint Weighting (Proportional)' : Eliminated nontunable gain of 1
+ * Block '<S14>/Integral Gain' : Eliminated nontunable gain of 1
+ * Block '<S14>/Proportional Gain' : Eliminated nontunable gain of 1
+ * Block '<S14>/Setpoint Weighting (Derivative)' : Eliminated nontunable gain of 1
+ * Block '<S14>/Setpoint Weighting (Proportional)' : Eliminated nontunable gain of 1
  * Block '<S1>/Rate Transition' : Eliminated since input and output rates are identical
  */
 
@@ -122,19 +121,17 @@ extern RT_MODEL *const rtM;
  * '<S1>'   : 'bldc_motor_controller_switch/Outer Motor Controller'
  * '<S2>'   : 'bldc_motor_controller_switch/PWM Driver'
  * '<S3>'   : 'bldc_motor_controller_switch/Outer Motor Controller/Async Rate Transition '
- * '<S4>'   : 'bldc_motor_controller_switch/Outer Motor Controller/Async Rate Transition 1'
- * '<S5>'   : 'bldc_motor_controller_switch/Outer Motor Controller/Halt Compare'
- * '<S6>'   : 'bldc_motor_controller_switch/Outer Motor Controller/Load Compare'
- * '<S7>'   : 'bldc_motor_controller_switch/Outer Motor Controller/Motor Controller'
- * '<S8>'   : 'bldc_motor_controller_switch/Outer Motor Controller/Motor Count Condition'
- * '<S9>'   : 'bldc_motor_controller_switch/Outer Motor Controller/Motor Halt and Arm'
- * '<S10>'  : 'bldc_motor_controller_switch/Outer Motor Controller/Motor ISR SF'
- * '<S11>'  : 'bldc_motor_controller_switch/Outer Motor Controller/Motor PID Controlelr'
- * '<S12>'  : 'bldc_motor_controller_switch/Outer Motor Controller/Ring Position Calc'
- * '<S13>'  : 'bldc_motor_controller_switch/Outer Motor Controller/Rotation Counter'
- * '<S14>'  : 'bldc_motor_controller_switch/Outer Motor Controller/Motor Halt and Arm/Counter1'
- * '<S15>'  : 'bldc_motor_controller_switch/Outer Motor Controller/Motor PID Controlelr/PID Controller'
- * '<S16>'  : 'bldc_motor_controller_switch/Outer Motor Controller/Motor PID Controlelr/PID Controller/Discrete PID Controller (2DOF)'
+ * '<S4>'   : 'bldc_motor_controller_switch/Outer Motor Controller/Halt Compare'
+ * '<S5>'   : 'bldc_motor_controller_switch/Outer Motor Controller/Load Compare'
+ * '<S6>'   : 'bldc_motor_controller_switch/Outer Motor Controller/Motor Controller'
+ * '<S7>'   : 'bldc_motor_controller_switch/Outer Motor Controller/Motor Count Condition'
+ * '<S8>'   : 'bldc_motor_controller_switch/Outer Motor Controller/Motor Halt and Arm'
+ * '<S9>'   : 'bldc_motor_controller_switch/Outer Motor Controller/Motor PID Controlelr'
+ * '<S10>'  : 'bldc_motor_controller_switch/Outer Motor Controller/Ring Position Calc'
+ * '<S11>'  : 'bldc_motor_controller_switch/Outer Motor Controller/Rotation Counter1'
+ * '<S12>'  : 'bldc_motor_controller_switch/Outer Motor Controller/Motor Halt and Arm/Counter1'
+ * '<S13>'  : 'bldc_motor_controller_switch/Outer Motor Controller/Motor PID Controlelr/PID Controller'
+ * '<S14>'  : 'bldc_motor_controller_switch/Outer Motor Controller/Motor PID Controlelr/PID Controller/Discrete PID Controller (2DOF)'
  */
 #endif                                 /* RTW_HEADER_bldc_motor_controller_switch_h_ */
 
