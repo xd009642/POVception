@@ -36,6 +36,20 @@ namespace app
             }
             return y_motion::none;
         }
+
+        x_motion x_state()
+        {
+            auto state = x_axis.read_u16();
+            if(state < LOWER_DEADZONE)
+            {
+                return x_motion::left;
+            }
+            else if(state > UPPER_DEADZONE)
+            {
+                return x_motion::right;
+            }
+            return x_motion::none;
+        }
     };
 
     extern joystick stick_1;
