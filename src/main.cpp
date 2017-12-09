@@ -10,7 +10,7 @@
 #include "gui.h"
 #include "display_settings.h"
 extern "C" {
-#include "motor_test.h"
+#include "bldc_motor_controller_second.h"
 }
 
 //Do I need to set the alt functions for the pins?
@@ -46,10 +46,23 @@ void launch_pong()
     lcd.DisplayStringAt(0, LINE(1), (uint8_t*)"PLAYING PONG", RIGHT_MODE);
 }
 
+void halt_motor()
+{
+    lcd.DisplayStringAt(0, LINE(10), (uint8_t*)"HALTING ", RIGHT_MODE);
+    bldc_motor_controller_second_U.halt_motor_req = 1.0;
+}
+
+
+void spin_up()
+{
+    lcd.DisplayStringAt(0, LINE(10), (uint8_t*)"SPINNING", RIGHT_MODE);
+    bldc_motor_controller_second_U.arm_motor_req = 1.0;
+    bldc_motor_controller_second_U.halt_motor_req = 0.0;
+}
+
 
 int main()
 {
-    t.start();
     TS_StateTypeDef touch;
     uint8_t text[30];
     lcd.SetTextColor(LCD_COLOR_WHITE);
@@ -75,11 +88,14 @@ int main()
     // Assume 3 apps and hack out a button
     ui.get_button(0).text = "PONG";
     ui.get_button(0).action = launch_pong;
-    sprintf((char*)text, "Startup time %fs", t.read());
-    lcd.DisplayStringAt(0, LINE(14), text, LEFT_MODE);
-    motor_test_initialize();
+    ui.get_button(1).text = "Spin";
+    ui.get_button(1).action = spin_up;
+    ui.get_button(2).text = "Halt";
+    ui.get_button(2).action = halt_motor;
+    
+    bldc_motor_controller_second_initialize();
     PwmOut m1(D5);
-    m1.period_us(motor_test_P.PWMPeriodus_Value);
+    m1.period_us(bldc_motor_controller_second_P.PWMPeriodus_Value);
     m1.write(0.0f);
     PwmOut m2(D6);
     while(1)
@@ -99,7 +115,9 @@ int main()
             inner_buffer.swap();
             inner_col = 0;
         }
-        motor_test_step();
-        m1.write(motor_test_Y.motor_pwm);
+        bldc_motor_controller_second_step();
+        m1.write(bldc_motor_controller_second_Y.motor_pwm);
+        sprintf((char*)text, "PWM %lf", bldc_motor_controller_second_Y.motor_pwm);
+        lcd.DisplayStringAt(0, LINE(14), text, LEFT_MODE);
     }
 }
