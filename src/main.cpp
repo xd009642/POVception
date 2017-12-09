@@ -15,8 +15,6 @@ LCD_DISCO_F469NI lcd;
 TS_DISCO_F469NI ts;
 SDFileSystem sd("sd");
 Timer t;
-InterruptIn wire(PA_1);
-InterruptIn wire2(PG_13);
 
 static constexpr uint32_t BACKGROUND_COLOUR = 0xFFED0000;
 static constexpr uint32_t SCREEN_WIDTH = 800;
@@ -25,8 +23,6 @@ static constexpr uint32_t SCREEN_HEIGHT = 480;
 static constexpr uint32_t BORDER_HEIGHT = 60;
 static constexpr uint32_t BORDER_WIDTH = 120;
 
-volatile bool triggered = false;
-volatile bool triggered2 = false;
 bool init_sd_card() {
     return sd.disk_initialize() == 0;
 }
@@ -47,22 +43,11 @@ void launch_pong()
     lcd.DisplayStringAt(0, LINE(10), (uint8_t*)"PLAYING PONG", RIGHT_MODE);
 }
 
-void trig()
-{
-    triggered = true;
-}
-
-void trig2()
-{
-    triggered2 = true;
-}
 
 int main()
 {
     t.start();
     TS_StateTypeDef touch;
-    wire.rise(&trig);
-    wire2.rise(&trig2);
     uint8_t text[30];
     uint8_t status;
     lcd.SetTextColor(LCD_COLOR_WHITE);
@@ -93,10 +78,27 @@ int main()
     m2.pulsewidth_us(pwmwid);
     render::framebuffer outer_buffer(OUTER_WIDTH, OUTER_HEIGHT);
     render::framebuffer inner_buffer(INNER_WIDTH, INNER_HEIGHT);
-    ds::ring outer(inner_buffer, ds::outer); 
-    ds::ring inner(outer_buffer, ds::inner); 
-    inner_buffer.clear(0x00FFFFFF);
-    outer_buffer.clear(0x00FFFFFF);
+    ds::ring outer(outer_buffer, ds::outer); 
+    ds::ring inner(inner_buffer, ds::inner); 
+    inner_buffer.clear(ds::RED);
+    outer_buffer.clear(ds::WHITE);
+    int outer_col = 0;
+    int inner_col = 0;
+    uint32_t colr = ds::RED;
+    for(int c=0; c<OUTER_WIDTH; c++)
+    {
+        if(c%5==0)
+        {
+            if(colr == ds::RED)
+                colr = ds::BLUE;
+            else 
+                colr = ds::RED;
+        }
+        for(int r=0; r<10; r++)
+        {
+            outer_buffer.pixel_at(c, r) = colr;
+        }
+    }
     outer_buffer.swap();
     inner_buffer.swap();
     while(1)
@@ -126,8 +128,14 @@ int main()
         {
             lcd.DisplayStringAt(0, LINE(8), (uint8_t*)"Hall effect 2 low", LEFT_MODE);
         }
-        outer.display(0);
-        inner.display(0);
+        outer.display(outer_col);
+        inner.display(inner_col);
+        outer_col++;
+        inner_col++;
+        if(inner_col == INNER_WIDTH)
+            inner_col = 0;
+        if(outer_col == OUTER_WIDTH)
+            outer_col = 0;
         if(pwmwid == maxpwm || (pwmwid + delta == 0))
         {
             delta *= -1;
@@ -139,18 +147,10 @@ int main()
         m2.pulsewidth_us(pwmwid);
         wait_ms(16);
     }
-    
+    gui::interface ui(lcd, 3);
     // Assume 3 apps and hack out a button
-    gui::button btn;
-    btn.x = 330;
-    btn.y = 200;
-    btn.width = 150;
-    btn.height = 100;
-    btn.border = LCD_COLOR_GREEN;
-    btn.text_colour = LCD_COLOR_WHITE;
-    btn.text = "PONG";
-    btn.action = launch_pong;
-    btn.render(lcd);
+    ui.get_button(0).text = "PONG";
+    ui.get_button(0).action = launch_pong;
     size_t col = 0;
     sprintf((char*)text, "Startup time %fs", t.read());
     lcd.DisplayStringAt(0, LINE(14), text, LEFT_MODE);
@@ -158,20 +158,13 @@ int main()
     while(1)
     {
         ts.GetState(&touch);
-        btn.poll_event(touch);
+        ui.render();
+        ui.get_action(touch)();
         t.start();
         outer.display(col);
         int bytes = 23*sizeof(uint32_t);
         //int bytes = np::render_segment(np::INNER_0, buffer.get_render_column(col), 26);
         t.stop();
-        if(!triggered)
-            sprintf((char*)text, "Rendered %d bytes in %fs", bytes, t.read());
-        else 
-            sprintf((char*)text, "I'm triggered");
-        if(triggered2) {
-            uint8_t text2[] = "hello";
-            lcd.DisplayStringAt(0, LINE(14), text2, LEFT_MODE);
-        }
         t.reset();
         lcd.DisplayStringAt(0, LINE(15), text, LEFT_MODE);
         outer_buffer.pixel_at(col,col)+=20;

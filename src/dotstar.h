@@ -9,6 +9,12 @@
 
 namespace ds
 {
+    static constexpr uint32_t WHITE = 0xE00F0F0F;
+    static constexpr uint32_t BLUE = 0xE07A0101;
+    static constexpr uint32_t GREEN = 0xE007A00A;
+    static constexpr uint32_t RED = 0xE001017A;
+    static constexpr uint32_t BLACK = 0xE0010101;
+
     struct strip_cfg
     {
         PinName mosi;
@@ -16,8 +22,8 @@ namespace ds
         PinName clk;
     };
 
-    static constexpr strip_cfg outer{SPI_MOSI, SPI_MISO, SPI_SCK};
-    static constexpr strip_cfg inner{PB_5, PB_4, PA_5};
+    static constexpr strip_cfg inner{SPI_MOSI, SPI_MISO, SPI_SCK};
+    static constexpr strip_cfg outer{PB_5, PB_4, PA_5};
 
     class ring
     {
