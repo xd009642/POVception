@@ -19,7 +19,7 @@
 #include <string.h>
 #ifndef motor_test_COMMON_INCLUDES_
 # define motor_test_COMMON_INCLUDES_
-#include "rtwtypes.h"
+#include "stdint.h"
 #endif                                 /* motor_test_COMMON_INCLUDES_ */
 
 #include "motor_test_types.h"
@@ -36,57 +36,57 @@
 
 /* Block states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T X;                            /* '<S1>/X' */
-} DW_motor_test_T;
+  float X;                            /* '<S1>/X' */
+} DW_motor_test_t;
 
 /* External inputs (root inport signals with auto storage) */
 typedef struct {
-  real_T count_load;                   /* '<Root>/count_load' */
-} ExtU_motor_test_T;
+  float count_load;                   /* '<Root>/count_load' */
+} ExtU_motor_test_t;
 
 /* External outputs (root outports fed by signals with auto storage) */
 typedef struct {
-  real_T motor_pwm;                    /* '<Root>/motor_pwm' */
-} ExtY_motor_test_T;
+  float motor_pwm;                    /* '<Root>/motor_pwm' */
+} ExtY_motor_test_t;
 
 /* Parameters (auto storage) */
-struct P_motor_test_T_ {
-  real_T Load_Value;                   /* Expression: 0
+struct P_motor_test_t_ {
+  float Load_Value;                   /* Expression: 0
                                         * Referenced by: '<S1>/Load'
                                         */
-  real_T Increment_Value;              /* Expression: 1
+  float Increment_Value;              /* Expression: 1
                                         * Referenced by: '<S1>/Increment'
                                         */
-  real_T X_InitialCondition;           /* Expression: 0
+  float X_InitialCondition;           /* Expression: 0
                                         * Referenced by: '<S1>/X'
                                         */
-  real_T Saturation_UpperSat;          /* Expression: 1070
+  float Saturation_UpperSat;          /* Expression: 1070
                                         * Referenced by: '<Root>/Saturation'
                                         */
-  real_T Saturation_LowerSat;          /* Expression: 0
+  float Saturation_LowerSat;          /* Expression: 0
                                         * Referenced by: '<Root>/Saturation'
                                         */
-  real_T PWMPeriodus_Value;            /* Expression: 20000
+  float PWMPeriodus_Value;            /* Expression: 20000
                                         * Referenced by: '<S2>/PWM Period us'
                                         */
 };
 
 /* Real-time Model Data Structure */
-struct tag_RTM_motor_test_T {
-  const char_T *errorStatus;
+struct tag_RTM_motor_test_t {
+  const char *errorStatus;
 };
 
 /* Block parameters (auto storage) */
-extern P_motor_test_T motor_test_P;
+extern P_motor_test_t motor_test_P;
 
 /* Block states (auto storage) */
-extern DW_motor_test_T motor_test_DW;
+extern DW_motor_test_t motor_test_DW;
 
 /* External inputs (root inport signals with auto storage) */
-extern ExtU_motor_test_T motor_test_U;
+extern ExtU_motor_test_t motor_test_U;
 
 /* External outputs (root outports fed by signals with auto storage) */
-extern ExtY_motor_test_T motor_test_Y;
+extern ExtY_motor_test_t motor_test_Y;
 
 /* Model entry point functions */
 extern void motor_test_initialize(void);
@@ -94,7 +94,7 @@ extern void motor_test_step(void);
 extern void motor_test_terminate(void);
 
 /* Real-time Model object */
-extern RT_MODEL_motor_test_T *const motor_test_M;
+extern RT_MODEL_motor_test_t *const motor_test_M;
 
 /*-
  * These blocks were eliminated from the model due to optimizations:

@@ -17,23 +17,23 @@
 #include "motor_test_private.h"
 
 /* Block states (auto storage) */
-DW_motor_test_T motor_test_DW;
+DW_motor_test_t motor_test_DW;
 
 /* External inputs (root inport signals with auto storage) */
-ExtU_motor_test_T motor_test_U;
+ExtU_motor_test_t motor_test_U;
 
 /* External outputs (root outports fed by signals with auto storage) */
-ExtY_motor_test_T motor_test_Y;
+ExtY_motor_test_t motor_test_Y;
 
 /* Real-time model */
-RT_MODEL_motor_test_T motor_test_M_;
-RT_MODEL_motor_test_T *const motor_test_M = &motor_test_M_;
+RT_MODEL_motor_test_t motor_test_M_;
+RT_MODEL_motor_test_t *const motor_test_M = &motor_test_M_;
 
 /* Model step function */
 void motor_test_step(void)
 {
-  real_T rtb_Sum;
-  real_T rtb_Sum_0;
+  float rtb_Sum;
+  float rtb_Sum_0;
 
   /* Sum: '<S1>/Sum' incorporates:
    *  Constant: '<S1>/Increment'
@@ -84,7 +84,7 @@ void motor_test_initialize(void)
 
   /* states (dwork) */
   (void) memset((void *)&motor_test_DW, 0,
-                sizeof(DW_motor_test_T));
+                sizeof(DW_motor_test_t));
 
   /* external inputs */
   motor_test_U.count_load = 0.0;
