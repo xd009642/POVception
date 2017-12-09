@@ -17,7 +17,7 @@
 #include "motor_test_private.h"
 
 /* Block parameters (auto storage) */
-P_motor_test_T motor_test_P = {
+P_motor_test_t motor_test_P = {
   0.0,                                 /* Expression: 0
                                         * Referenced by: '<S1>/Load'
                                         */

@@ -238,6 +238,7 @@ INCLUDE_PATHS += -I../mbed/drivers
 INCLUDE_PATHS += -I../mbed/hal
 INCLUDE_PATHS += -I../mbed/platform
 INCLUDE_PATHS += -I../src
+INCLUDE_PATHS += -I../MATLAB/motor_test
 
 LIBRARY_PATHS := -L../mbed/TARGET_DISCO_F469NI/TOOLCHAIN_GCC_ARM 
 LIBRARIES := -lmbed 

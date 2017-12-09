@@ -9,6 +9,9 @@
 #include "background.h"
 #include "gui.h"
 #include "display_settings.h"
+extern "C" {
+#include "motor_test.h"
+}
 
 //Do I need to set the alt functions for the pins?
 LCD_DISCO_F469NI lcd;
@@ -74,6 +77,11 @@ int main()
     ui.get_button(0).action = launch_pong;
     sprintf((char*)text, "Startup time %fs", t.read());
     lcd.DisplayStringAt(0, LINE(14), text, LEFT_MODE);
+    motor_test_initialize();
+    PwmOut m1(D5);
+    m1.period_us(motor_test_P.PWMPeriodus_Value);
+    m1.write(0.0f);
+    PwmOut m2(D6);
     while(1)
     {
         ts.GetState(&touch);
@@ -91,5 +99,7 @@ int main()
             inner_buffer.swap();
             inner_col = 0;
         }
+        motor_test_step();
+        m1.write(motor_test_Y.motor_pwm);
     }
 }

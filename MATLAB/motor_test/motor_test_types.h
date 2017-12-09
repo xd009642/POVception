@@ -15,13 +15,12 @@
 
 #ifndef RTW_HEADER_motor_test_types_h_
 #define RTW_HEADER_motor_test_types_h_
-#include "rtwtypes.h"
 
 /* Parameters (auto storage) */
-typedef struct P_motor_test_T_ P_motor_test_T;
+typedef struct P_motor_test_t_ P_motor_test_t;
 
 /* Forward declaration for rtModel */
-typedef struct tag_RTM_motor_test_T RT_MODEL_motor_test_T;
+typedef struct tag_RTM_motor_test_t RT_MODEL_motor_test_t;
 
 #endif                                 /* RTW_HEADER_motor_test_types_h_ */
 
