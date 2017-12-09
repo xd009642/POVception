@@ -1,7 +1,8 @@
 #include "gui.h"
 
-static constexpr uint32_t WIDTH_OFFSET = 20;
-static constexpr uint32_t HEIGHT_OFFSET = 100;
+static constexpr uint32_t WIDTH_OFFSET = 50;
+static constexpr uint32_t HEIGHT_OFFSET = 200;
+
 
 gui::interface::interface(LCD_DISCO_F469NI& screen, size_t n_buttons):
     screen(screen),
@@ -13,7 +14,7 @@ gui::interface::interface(LCD_DISCO_F469NI& screen, size_t n_buttons):
         buttons = new gui::button[n_buttons];
         for(size_t i=0; i<n_buttons; i++)
         {
-            buttons[i].x = WIDTH_OFFSET + i*150;
+            buttons[i].x = WIDTH_OFFSET + i*(150+WIDTH_OFFSET);
             buttons[i].y = HEIGHT_OFFSET;
             buttons[i].width = 150;
             buttons[i].height = 100;
@@ -23,6 +24,7 @@ gui::interface::interface(LCD_DISCO_F469NI& screen, size_t n_buttons):
     }
 }
 
+
 gui::interface::~interface()
 {
     if(buttons != nullptr)
@@ -31,13 +33,25 @@ gui::interface::~interface()
     }
 }
 
-void gui::interface::render()
+
+void gui::interface::render(size_t n)
 {
-    for(size_t i=0; i<len; i++)
+    if(n>len)
+    {
+        n = len;
+    }
+    for(int i=0; i<n; i++)
     {
         buttons[i].render(screen);
     }
 }
+
+
+void gui::interface::render_all()
+{
+    render(len);
+}
+
 
 gui::button& gui::interface::get_button(const size_t index)
 {
@@ -51,12 +65,14 @@ gui::button& gui::interface::get_button(const size_t index)
     }
 }
 
-std::function<void()> gui::interface::get_action(const TS_StateTypeDef& pos)
+
+void gui::interface::update(const TS_StateTypeDef& pos)
 {
     for(size_t i=0; i<len; i++)
     {
         if(buttons[i].poll_event(pos))
-            return buttons[i].action;
+        {
+            break;
+        }
     }
-    return {};
 }

@@ -40,7 +40,7 @@ void prepare_background()
 
 void launch_pong()
 {
-    lcd.DisplayStringAt(0, LINE(10), (uint8_t*)"PLAYING PONG", RIGHT_MODE);
+    lcd.DisplayStringAt(0, LINE(1), (uint8_t*)"PLAYING PONG", RIGHT_MODE);
 }
 
 
@@ -49,33 +49,15 @@ int main()
     t.start();
     TS_StateTypeDef touch;
     uint8_t text[30];
-    uint8_t status;
     lcd.SetTextColor(LCD_COLOR_WHITE);
     lcd.Clear(BACKGROUND_COLOUR);
     lcd.SetBackColor(BACKGROUND_COLOUR);
     BSP_LCD_SetFont(&Font24);
-    status = ts.Init(lcd.GetXSize(), lcd.GetYSize());
+    // not checking status
+    ts.Init(lcd.GetXSize(), lcd.GetYSize());
     prepare_background();
     // 0 means good, non-zero is error code. 
     lcd.DisplayStringAt(0, LINE(2), (uint8_t *)"XMAS CHALLENGE SPIN", CENTER_MODE);
-    auto a0 = AnalogIn(A0);
-    auto a1 = AnalogIn(A1);
-    auto a2 = AnalogIn(A2);
-    auto a3 = AnalogIn(A3);
-    auto he1 = DigitalIn(D2);
-    auto he2 = DigitalIn(D3);
-    np::init_all();
-    uint32_t np_leds[16] ={0xFF00u};
-    int pwmwid = 0;
-    int delta = 2;
-    int maxpwm = 1400;
-    auto m1 = PwmOut(D5);
-    auto m2 = PwmOut(D6);
-    wait_ms(1500);
-    m1.period_ms(20);
-    m2.period_ms(20);
-    m1.pulsewidth_us(pwmwid);
-    m2.pulsewidth_us(pwmwid);
     render::framebuffer outer_buffer(OUTER_WIDTH, OUTER_HEIGHT);
     render::framebuffer inner_buffer(INNER_WIDTH, INNER_HEIGHT);
     ds::ring outer(outer_buffer, ds::outer); 
@@ -84,94 +66,30 @@ int main()
     outer_buffer.clear(ds::WHITE);
     int outer_col = 0;
     int inner_col = 0;
-    uint32_t colr = ds::RED;
-    for(int c=0; c<OUTER_WIDTH; c++)
-    {
-        if(c%5==0)
-        {
-            if(colr == ds::RED)
-                colr = ds::BLUE;
-            else 
-                colr = ds::RED;
-        }
-        for(int r=0; r<10; r++)
-        {
-            outer_buffer.pixel_at(c, r) = colr;
-        }
-    }
     outer_buffer.swap();
     inner_buffer.swap();
-    while(1)
-    {
-        np::render_segment(np_leds, 16);
-        sprintf((char*)text, "A0 = %f", a0.read());
-        lcd.DisplayStringAt(0, LINE(3), (uint8_t*)text, LEFT_MODE);
-        sprintf((char*)text, "A1 = %f", a1.read());
-        lcd.DisplayStringAt(0, LINE(4), (uint8_t*)text, LEFT_MODE);
-        sprintf((char*)text, "A2 = %f", a2.read());
-        lcd.DisplayStringAt(0, LINE(5), (uint8_t*)text, LEFT_MODE);
-        sprintf((char*)text, "A3 = %f", a3.read());
-        lcd.DisplayStringAt(0, LINE(6), (uint8_t*)text, LEFT_MODE);
-        if(he1.read())
-        {
-            lcd.DisplayStringAt(0, LINE(7), (uint8_t*)"Hall effect 1 high", LEFT_MODE);
-        }
-        else
-        {
-            lcd.DisplayStringAt(0, LINE(7), (uint8_t*)"Hall effect 1 low", LEFT_MODE);
-        }
-        if(he2.read())
-        {
-            lcd.DisplayStringAt(0, LINE(8), (uint8_t*)"Hall effect 2 high", LEFT_MODE);
-        }
-        else
-        {
-            lcd.DisplayStringAt(0, LINE(8), (uint8_t*)"Hall effect 2 low", LEFT_MODE);
-        }
-        outer.display(outer_col);
-        inner.display(inner_col);
-        outer_col++;
-        inner_col++;
-        if(inner_col == INNER_WIDTH)
-            inner_col = 0;
-        if(outer_col == OUTER_WIDTH)
-            outer_col = 0;
-        if(pwmwid == maxpwm || (pwmwid + delta == 0))
-        {
-            delta *= -1;
-        }
-        pwmwid += delta;
-        sprintf((char*)text, "PWM width is %dus", pwmwid);
-        lcd.DisplayStringAt(0, LINE(9), text, LEFT_MODE);
-        m1.pulsewidth_us(pwmwid);
-        m2.pulsewidth_us(pwmwid);
-        wait_ms(16);
-    }
     gui::interface ui(lcd, 3);
     // Assume 3 apps and hack out a button
     ui.get_button(0).text = "PONG";
     ui.get_button(0).action = launch_pong;
-    size_t col = 0;
     sprintf((char*)text, "Startup time %fs", t.read());
     lcd.DisplayStringAt(0, LINE(14), text, LEFT_MODE);
-    t.reset();
     while(1)
     {
         ts.GetState(&touch);
-        ui.render();
-        ui.get_action(touch)();
-        t.start();
-        outer.display(col);
-        int bytes = 23*sizeof(uint32_t);
-        //int bytes = np::render_segment(np::INNER_0, buffer.get_render_column(col), 26);
-        t.stop();
-        t.reset();
-        lcd.DisplayStringAt(0, LINE(15), text, LEFT_MODE);
-        outer_buffer.pixel_at(col,col)+=20;
-        col++;
-        if(col==26) {
+        ui.render_all();
+        ui.update(touch);
+        outer.display(outer_col);
+        inner.display(inner_col);
+        inner_col++;
+        outer_col++;
+        if(outer_col == OUTER_WIDTH) {
             outer_buffer.swap();
-            col = 0;
+            outer_col = 0;
+        }
+        if(inner_col == INNER_WIDTH) {
+            inner_buffer.swap();
+            inner_col = 0;
         }
     }
 }

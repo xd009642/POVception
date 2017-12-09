@@ -56,11 +56,12 @@ namespace gui
         interface(LCD_DISCO_F469NI& screen, size_t n_buttons = 3);
         ~interface();
 
-        void render();
+        void render(size_t n);
+        void render_all();
         //! if overruns returns last button
         button& get_button(const size_t index);
 
-        std::function<void()> get_action(const TS_StateTypeDef& pos);
+        void update(const TS_StateTypeDef& pos);
 
     private:
         LCD_DISCO_F469NI& screen;
