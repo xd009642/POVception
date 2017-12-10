@@ -15,8 +15,8 @@ namespace app
         left, right, none
     };
 
-    static constexpr uint16_t LOWER_DEADZONE = 0x7FE0;
-    static constexpr uint16_t UPPER_DEADZONE = 0x8020;
+    static constexpr uint16_t LOWER_DEADZONE = 30'000;
+    static constexpr uint16_t UPPER_DEADZONE = 35'000;
 
     struct joystick
     {

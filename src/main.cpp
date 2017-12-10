@@ -10,8 +10,9 @@
 #include "gui.h"
 #include "display_settings.h"
 #include "motor_control.h"
+#include "joystick.h"
 
-//Do I need to set the alt functions for the pins?
+
 LCD_DISCO_F469NI lcd;
 TS_DISCO_F469NI ts;
 SDFileSystem sd("sd");
