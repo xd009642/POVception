@@ -8,7 +8,7 @@ SPI outer_ring(SPI_MOSI, SPI_MISO, SPI_SCK);
 // Male connectors on CN12
 SPI inner_ring(PB_5, PB_4, PA_5);
 
-static constexpr uint32_t DOTSTAR_FREQUENCY = 2'500'000;
+static constexpr uint32_t DOTSTAR_FREQUENCY = 10'000'000;
 
 static constexpr size_t HEADER_SIZE = 4;
 static constexpr size_t FOOTER_SIZE = 0;

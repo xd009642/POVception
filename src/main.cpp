@@ -57,6 +57,26 @@ void spin_up()
     motors::set_state(motors::state::spin);
 }
 
+void setup_main_menu(gui::interface& ui)
+{
+    // Assume 3 apps and hack out a button
+    ui.get_button(0).text = "PONG";
+    ui.get_button(0).action = launch_pong;
+    ui.get_button(1).text = "Spin";
+    ui.get_button(1).action = spin_up;
+    ui.get_button(2).text = "Halt";
+    ui.get_button(2).action = halt_motor;
+}
+
+void stripey(render::framebuffer& buffer)
+{
+    buffer.clear(ds::GREEN);
+    buffer.fill_rect(0,0,1,buffer.n_row(), ds::BLUE);
+    for(size_t i=1; i<buffer.n_col(); i+=2)
+    {
+        buffer.fill_rect(i, 0, 1, buffer.n_row(), ds::RED);
+    }
+}
 
 int main()
 {
@@ -74,25 +94,14 @@ int main()
     render::framebuffer inner_buffer(INNER_WIDTH, INNER_HEIGHT);
     ds::ring outer(outer_buffer, ds::outer, lcd); 
     ds::ring inner(inner_buffer, ds::inner, lcd);
-    inner_buffer.clear(ds::BLACK);
-    outer_buffer.clear(ds::BLACK);
-    inner_buffer.fill_rect(0, 0, 1, INNER_HEIGHT, ds::BLUE); 
-    outer_buffer.fill_rect(0, 0, 1, OUTER_HEIGHT, ds::BLUE);
-    inner_buffer.fill_rect(INNER_WIDTH/2, 0, 1, INNER_HEIGHT, ds::RED); 
-    outer_buffer.fill_rect(OUTER_WIDTH/2, 0, 1, OUTER_HEIGHT, ds::RED);
+    stripey(outer_buffer);
+    stripey(inner_buffer);
     int outer_col = 0;
     int inner_col = 0;
     outer_buffer.swap();
     inner_buffer.swap();
     gui::interface ui(lcd, 3);
-    // Assume 3 apps and hack out a button
-    ui.get_button(0).text = "PONG";
-    ui.get_button(0).action = launch_pong;
-    ui.get_button(1).text = "Spin";
-    ui.get_button(1).action = spin_up;
-    ui.get_button(2).text = "Halt";
-    ui.get_button(2).action = halt_motor;
-    motors::set_lcd(&lcd);
+    setup_main_menu(ui);
     motors::init(); 
     while(1)
     {
@@ -112,6 +121,5 @@ int main()
         }
         outer_col = oi_temp;
         inner_col = ii_temp;
-        //wait_us(10000);
     }
 }
