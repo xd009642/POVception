@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.100
+ * Model version                  : 1.106
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 16:52:45 2017
+ * C/C++ source code generated on : Sun Dec 10 17:18:46 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -45,7 +45,7 @@ typedef struct {
 typedef struct {
   real_T X;                            /* '<S1>/X' */
   real_T X_m;                          /* '<S7>/X' */
-  boolean_T X_o;                       /* '<S7>/X1' */
+  boolean_T X_n;                       /* '<S7>/X1' */
   uint8_T is_active_c3_bldc_motor_control;/* '<S1>/Motor Controller' */
   uint8_T is_c3_bldc_motor_controller_ful;/* '<S1>/Motor Controller' */
 } DW_bldc_motor_controller_full_T;
@@ -69,10 +69,10 @@ typedef struct {
 
 /* Parameters (auto storage) */
 struct P_bldc_motor_controller_full__T_ {
-  real_T Compare_const;                /* Mask Parameter: Compare_const
+  real_T HaltCompare_const;            /* Mask Parameter: HaltCompare_const
                                         * Referenced by: '<S10>/Constant'
                                         */
-  uint8_T HaltCompare_const;           /* Mask Parameter: HaltCompare_const
+  uint8_T HaltCompare_const_g;         /* Mask Parameter: HaltCompare_const_g
                                         * Referenced by: '<S8>/Constant'
                                         */
   uint8_T LoadCompare_const;           /* Mask Parameter: LoadCompare_const
@@ -87,8 +87,8 @@ struct P_bldc_motor_controller_full__T_ {
   real_T Decrement_Value;              /* Expression: -100
                                         * Referenced by: '<S7>/Decrement'
                                         */
-  real_T zero_Value;                   /* Expression: 0
-                                        * Referenced by: '<S7>/zero'
+  real_T Idle_Value;                   /* Expression: 0
+                                        * Referenced by: '<S7>/Idle'
                                         */
   real_T load_var_Value;               /* Expression: 0
                                         * Referenced by: '<S7>/load_var'
@@ -107,9 +107,6 @@ struct P_bldc_motor_controller_full__T_ {
                                         */
   real_T PWMPeriodus_Value;            /* Expression: 20000
                                         * Referenced by: '<S2>/PWM Period us'
-                                        */
-  real_T ClockPeriodConst_Value;       /* Expression: 5.56*(10^-9)
-                                        * Referenced by: '<S6>/Clock Period Const'
                                         */
   real_T Terminal_Value;               /* Expression: 1093
                                         * Referenced by: '<S5>/Terminal'
@@ -171,7 +168,7 @@ extern RT_MODEL_bldc_motor_controlle_T *const bldc_motor_controller_full_c_M;
  * '<S7>'   : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter'
  * '<S8>'   : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Halt Compare'
  * '<S9>'   : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Load Compare'
- * '<S10>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Compare'
+ * '<S10>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Halt Compare'
  */
 #endif                                 /* RTW_HEADER_bldc_motor_controller_full_count_h_ */
 
