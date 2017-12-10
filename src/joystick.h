@@ -15,8 +15,8 @@ namespace app
         left, right, none
     };
 
-    static constexpr uint16_t LOWER_DEADZONE = 0x7FE0;
-    static constexpr uint16_t UPPER_DEADZONE = 0x8020;
+    static constexpr uint16_t LOWER_DEADZONE = 30'000;
+    static constexpr uint16_t UPPER_DEADZONE = 35'000;
 
     struct joystick
     {
@@ -35,6 +35,20 @@ namespace app
                 return y_motion::up;
             }
             return y_motion::none;
+        }
+
+        x_motion x_state()
+        {
+            auto state = x_axis.read_u16();
+            if(state < LOWER_DEADZONE)
+            {
+                return x_motion::left;
+            }
+            else if(state > UPPER_DEADZONE)
+            {
+                return x_motion::right;
+            }
+            return x_motion::none;
         }
     };
 
