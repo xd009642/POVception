@@ -1,38 +1,27 @@
 #include "neopixel.h"
 #include "PinNames.h"
-#include "gpio_object.h"
-#include "gpio_api.h"
 #include "cycle_timer.h"
 
 
 struct strip_cfg {
     PinName pin;
     uint8_t length;
-    uint8_t irq;
-  //  IRQn_Type irq;
 };
 struct np::strip {
     gpio_t handle;
 };
 
 // lets use D10 (P13 PH6
-strip_cfg configs[np::SEGMENT_COUNT] = {{D8, 26,0}};
+const strip_cfg config = {D9, 16};
 
-np::strip buffer[np::SEGMENT_COUNT];
+np::strip buffer;
 
 bool np::init_all()
 {
-    for(int i=0; i<np::SEGMENT_COUNT; i++) 
+    if(config.pin != NC)
     {
-        if(configs[i].irq != 0) 
-        {
-            //InterruptManager::get()->add_handler(configs ...
-        }
-        if(configs[i].pin != 0)
-        {
-            gpio_init_out(&buffer[i].handle, configs[i].pin);
-            buffer[i].handle.gpio->OSPEEDR |=  0xffffffff;
-        }
+        gpio_init_out(&buffer.handle, config.pin);
+        buffer.handle.gpio->OSPEEDR |=  0xffffffff;
     }
     return true;
 }
@@ -54,7 +43,7 @@ inline void write_bit(gpio_t* handle, const bool value)
     }
 }
 
-inline void write_byte(gpio_t* handle, uint8_t data)
+void np::write_byte(gpio_t* handle, uint8_t data)
 {
     for(uint8_t b=0; b<8; b++) 
     {
@@ -63,21 +52,19 @@ inline void write_byte(gpio_t* handle, uint8_t data)
     }
 }
 
-int np::render_segment(const segment_id id, 
-        uint32_t* data, const size_t len) 
+int np::render_segment(uint32_t* data, const size_t len) 
 {
     ct::reset();
     int res = 0;
-    np::strip* strip = &buffer[id];
     uint32_t temp=0;
     for(uint32_t i=0; i<len; i++)
     {
         temp = data[i];
-        write_byte(&strip->handle, temp&0xFF);
+        write_byte(&buffer.handle, temp&0xFF);
         temp >>= 8;
-        write_byte(&strip->handle, temp&0xFF);
+        write_byte(&buffer.handle, temp&0xFF);
         temp >>= 8;
-        write_byte(&strip->handle, temp&0xFF);
+        write_byte(&buffer.handle, temp&0xFF);
         res++;
     }
     return res;

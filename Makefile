@@ -76,6 +76,13 @@ OBJECTS += SDFileSystem/SDFileSystem.o
 OBJECTS += src/main.o
 OBJECTS += src/neopixel.o
 OBJECTS += src/framebuffer.o
+OBJECTS += src/pong.o
+OBJECTS += src/joystick.o
+OBJECTS += src/dotstar.o
+OBJECTS += src/gui.o
+OBJECTS += MATLAB/06_motor_controller_full_count/bldc_motor_controller_full_count.o
+OBJECTS += MATLAB/06_motor_controller_full_count/bldc_motor_controller_full_count_data.o
+OBJECTS += src/motor_control.o
 
  SYS_OBJECTS += mbed/TARGET_DISCO_F469NI/TOOLCHAIN_GCC_ARM/stm32f4xx_hal_flash_ramfunc.o
  SYS_OBJECTS += mbed/TARGET_DISCO_F469NI/TOOLCHAIN_GCC_ARM/PeripheralPins.o
@@ -232,6 +239,7 @@ INCLUDE_PATHS += -I../mbed/drivers
 INCLUDE_PATHS += -I../mbed/hal
 INCLUDE_PATHS += -I../mbed/platform
 INCLUDE_PATHS += -I../src
+INCLUDE_PATHS += -I../MATLAB/06_motor_controller_full_count
 
 LIBRARY_PATHS := -L../mbed/TARGET_DISCO_F469NI/TOOLCHAIN_GCC_ARM 
 LIBRARIES := -lmbed 
@@ -303,7 +311,7 @@ C_FLAGS += -DARM_MATH_CM4
 C_FLAGS += -include
 C_FLAGS += mbed_config.h
 
-CXX_FLAGS += -std=gnu++11
+CXX_FLAGS += -std=gnu++14
 CXX_FLAGS += -fno-rtti
 CXX_FLAGS += -Wvla
 CXX_FLAGS += -D__MBED__=1
@@ -413,6 +421,11 @@ LD_SYS_LIBS :=-Wl,--start-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys -lmbed -
 
 
 all: $(PROJECT).bin $(PROJECT).hex size
+
+debug: CXXFLAGS += -DDEBUG -g
+debug: CCFLAGS += -DDEBUG -d
+debug: LD_FLAGS += --debug
+debug: $(PROJECT).bin $(PROJECT).hex size
 
 
 .s.o:

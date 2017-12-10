@@ -9,6 +9,7 @@
 
 namespace gui
 {
+
     struct button
     {
         uint16_t x;
@@ -33,6 +34,8 @@ namespace gui
 
         bool poll_event(const TS_StateTypeDef& touch)
         {
+            if(!action)
+                return false;
             if(touch.touchDetected == 1)
             {
                 if(touch.touchX[0] > x && touch.touchX[0] < (x+width) &&
@@ -46,10 +49,25 @@ namespace gui
         }
     };
 
-    
+    class interface
+    {
+    public:
+        //! n_buttons is number of buttons to be displayed.
+        interface(LCD_DISCO_F469NI& screen, size_t n_buttons = 3);
+        ~interface();
 
+        void render(size_t n);
+        void render_all();
+        //! if overruns returns last button
+        button& get_button(const size_t index);
 
+        void update(const TS_StateTypeDef& pos);
 
+    private:
+        LCD_DISCO_F469NI& screen;
+        const size_t len;
+        button* buttons;
+    };
 }
 
 
