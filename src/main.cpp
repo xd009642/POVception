@@ -119,6 +119,5 @@ int main()
         }
         motors::update();
         wait_us(100000);
-        wait_ms(500);
     }
 }
