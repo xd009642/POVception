@@ -117,6 +117,7 @@ int main()
             inner_col = 0;
         }
         motors::update();
+        wait(1);
         wait_us(100000);
     }
 }

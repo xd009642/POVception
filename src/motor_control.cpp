@@ -72,7 +72,8 @@ void motors::update()
         mlcd->DisplayStringAt(0, LINE(14), (uint8_t*)text, LEFT_MODE);
         sprintf(text, "ring pos %f", bldc_motor_controller_full_co_Y.ring_position_ratio);
         mlcd->DisplayStringAt(0, LINE(15), (uint8_t*)text, LEFT_MODE);
-        sprintf(text, "prev_speed %0.5f", 
+        sprintf(text, "pos %f, prev_speed %0.5f", 
+                bldc_motor_controller_full_co_Y.ring_position_ratio,
                 bldc_motor_controller_full_co_Y.prev_frame_speed);
         mlcd->DisplayStringAt(0, LINE(16), (uint8_t*)text, LEFT_MODE);
     }
