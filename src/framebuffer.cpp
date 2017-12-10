@@ -35,6 +35,10 @@ uint32_t& render::framebuffer::pixel_at(size_t x, size_t y)
     return proc_buffer[x*width + y];
 }
 
+void render::framebuffer::set_pixel(size_t x, size_t y, uint32_t colour)
+{
+    proc_buffer[x*width + y] = colour;
+}
 
 void render::framebuffer::clear(const uint32_t& clear)
 {

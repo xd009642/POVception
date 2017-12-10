@@ -72,15 +72,14 @@ int main()
     lcd.DisplayStringAt(0, LINE(2), (uint8_t *)"XMAS CHALLENGE SPIN", CENTER_MODE);
     render::framebuffer outer_buffer(OUTER_WIDTH, OUTER_HEIGHT);
     render::framebuffer inner_buffer(INNER_WIDTH, INNER_HEIGHT);
-    ds::ring outer(outer_buffer, ds::outer); 
-    ds::ring inner(inner_buffer, ds::inner); 
+    ds::ring outer(outer_buffer, ds::outer, lcd); 
+    ds::ring inner(inner_buffer, ds::inner, lcd); 
     inner_buffer.clear(ds::RED);
-    outer_buffer.clear(ds::BLUE);
-    for(int i=0; i<OUTER_WIDTH; i++)
+    outer_buffer.clear(ds::RED);
+    for(size_t i=0; i<INNER_WIDTH; i+=2)
     {
-        outer_buffer.pixel_at(i, 25) = ds::GREEN; 
-        outer_buffer.pixel_at(i, 26) = ds::GREEN; 
-        outer_buffer.pixel_at(i, 27) = ds::GREEN; 
+        for(size_t j=0; j<INNER_HEIGHT; j++)
+            inner_buffer.pixel_at(i, j) = ds::BLUE; 
     }
     int outer_col = 0;
     int inner_col = 0;
@@ -102,7 +101,7 @@ int main()
         ui.render_all();
         ui.update(touch);
         outer.display(outer_col);
-    //    inner.display(inner_col);
+        inner.display(inner_col); 
         inner_col++;
         outer_col++;
         if(outer_col == OUTER_WIDTH) {
@@ -113,7 +112,7 @@ int main()
             inner_buffer.swap();
             inner_col = 0;
         }
-
+        wait(1);
         motors::update();
     }
 }
