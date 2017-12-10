@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.84
+ * Model version                  : 1.89
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 16:20:21 2017
+ * C/C++ source code generated on : Sun Dec 10 16:31:00 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,6 +18,9 @@
 
 /* Block parameters (auto storage) */
 P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
+  1196.0,                              /* Mask Parameter: Compare_const
+                                        * Referenced by: '<S11>/Constant'
+                                        */
   1U,                                  /* Mask Parameter: HaltCompare_const
                                         * Referenced by: '<S9>/Constant'
                                         */
@@ -43,10 +46,16 @@ P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
                                         * Referenced by: '<S8>/Decrement'
                                         */
   0.0,                                 /* Expression: 0
+                                        * Referenced by: '<S8>/zero'
+                                        */
+  0.0,                                 /* Expression: 0
                                         * Referenced by: '<S8>/load_var'
                                         */
   0.0,                                 /* Expression: 0
                                         * Referenced by: '<S7>/Load'
+                                        */
+  0.0,                                 /* Expression: 0
+                                        * Referenced by: '<S1>/X'
                                         */
   1.0,                                 /* Expression: 1
                                         * Referenced by: '<S7>/Increment'
@@ -57,23 +66,23 @@ P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
   0.0,                                 /* Expression: 0
                                         * Referenced by: '<S8>/X'
                                         */
+  1196.0,                              /* Expression: 1196
+                                        * Referenced by: '<S5>/Saturation'
+                                        */
+  -0.5,                                /* Expression: -0.5
+                                        * Referenced by: '<S5>/Saturation'
+                                        */
   20000.0,                             /* Expression: 20000
                                         * Referenced by: '<S2>/PWM Period us'
                                         */
   5.56E-9,                             /* Expression: 5.56*(10^-9)
                                         * Referenced by: '<S6>/Clock Period Const'
                                         */
-  0U,                                  /* Computed Parameter: X_InitialCondition_h
-                                        * Referenced by: '<S1>/X'
-                                        */
-  1196U,                               /* Computed Parameter: Saturation_UpperSat
-                                        * Referenced by: '<S5>/Saturation'
-                                        */
-  0U,                                  /* Computed Parameter: Saturation_LowerSat
-                                        * Referenced by: '<S5>/Saturation'
-                                        */
-  1093U                                /* Computed Parameter: Terminal_Value
+  1093.0,                              /* Expression: 1093
                                         * Referenced by: '<S5>/Terminal'
+                                        */
+  0                                    /* Computed Parameter: X1_InitialCondition
+                                        * Referenced by: '<S8>/X1'
                                         */
 };
 
