@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.66
+ * Model version                  : 1.81
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 15:57:56 2017
+ * C/C++ source code generated on : Sun Dec 10 16:08:08 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -45,9 +45,9 @@ typedef struct {
 
 /* Block states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T X;                            /* '<S1>/X' */
-  real_T X_d;                          /* '<S7>/X' */
+  real_T X;                            /* '<S7>/X' */
   real_T X_m;                          /* '<S8>/X' */
+  uint16_T X_i;                        /* '<S1>/X' */
   uint8_T is_active_c3_bldc_motor_control;/* '<S1>/Motor Controller' */
   uint8_T is_c3_bldc_motor_controller_ful;/* '<S1>/Motor Controller' */
 } DW_bldc_motor_controller_full_T;
@@ -98,13 +98,10 @@ struct P_bldc_motor_controller_full__T_ {
   real_T Load_Value;                   /* Expression: 0
                                         * Referenced by: '<S7>/Load'
                                         */
-  real_T X_InitialCondition;           /* Expression: 0
-                                        * Referenced by: '<S1>/X'
-                                        */
   real_T Increment_Value_p;            /* Expression: 1
                                         * Referenced by: '<S7>/Increment'
                                         */
-  real_T X_InitialCondition_a;         /* Expression: 0
+  real_T X_InitialCondition;           /* Expression: 0
                                         * Referenced by: '<S7>/X'
                                         */
   real_T X_InitialCondition_d;         /* Expression: 0
@@ -116,7 +113,16 @@ struct P_bldc_motor_controller_full__T_ {
   real_T ClockPeriodConst_Value;       /* Expression: 5.56*(10^-9)
                                         * Referenced by: '<S6>/Clock Period Const'
                                         */
-  real_T Terminal_Value;               /* Expression: 1093
+  uint16_T X_InitialCondition_h;       /* Computed Parameter: X_InitialCondition_h
+                                        * Referenced by: '<S1>/X'
+                                        */
+  uint16_T Saturation_UpperSat;        /* Computed Parameter: Saturation_UpperSat
+                                        * Referenced by: '<S5>/Saturation'
+                                        */
+  uint16_T Saturation_LowerSat;        /* Computed Parameter: Saturation_LowerSat
+                                        * Referenced by: '<S5>/Saturation'
+                                        */
+  uint16_T Terminal_Value;             /* Computed Parameter: Terminal_Value
                                         * Referenced by: '<S5>/Terminal'
                                         */
 };
