@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_pid_test'.
  *
- * Model version                  : 1.616
+ * Model version                  : 1.622
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 13:28:42 2017
+ * C/C++ source code generated on : Sun Dec 10 13:47:36 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -41,15 +41,13 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T GearingRatio;                 /* '<S4>/Gearing Ratio' */
   real_T X_b;                          /* '<S1>/X' */
-  real_T X_p;                          /* '<S7>/X' */
-  real_T Integrator_DSTATE;            /* '<S9>/Integrator' */
-  real_T Filter_DSTATE;                /* '<S9>/Filter' */
+  real_T X_p;                          /* '<S1>/X1' */
+  real_T Integrator_DSTATE;            /* '<S6>/Integrator' */
+  real_T Filter_DSTATE;                /* '<S6>/Filter' */
   uint8_T motor_state;                 /* '<S1>/Motor Controller' */
   uint8_T is_active_c3_bldc_motor_control;/* '<S1>/Motor Controller' */
   uint8_T is_c3_bldc_motor_controller_pid;/* '<S1>/Motor Controller' */
-  boolean_T count_load;                /* '<S1>/Motor Controller' */
 } DW;
 
 /* External inputs (root inport signals with auto storage) */
@@ -63,7 +61,9 @@ typedef struct {
 typedef struct {
   real_T outer_motor_pwm;              /* '<Root>/outer_motor_pwm' */
   boolean_T motor_speed_flag;          /* '<Root>/motor_speed_flag' */
-  real32_T ring_position_ratio;        /* '<Root>/ring_position_ratio' */
+  real_T ring_position_ratio;          /* '<Root>/ring_position_ratio' */
+  real_T rotation_count;               /* '<Root>/rotation_count' */
+  real_T current_motor_state;          /* '<Root>/current_motor_state' */
 } ExtY;
 
 /* Real-time Model Data Structure */
@@ -90,12 +90,10 @@ extern RT_MODEL *const rtM;
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
- * Block '<S7>/RelOpt' : Unused code path elimination
- * Block '<S7>/Terminal' : Unused code path elimination
- * Block '<S9>/Integral Gain' : Eliminated nontunable gain of 1
- * Block '<S9>/Proportional Gain' : Eliminated nontunable gain of 1
- * Block '<S9>/Setpoint Weighting (Derivative)' : Eliminated nontunable gain of 1
- * Block '<S9>/Setpoint Weighting (Proportional)' : Eliminated nontunable gain of 1
+ * Block '<S6>/Integral Gain' : Eliminated nontunable gain of 1
+ * Block '<S6>/Proportional Gain' : Eliminated nontunable gain of 1
+ * Block '<S6>/Setpoint Weighting (Derivative)' : Eliminated nontunable gain of 1
+ * Block '<S6>/Setpoint Weighting (Proportional)' : Eliminated nontunable gain of 1
  */
 
 /*-
@@ -116,12 +114,9 @@ extern RT_MODEL *const rtM;
  * '<S1>'   : 'bldc_motor_controller_pid_test/Outer Motor Controller'
  * '<S2>'   : 'bldc_motor_controller_pid_test/PWM Driver'
  * '<S3>'   : 'bldc_motor_controller_pid_test/Outer Motor Controller/Motor Controller'
- * '<S4>'   : 'bldc_motor_controller_pid_test/Outer Motor Controller/Motor Count Condition'
- * '<S5>'   : 'bldc_motor_controller_pid_test/Outer Motor Controller/Motor PID Controlelr'
- * '<S6>'   : 'bldc_motor_controller_pid_test/Outer Motor Controller/Ring Position Calc'
- * '<S7>'   : 'bldc_motor_controller_pid_test/Outer Motor Controller/Rotation Counter1'
- * '<S8>'   : 'bldc_motor_controller_pid_test/Outer Motor Controller/Motor PID Controlelr/PID Controller'
- * '<S9>'   : 'bldc_motor_controller_pid_test/Outer Motor Controller/Motor PID Controlelr/PID Controller/Discrete PID Controller (2DOF)'
+ * '<S4>'   : 'bldc_motor_controller_pid_test/Outer Motor Controller/Motor PID Controlelr'
+ * '<S5>'   : 'bldc_motor_controller_pid_test/Outer Motor Controller/Motor PID Controlelr/PID Controller'
+ * '<S6>'   : 'bldc_motor_controller_pid_test/Outer Motor Controller/Motor PID Controlelr/PID Controller/Discrete PID Controller (2DOF)'
  */
 #endif                                 /* RTW_HEADER_bldc_motor_controller_pid_test_h_ */
 

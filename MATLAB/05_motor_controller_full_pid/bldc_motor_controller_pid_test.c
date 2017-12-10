@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_pid_test'.
  *
- * Model version                  : 1.616
+ * Model version                  : 1.622
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 13:28:42 2017
+ * C/C++ source code generated on : Sun Dec 10 13:47:36 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -43,7 +43,7 @@ void bldc_motor_controller_pid_test_step(void)
 {
   real_T rtb_GearingRatio;
   real_T rtb_FilterCoefficient;
-  real_T rtb_Switch_j;
+  real_T rtb_Add;
   real_T rtb_Saturation;
   int32_T tmp;
 
@@ -65,8 +65,6 @@ void bldc_motor_controller_pid_test_step(void)
 
     /* Entry 'idle': '<S3>:15' */
     /* '<S3>:15:1' count_load = true; */
-    rtDW.count_load = true;
-
     /* '<S3>:15:1' motor_state = 0; */
     rtDW.motor_state = 0U;
   } else {
@@ -86,13 +84,11 @@ void bldc_motor_controller_pid_test_step(void)
         rtDW.motor_state = 3U;
 
         /* '<S3>:1:1' count_load = false; */
-        rtDW.count_load = false;
       }
       break;
 
      case IN_idle:
       rtDW.motor_state = 0U;
-      rtDW.count_load = true;
 
       /* During 'idle': '<S3>:15' */
       /* '<S3>:19:1' sf_internal_predicateOutput = ... */
@@ -119,8 +115,6 @@ void bldc_motor_controller_pid_test_step(void)
 
         /* Entry 'idle': '<S3>:15' */
         /* '<S3>:15:1' count_load = true; */
-        rtDW.count_load = true;
-
         /* '<S3>:15:1' motor_state = 0; */
         rtDW.motor_state = 0U;
       }
@@ -133,7 +127,6 @@ void bldc_motor_controller_pid_test_step(void)
 
       /* Entry 'speed_calc_done': '<S3>:10' */
       /* '<S3>:10:1' count_load = true; */
-      rtDW.count_load = true;
       break;
 
      case IN_speed_calc_done:
@@ -146,12 +139,10 @@ void bldc_motor_controller_pid_test_step(void)
       rtDW.motor_state = 3U;
 
       /* '<S3>:1:1' count_load = false; */
-      rtDW.count_load = false;
       break;
 
      default:
       rtDW.motor_state = 3U;
-      rtDW.count_load = false;
 
       /* During 'trig_idle': '<S3>:1' */
       /* '<S3>:24:1' sf_internal_predicateOutput = ... */
@@ -170,22 +161,9 @@ void bldc_motor_controller_pid_test_step(void)
           /* Transition: '<S3>:25' */
           rtDW.is_c3_bldc_motor_controller_pid = IN_interrupt_trigger;
 
-          /* Outputs for Function Call SubSystem: '<S1>/Motor Count Condition' */
-          /* Gain: '<S4>/Gearing Ratio' incorporates:
-           *  Constant: '<S4>/rps to rpm'
-           *  Constant: '<S7>/Increment'
-           *  Gain: '<S4>/Clock Period'
-           *  Product: '<S4>/Divide'
-           *  Sum: '<S7>/Sum'
-           *  UnitDelay: '<S7>/X'
-           */
           /* Entry 'interrupt_trigger': '<S3>:5' */
           /* '<S3>:5:1' trigOut; */
           /* Event: '<S3>:9' */
-          rtDW.GearingRatio = 60.0 / ((1.0 + rtDW.X_p) * 5.56E-9) *
-            0.26666666666666666;
-
-          /* End of Outputs for SubSystem: '<S1>/Motor Count Condition' */
         }
       }
       break;
@@ -194,9 +172,9 @@ void bldc_motor_controller_pid_test_step(void)
 
   /* End of Chart: '<S1>/Motor Controller' */
 
-  /* Switch: '<S8>/Switch' incorporates:
-   *  Constant: '<S8>/Reference Speed (rpm)'
-   *  Constant: '<S8>/Stop Speed (rpm)'
+  /* Switch: '<S5>/Switch' incorporates:
+   *  Constant: '<S5>/Reference Speed (rpm)'
+   *  Constant: '<S5>/Stop Speed (rpm)'
    */
   if (rtDW.motor_state > 1) {
     tmp = 800;
@@ -204,41 +182,42 @@ void bldc_motor_controller_pid_test_step(void)
     tmp = 0;
   }
 
-  /* End of Switch: '<S8>/Switch' */
+  /* End of Switch: '<S5>/Switch' */
 
-  /* Gain: '<S8>/Gearing Ratio' */
+  /* Gain: '<S5>/Gearing Ratio' */
   rtb_GearingRatio = 0.26666666666666666 * (real_T)tmp;
 
-  /* Gain: '<S9>/Filter Coefficient' incorporates:
-   *  DiscreteIntegrator: '<S9>/Filter'
-   *  Gain: '<S9>/Derivative Gain'
-   *  Sum: '<S9>/Sum3'
-   *  Sum: '<S9>/SumD'
+  /* Gain: '<S6>/Filter Coefficient' incorporates:
+   *  DiscreteIntegrator: '<S6>/Filter'
+   *  Gain: '<S6>/Derivative Gain'
+   *  Sum: '<S6>/Sum3'
+   *  Sum: '<S6>/SumD'
+   *  UnitDelay: '<S1>/X1'
    */
-  rtb_FilterCoefficient = ((rtb_GearingRatio - rtDW.GearingRatio) * 0.0 -
+  rtb_FilterCoefficient = ((rtb_GearingRatio - rtDW.X_p) * 0.0 -
     rtDW.Filter_DSTATE) * 100.0;
 
-  /* Sum: '<S8>/Add' incorporates:
-   *  Constant: '<S8>/PWM Offset Factor'
-   *  DiscreteIntegrator: '<S9>/Integrator'
-   *  Gain: '<S8>/PWM Gain Factor'
-   *  Sum: '<S9>/Sum'
-   *  Sum: '<S9>/Sum1'
+  /* Sum: '<S5>/Add' incorporates:
+   *  Constant: '<S5>/PWM Offset Factor'
+   *  DiscreteIntegrator: '<S6>/Integrator'
+   *  Gain: '<S5>/PWM Gain Factor'
+   *  Sum: '<S6>/Sum'
+   *  Sum: '<S6>/Sum1'
+   *  UnitDelay: '<S1>/X1'
    */
-  rtb_Switch_j = (((rtb_GearingRatio - rtDW.GearingRatio) +
-                   rtDW.Integrator_DSTATE) + rtb_FilterCoefficient) * 0.1709 +
-    1060.0;
+  rtb_Add = (((rtb_GearingRatio - rtDW.X_p) + rtDW.Integrator_DSTATE) +
+             rtb_FilterCoefficient) * 0.1709 + 1060.0;
 
-  /* Saturate: '<S5>/Saturation' */
-  if (rtb_Switch_j > 1860.0) {
+  /* Saturate: '<S4>/Saturation' */
+  if (rtb_Add > 1860.0) {
     rtb_Saturation = 1860.0;
-  } else if (rtb_Switch_j < 0.0) {
+  } else if (rtb_Add < 0.0) {
     rtb_Saturation = 0.0;
   } else {
-    rtb_Saturation = rtb_Switch_j;
+    rtb_Saturation = rtb_Add;
   }
 
-  /* End of Saturate: '<S5>/Saturation' */
+  /* End of Saturate: '<S4>/Saturation' */
 
   /* Outport: '<Root>/outer_motor_pwm' incorporates:
    *  Constant: '<S2>/PWM Period us'
@@ -247,61 +226,31 @@ void bldc_motor_controller_pid_test_step(void)
   rtY.outer_motor_pwm = rtb_Saturation / 20000.0;
 
   /* Outport: '<Root>/motor_speed_flag' incorporates:
-   *  Constant: '<S5>/Terminal'
-   *  RelationalOperator: '<S5>/RelOpt'
+   *  Constant: '<S4>/Terminal'
+   *  RelationalOperator: '<S4>/RelOpt'
    */
-  rtY.motor_speed_flag = (1093.0 <= rtb_Switch_j);
+  rtY.motor_speed_flag = (1093.0 <= rtb_Add);
 
-  /* Product: '<S6>/Divide' incorporates:
-   *  Constant: '<S6>/Clock Period Const'
+  /* Sum: '<S6>/Sum2' incorporates:
+   *  UnitDelay: '<S1>/X1'
    */
-  rtb_Switch_j = rtDW.GearingRatio / 5.56E-9;
-
-  /* Switch: '<S6>/Switch' incorporates:
-   *  Constant: '<S7>/Increment'
-   *  Sum: '<S7>/Sum'
-   *  UnitDelay: '<S7>/X'
-   */
-  if (!(rtb_Switch_j != 0.0)) {
-    rtb_Switch_j = 1.0 + rtDW.X_p;
-  }
-
-  /* End of Switch: '<S6>/Switch' */
-
-  /* Outport: '<Root>/ring_position_ratio' incorporates:
-   *  Constant: '<S7>/Increment'
-   *  Product: '<S6>/Divide1'
-   *  Sum: '<S7>/Sum'
-   *  UnitDelay: '<S7>/X'
-   */
-  rtY.ring_position_ratio = (real32_T)((1.0 + rtDW.X_p) / rtb_Switch_j);
+  rtb_GearingRatio -= rtDW.X_p;
 
   /* Update for UnitDelay: '<S1>/X' */
   rtDW.X_b = rtb_Saturation;
 
-  /* Switch: '<S7>/Switch' */
-  if (rtDW.count_load) {
-    /* Update for UnitDelay: '<S7>/X' incorporates:
-     *  Constant: '<S7>/Load'
-     */
-    rtDW.X_p = 0.0;
-  } else {
-    /* Update for UnitDelay: '<S7>/X' incorporates:
-     *  Constant: '<S7>/Increment'
-     *  Sum: '<S7>/Sum'
-     *  UnitDelay: '<S7>/X'
-     */
-    rtDW.X_p++;
-  }
-
-  /* End of Switch: '<S7>/Switch' */
-
-  /* Update for DiscreteIntegrator: '<S9>/Integrator' incorporates:
-   *  Sum: '<S9>/Sum2'
+  /* Update for UnitDelay: '<S1>/X1' incorporates:
+   *  Constant: '<S1>/PWM Gain Factor'
+   *  Constant: '<S1>/PWM Offset Factor'
+   *  Product: '<S1>/Divide2'
+   *  Sum: '<S1>/Sum'
    */
-  rtDW.Integrator_DSTATE += rtb_GearingRatio - rtDW.GearingRatio;
+  rtDW.X_p = (rtb_Saturation - 1060.0) / 0.1709;
 
-  /* Update for DiscreteIntegrator: '<S9>/Filter' */
+  /* Update for DiscreteIntegrator: '<S6>/Integrator' */
+  rtDW.Integrator_DSTATE += rtb_GearingRatio;
+
+  /* Update for DiscreteIntegrator: '<S6>/Filter' */
   rtDW.Filter_DSTATE += rtb_FilterCoefficient;
 }
 
