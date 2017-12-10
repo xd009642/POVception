@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.65
+ * Model version                  : 1.66
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 15:45:57 2017
+ * C/C++ source code generated on : Sun Dec 10 15:57:56 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -219,9 +219,9 @@ void bldc_motor_controller_full_count_step(void)
    */
   if (bldc_motor_controller_full_co_B.motor_state ==
       bldc_motor_controller_full_co_P.HaltCompare_const) {
-    rtb_Sum = bldc_motor_controller_full_co_P.Increment_Value;
-  } else {
     rtb_Sum = bldc_motor_controller_full_co_P.Decrement_Value;
+  } else {
+    rtb_Sum = bldc_motor_controller_full_co_P.Increment_Value;
   }
 
   /* End of Switch: '<S8>/Switch1' */
