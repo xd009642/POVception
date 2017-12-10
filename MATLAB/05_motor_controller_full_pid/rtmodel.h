@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_pid_test'.
  *
- * Model version                  : 1.622
+ * Model version                  : 1.631
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 13:47:36 2017
+ * C/C++ source code generated on : Sun Dec 10 14:14:50 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex

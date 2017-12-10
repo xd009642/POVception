@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_pid_test'.
  *
- * Model version                  : 1.622
+ * Model version                  : 1.631
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 13:47:36 2017
+ * C/C++ source code generated on : Sun Dec 10 14:14:50 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -45,7 +45,6 @@ typedef struct {
   real_T X_p;                          /* '<S1>/X1' */
   real_T Integrator_DSTATE;            /* '<S6>/Integrator' */
   real_T Filter_DSTATE;                /* '<S6>/Filter' */
-  uint8_T motor_state;                 /* '<S1>/Motor Controller' */
   uint8_T is_active_c3_bldc_motor_control;/* '<S1>/Motor Controller' */
   uint8_T is_c3_bldc_motor_controller_pid;/* '<S1>/Motor Controller' */
 } DW;
@@ -61,9 +60,6 @@ typedef struct {
 typedef struct {
   real_T outer_motor_pwm;              /* '<Root>/outer_motor_pwm' */
   boolean_T motor_speed_flag;          /* '<Root>/motor_speed_flag' */
-  real_T ring_position_ratio;          /* '<Root>/ring_position_ratio' */
-  real_T rotation_count;               /* '<Root>/rotation_count' */
-  real_T current_motor_state;          /* '<Root>/current_motor_state' */
 } ExtY;
 
 /* Real-time Model Data Structure */
