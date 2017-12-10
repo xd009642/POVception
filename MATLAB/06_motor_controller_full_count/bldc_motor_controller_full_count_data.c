@@ -84,7 +84,7 @@ P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
   0.0,                                 /* Expression: 0
                                         * Referenced by: '<S9>/X'
                                         */
-  1100.0,                              /* Expression: 1100
+  1200.0,                              /* Expression: 1100
                                         * Referenced by: '<S7>/Saturation'
                                         */
   -0.5,                                /* Expression: -0.5

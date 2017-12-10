@@ -53,6 +53,30 @@ void motors::set_state(const motors::state s)
             break;
     }
 }
+    
+
+float motors::position(motors::motor m)
+{
+    float ratio=0.0f;
+    switch(m) 
+    {
+    case motors::motor::inner:
+        ratio = bldc_motor_controller_full_co_Y.inner_ring_position_ratio;
+        break;
+    case motors::motor::outer:
+        ratio = bldc_motor_controller_full_co_Y.outer_ring_position_ratio;
+        break;
+    }
+    if(ratio < 0.0f)
+    {
+        ratio = 0.0f;
+    }
+    else if(ratio > 1.0f)
+    {
+        ratio = 1.0f;
+    }
+    return ratio;
+}
 
 
 void motors::update()

@@ -74,21 +74,12 @@ int main()
     render::framebuffer inner_buffer(INNER_WIDTH, INNER_HEIGHT);
     ds::ring outer(outer_buffer, ds::outer, lcd); 
     ds::ring inner(inner_buffer, ds::inner, lcd);
-  //  while(true)
-    {
-        outer.slow_display(0);
-        inner.slow_display(0);
-    }
-    inner_buffer.clear(ds::RED);
-    outer_buffer.clear(ds::RED);
-    for(size_t i=0; i<INNER_WIDTH; i+=2)
-    {
-        inner_buffer.pixel_at(i,i) = ds::BLUE;
-    }
-    for(size_t i=0; i<OUTER_WIDTH; i++)
-    {
-        outer_buffer.pixel_at(i,i) = ds::BLUE;
-    }   
+    inner_buffer.clear(ds::BLACK);
+    outer_buffer.clear(ds::BLACK);
+    inner_buffer.fill_rect(0, 0, 1, INNER_HEIGHT, ds::BLUE); 
+    outer_buffer.fill_rect(0, 0, 1, OUTER_HEIGHT, ds::BLUE);
+    inner_buffer.fill_rect(INNER_WIDTH/2, 0, 1, INNER_HEIGHT, ds::RED); 
+    outer_buffer.fill_rect(OUTER_WIDTH/2, 0, 1, OUTER_HEIGHT, ds::RED);
     int outer_col = 0;
     int inner_col = 0;
     outer_buffer.swap();
@@ -105,22 +96,22 @@ int main()
     motors::init(); 
     while(1)
     {
+        motors::update();
+        int oi_temp = (OUTER_WIDTH-1)*motors::position(motors::motor::outer);
+        int ii_temp = (INNER_WIDTH-1)*motors::position(motors::motor::inner);
         ts.GetState(&touch);
         ui.render_all();
         ui.update(touch);
-        outer.display(outer_col);
-        inner.display(inner_col); 
-        inner_col++;
-        outer_col++;
-        if(outer_col == OUTER_WIDTH) {
+        outer.display(oi_temp);
+        inner.display(ii_temp); 
+        if(outer_col > oi_temp) {
             outer_buffer.swap();
-            outer_col = 0;
         }
-        if(inner_col == INNER_WIDTH) {
+        if(inner_col > ii_temp) {
             inner_buffer.swap();
-            inner_col = 0;
         }
-        motors::update();
-        wait_us(10000);
+        outer_col = oi_temp;
+        inner_col = ii_temp;
+        //wait_us(10000);
     }
 }

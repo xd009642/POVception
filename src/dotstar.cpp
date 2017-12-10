@@ -8,7 +8,7 @@ SPI outer_ring(SPI_MOSI, SPI_MISO, SPI_SCK);
 // Male connectors on CN12
 SPI inner_ring(PB_5, PB_4, PA_5);
 
-static constexpr uint32_t DOTSTAR_FREQUENCY = 1'000'000;
+static constexpr uint32_t DOTSTAR_FREQUENCY = 2'500'000;
 
 static constexpr size_t HEADER_SIZE = 4;
 static constexpr size_t FOOTER_SIZE = 0;
@@ -35,7 +35,7 @@ ds::ring::ring(render::framebuffer& buffer, const ds::strip_cfg& cfg, LCD_DISCO_
     {
         if(i>=HEADER_SIZE && i<HEADER_SIZE+payload_length)
         {
-            ring_buffer[i] = 0xFF000000;
+            ring_buffer[i] = ds::BLACK;
         }
         else
         {
@@ -62,8 +62,12 @@ void ds::ring::display(const size_t col)
     memcpy(&ring_buffer[HEADER_SIZE], buffer.get_render_column(col), row_byte_count);
     for(size_t i=0; i<buffer.n_row(); i++)
     {
-        ring_buffer[BACK_START+i] = buffer.pixel_at(opposite_col, 
-            buffer.n_row()-(i+1));
+        ring_buffer[HEADER_SIZE+i] = __REV(buffer.pixel_at(col, i));
+    }
+    for(size_t i=0; i<buffer.n_row(); i++)
+    {
+        ring_buffer[BACK_START+i] = __REV(buffer.pixel_at(opposite_col, 
+            buffer.n_row()-(i+1)));
     }
     strip.write((const char*)ring_buffer, 
         length*sizeof(uint32_t), 
@@ -77,10 +81,9 @@ void ds::ring::slow_display(const size_t col)
     strip.write((const char*)&blank, sizeof(uint32_t), nullptr, 0);
     for(int i=0; i<1; i++)
     {
-        strip.write((const char*)&ds::BLUE, sizeof(uint32_t), nullptr, 0);
         strip.write((const char*)&ds::RED, sizeof(uint32_t), nullptr, 0);
-   //     strip.write((const char*)&ds::GREEN, sizeof(uint32_t), nullptr, 0);
+        strip.write((const char*)&ds::BLUE, sizeof(uint32_t), nullptr, 0);
+        strip.write((const char*)&ds::WHITE, sizeof(uint32_t), nullptr, 0);
     }
-    strip.write((const char*)&blank, sizeof(uint32_t), nullptr, 0);
     strip.write((const char*)&blank, sizeof(uint32_t), nullptr, 0);
 }

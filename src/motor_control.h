@@ -10,11 +10,17 @@ namespace motors
         stop, spin  
     };
 
+    enum class motor {
+        inner, outer
+    };
+
     void init();
 
     void set_state(const motors::state s);
 
     void update();
+
+    float position(motor m);
 
     void set_lcd(LCD_DISCO_F469NI* lcd);
 }
