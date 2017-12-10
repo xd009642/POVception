@@ -2,6 +2,8 @@
 #include "PinNames.h"
 #include "mbed.h"
 #include "display_settings.h"
+#include <functional>
+
 
 // Arduino style connectors
 SPI outer_ring(SPI_MOSI, SPI_MISO, SPI_SCK);
@@ -23,6 +25,7 @@ ds::ring::ring(render::framebuffer& buffer, const ds::strip_cfg& cfg, LCD_DISCO_
     lcd(l)
 {
     strip.frequency(DOTSTAR_FREQUENCY);
+    strip.set_dma_usage(DMA_USAGE_ALLOCATED);
     payload_length = buffer.n_row() * 2;
     footer = payload_length/16;
     if(footer<4)
@@ -69,10 +72,7 @@ void ds::ring::display(const size_t col)
         ring_buffer[BACK_START+i] = __REV(buffer.pixel_at(opposite_col, 
             buffer.n_row()-(i+1)));
     }
-    strip.write((const char*)ring_buffer, 
-        length*sizeof(uint32_t), 
-        nullptr, 
-        0);
+    strip.transfer<char*>((char* const*)ring_buffer, length*sizeof(uint32_t), nullptr, 0u, [](int){});
 }
 
 void ds::ring::slow_display(const size_t col)
