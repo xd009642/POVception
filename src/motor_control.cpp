@@ -1,7 +1,7 @@
 #include "motor_control.h"
 #include "mbed.h"
 extern "C" {
-#include "bldc_motor_controller_switch.h"
+#include "bldc_motor_controller_pid_test.h"
 }
 
 LCD_DISCO_F469NI* mlcd = nullptr;
@@ -27,7 +27,7 @@ void motors::init()
 {
     he1.rise(&h1_trigger);
     he2.rise(&h2_trigger);
-    bldc_motor_controller_switch_initialize();
+    bldc_motor_controller_pid_test_initialize();
     motor_1.period_us(20'000);
     motor_1.write(0.0f);
 }
@@ -50,7 +50,7 @@ void motors::set_state(const motors::state s)
 
 void motors::update()
 {
-    bldc_motor_controller_switch_step();
+    bldc_motor_controller_pid_test_step();
     motor_1.write(rtY.outer_motor_pwm);
     if(nullptr != mlcd)
     {
