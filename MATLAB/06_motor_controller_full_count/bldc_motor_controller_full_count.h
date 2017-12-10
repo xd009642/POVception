@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.84
+ * Model version                  : 1.89
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 16:20:21 2017
+ * C/C++ source code generated on : Sun Dec 10 16:31:00 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -38,16 +38,16 @@
 
 /* Block signals (auto storage) */
 typedef struct {
-  real_T GearingRatio;                 /* '<S4>/Gearing Ratio' */
   uint8_T motor_state;                 /* '<S1>/Motor Controller' */
   boolean_T count_load;                /* '<S1>/Motor Controller' */
 } B_bldc_motor_controller_full__T;
 
 /* Block states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T X;                            /* '<S7>/X' */
+  real_T X;                            /* '<S1>/X' */
+  real_T X_d;                          /* '<S7>/X' */
   real_T X_m;                          /* '<S8>/X' */
-  uint16_T X_i;                        /* '<S1>/X' */
+  boolean_T X_o;                       /* '<S8>/X1' */
   uint8_T is_active_c3_bldc_motor_control;/* '<S1>/Motor Controller' */
   uint8_T is_c3_bldc_motor_controller_ful;/* '<S1>/Motor Controller' */
 } DW_bldc_motor_controller_full_T;
@@ -64,10 +64,15 @@ typedef struct {
   real_T outer_motor_pwm;              /* '<Root>/outer_motor_pwm' */
   real32_T ring_position_ratio;        /* '<Root>/ring_position_ratio' */
   boolean_T motor_speed_flag;          /* '<Root>/motor_speed_flag' */
+  real_T rotation_count;               /* '<Root>/rotation_count' */
+  real_T prev_frame_speed;             /* '<Root>/prev_frame_speed' */
 } ExtY_bldc_motor_controller_fu_T;
 
 /* Parameters (auto storage) */
 struct P_bldc_motor_controller_full__T_ {
+  real_T Compare_const;                /* Mask Parameter: Compare_const
+                                        * Referenced by: '<S11>/Constant'
+                                        */
   uint8_T HaltCompare_const;           /* Mask Parameter: HaltCompare_const
                                         * Referenced by: '<S9>/Constant'
                                         */
@@ -92,20 +97,32 @@ struct P_bldc_motor_controller_full__T_ {
   real_T Decrement_Value;              /* Expression: -100
                                         * Referenced by: '<S8>/Decrement'
                                         */
+  real_T zero_Value;                   /* Expression: 0
+                                        * Referenced by: '<S8>/zero'
+                                        */
   real_T load_var_Value;               /* Expression: 0
                                         * Referenced by: '<S8>/load_var'
                                         */
   real_T Load_Value;                   /* Expression: 0
                                         * Referenced by: '<S7>/Load'
                                         */
+  real_T X_InitialCondition;           /* Expression: 0
+                                        * Referenced by: '<S1>/X'
+                                        */
   real_T Increment_Value_p;            /* Expression: 1
                                         * Referenced by: '<S7>/Increment'
                                         */
-  real_T X_InitialCondition;           /* Expression: 0
+  real_T X_InitialCondition_a;         /* Expression: 0
                                         * Referenced by: '<S7>/X'
                                         */
   real_T X_InitialCondition_d;         /* Expression: 0
                                         * Referenced by: '<S8>/X'
+                                        */
+  real_T Saturation_UpperSat;          /* Expression: 1196
+                                        * Referenced by: '<S5>/Saturation'
+                                        */
+  real_T Saturation_LowerSat;          /* Expression: -0.5
+                                        * Referenced by: '<S5>/Saturation'
                                         */
   real_T PWMPeriodus_Value;            /* Expression: 20000
                                         * Referenced by: '<S2>/PWM Period us'
@@ -113,17 +130,11 @@ struct P_bldc_motor_controller_full__T_ {
   real_T ClockPeriodConst_Value;       /* Expression: 5.56*(10^-9)
                                         * Referenced by: '<S6>/Clock Period Const'
                                         */
-  uint16_T X_InitialCondition_h;       /* Computed Parameter: X_InitialCondition_h
-                                        * Referenced by: '<S1>/X'
-                                        */
-  uint16_T Saturation_UpperSat;        /* Computed Parameter: Saturation_UpperSat
-                                        * Referenced by: '<S5>/Saturation'
-                                        */
-  uint16_T Saturation_LowerSat;        /* Computed Parameter: Saturation_LowerSat
-                                        * Referenced by: '<S5>/Saturation'
-                                        */
-  uint16_T Terminal_Value;             /* Computed Parameter: Terminal_Value
+  real_T Terminal_Value;               /* Expression: 1093
                                         * Referenced by: '<S5>/Terminal'
+                                        */
+  boolean_T X1_InitialCondition;       /* Computed Parameter: X1_InitialCondition
+                                        * Referenced by: '<S8>/X1'
                                         */
 };
 
@@ -158,8 +169,6 @@ extern RT_MODEL_bldc_motor_controlle_T *const bldc_motor_controller_full_c_M;
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
- * Block '<S8>/RelOpt' : Unused code path elimination
- * Block '<S8>/Terminal' : Unused code path elimination
  * Block '<S7>/RelOpt' : Unused code path elimination
  * Block '<S7>/Terminal' : Unused code path elimination
  */
@@ -185,10 +194,11 @@ extern RT_MODEL_bldc_motor_controlle_T *const bldc_motor_controller_full_c_M;
  * '<S4>'   : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Count Condition'
  * '<S5>'   : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive'
  * '<S6>'   : 'bldc_motor_controller_full_count/Outer Motor Controller/Ring Position Calc'
- * '<S7>'   : 'bldc_motor_controller_full_count/Outer Motor Controller/Rotation Counter1'
+ * '<S7>'   : 'bldc_motor_controller_full_count/Outer Motor Controller/Rotation Counter'
  * '<S8>'   : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter'
  * '<S9>'   : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Halt Compare'
  * '<S10>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Load Compare'
+ * '<S11>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Compare'
  */
 #endif                                 /* RTW_HEADER_bldc_motor_controller_full_count_h_ */
 
