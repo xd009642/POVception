@@ -7,7 +7,7 @@
 #include "arm_cortex_m_multitasking.h"
 #include "system_stm32f4xx.h"
 #include "blapp_support.h"
-#include "stm32f4discovery_wrapper.h"
+#include "mbed.h"
 
 #define MW_USECODERTARGET 1
 #define MW_TARGETHARDWARE STM32F4-Discovery

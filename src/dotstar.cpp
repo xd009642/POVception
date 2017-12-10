@@ -8,7 +8,7 @@ SPI outer_ring(SPI_MOSI, SPI_MISO, SPI_SCK);
 // Male connectors on CN12
 SPI inner_ring(PB_5, PB_4, PA_5);
 
-static constexpr uint32_t DOTSTAR_FREQUENCY = 1'500'000;
+static constexpr uint32_t DOTSTAR_FREQUENCY = 500'000;
 
 static constexpr size_t HEADER_SIZE = 1;
 static constexpr size_t FOOTER_SIZE = 0;
@@ -31,6 +31,10 @@ ds::ring::ring(render::framebuffer& buffer, const ds::strip_cfg& cfg):
     for(size_t i=0; i<HEADER_SIZE+FOOTER_SIZE+payload_length; i++)
     {
         ring_buffer[i] = 0;
+    }
+    for(size_t i = length - FOOTER_SIZE; i< length; i++)
+    {
+       ring_buffer[i] = 0xFFFFFFFF;
     }
     ready = true;
 }

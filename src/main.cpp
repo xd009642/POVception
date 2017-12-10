@@ -9,9 +9,7 @@
 #include "background.h"
 #include "gui.h"
 #include "display_settings.h"
-extern "C" {
-#include "motor_test.h"
-}
+#include "motor_control.h"
 
 //Do I need to set the alt functions for the pins?
 LCD_DISCO_F469NI lcd;
@@ -46,12 +44,23 @@ void launch_pong()
     lcd.DisplayStringAt(0, LINE(1), (uint8_t*)"PLAYING PONG", RIGHT_MODE);
 }
 
+void halt_motor()
+{
+    lcd.DisplayStringAt(0, LINE(10), (uint8_t*)"HALTING ", RIGHT_MODE);
+    motors::set_state(motors::state::stop);
+}
+
+
+void spin_up()
+{
+    lcd.DisplayStringAt(0, LINE(10), (uint8_t*)"SPINNING", RIGHT_MODE);
+    motors::set_state(motors::state::spin);
+}
+
 
 int main()
 {
-    t.start();
     TS_StateTypeDef touch;
-    uint8_t text[30];
     lcd.SetTextColor(LCD_COLOR_WHITE);
     lcd.Clear(BACKGROUND_COLOUR);
     lcd.SetBackColor(BACKGROUND_COLOUR);
@@ -66,7 +75,13 @@ int main()
     ds::ring outer(outer_buffer, ds::outer); 
     ds::ring inner(inner_buffer, ds::inner); 
     inner_buffer.clear(ds::RED);
-    outer_buffer.clear(ds::WHITE);
+    outer_buffer.clear(ds::BLUE);
+    for(int i=0; i<OUTER_WIDTH; i++)
+    {
+        outer_buffer.pixel_at(i, 25) = ds::GREEN; 
+        outer_buffer.pixel_at(i, 26) = ds::GREEN; 
+        outer_buffer.pixel_at(i, 27) = ds::GREEN; 
+    }
     int outer_col = 0;
     int inner_col = 0;
     outer_buffer.swap();
@@ -75,20 +90,19 @@ int main()
     // Assume 3 apps and hack out a button
     ui.get_button(0).text = "PONG";
     ui.get_button(0).action = launch_pong;
-    sprintf((char*)text, "Startup time %fs", t.read());
-    lcd.DisplayStringAt(0, LINE(14), text, LEFT_MODE);
-    motor_test_initialize();
-    PwmOut m1(D5);
-    m1.period_us(motor_test_P.PWMPeriodus_Value);
-    m1.write(0.0f);
-    PwmOut m2(D6);
+    ui.get_button(1).text = "Spin";
+    ui.get_button(1).action = spin_up;
+    ui.get_button(2).text = "Halt";
+    ui.get_button(2).action = halt_motor;
+    motors::set_lcd(&lcd);
+    motors::init(); 
     while(1)
     {
         ts.GetState(&touch);
         ui.render_all();
         ui.update(touch);
         outer.display(outer_col);
-        inner.display(inner_col);
+    //    inner.display(inner_col);
         inner_col++;
         outer_col++;
         if(outer_col == OUTER_WIDTH) {
@@ -99,7 +113,7 @@ int main()
             inner_buffer.swap();
             inner_col = 0;
         }
-        motor_test_step();
-        m1.write(motor_test_Y.motor_pwm);
+
+        motors::update();
     }
 }
