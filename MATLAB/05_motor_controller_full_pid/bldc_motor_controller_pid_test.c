@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_pid_test'.
  *
- * Model version                  : 1.611
+ * Model version                  : 1.616
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 13:12:31 2017
+ * C/C++ source code generated on : Sun Dec 10 13:28:42 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -72,7 +72,7 @@ void bldc_motor_controller_pid_test_step(void)
   } else {
     switch (rtDW.is_c3_bldc_motor_controller_pid) {
      case IN_arm_motor:
-      rtDW.motor_state = 1U;
+      rtDW.motor_state = 2U;
 
       /* During 'arm_motor': '<S3>:18' */
       /* '<S3>:17:1' sf_internal_predicateOutput = ... */
@@ -82,8 +82,8 @@ void bldc_motor_controller_pid_test_step(void)
         rtDW.is_c3_bldc_motor_controller_pid = IN_trig_idle;
 
         /* Entry 'trig_idle': '<S3>:1' */
-        /* '<S3>:1:1' motor_state = 2; */
-        rtDW.motor_state = 2U;
+        /* '<S3>:1:1' motor_state = 3; */
+        rtDW.motor_state = 3U;
 
         /* '<S3>:1:1' count_load = false; */
         rtDW.count_load = false;
@@ -102,15 +102,13 @@ void bldc_motor_controller_pid_test_step(void)
         rtDW.is_c3_bldc_motor_controller_pid = IN_arm_motor;
 
         /* Entry 'arm_motor': '<S3>:18' */
-        /* '<S3>:18:1' motor_state = 1; */
-        rtDW.motor_state = 1U;
-
-        /* exit: motor_state = 2; */
+        /* '<S3>:18:1' motor_state = 2; */
+        rtDW.motor_state = 2U;
       }
       break;
 
      case IN_halt_motor:
-      rtDW.motor_state = 3U;
+      rtDW.motor_state = 1U;
 
       /* During 'halt_motor': '<S3>:23' */
       /* '<S3>:26:1' sf_internal_predicateOutput = ... */
@@ -144,15 +142,15 @@ void bldc_motor_controller_pid_test_step(void)
       rtDW.is_c3_bldc_motor_controller_pid = IN_trig_idle;
 
       /* Entry 'trig_idle': '<S3>:1' */
-      /* '<S3>:1:1' motor_state = 2; */
-      rtDW.motor_state = 2U;
+      /* '<S3>:1:1' motor_state = 3; */
+      rtDW.motor_state = 3U;
 
       /* '<S3>:1:1' count_load = false; */
       rtDW.count_load = false;
       break;
 
      default:
-      rtDW.motor_state = 2U;
+      rtDW.motor_state = 3U;
       rtDW.count_load = false;
 
       /* During 'trig_idle': '<S3>:1' */
@@ -163,8 +161,8 @@ void bldc_motor_controller_pid_test_step(void)
         rtDW.is_c3_bldc_motor_controller_pid = IN_halt_motor;
 
         /* Entry 'halt_motor': '<S3>:23' */
-        /* '<S3>:23:1' motor_state = 3; */
-        rtDW.motor_state = 3U;
+        /* '<S3>:23:1' motor_state = 1; */
+        rtDW.motor_state = 1U;
       } else {
         /* '<S3>:25:1' sf_internal_predicateOutput = ... */
         /* '<S3>:25:1' hallEffectTrig; */
@@ -200,7 +198,7 @@ void bldc_motor_controller_pid_test_step(void)
    *  Constant: '<S8>/Reference Speed (rpm)'
    *  Constant: '<S8>/Stop Speed (rpm)'
    */
-  if (rtDW.motor_state > 2) {
+  if (rtDW.motor_state > 1) {
     tmp = 800;
   } else {
     tmp = 0;
