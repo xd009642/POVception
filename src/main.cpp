@@ -85,6 +85,10 @@ int main()
     {
         inner_buffer.pixel_at(i,i) = ds::BLUE;
     }
+    for(size_t i=0; i<OUTER_WIDTH; i++)
+    {
+        outer_buffer.pixel_at(i,i) = ds::BLUE;
+    }   
     int outer_col = 0;
     int inner_col = 0;
     outer_buffer.swap();
@@ -117,7 +121,6 @@ int main()
             inner_col = 0;
         }
         motors::update();
-        wait(1);
-        wait_us(100000);
+        wait_us(10000);
     }
 }
