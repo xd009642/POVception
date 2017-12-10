@@ -423,6 +423,7 @@ all: $(PROJECT).bin $(PROJECT).hex size
 
 debug: CXXFLAGS += -DDEBUG -g
 debug: CCFLAGS += -DDEBUG -d
+debug: LD_FLAGS += --debug
 debug: $(PROJECT).bin $(PROJECT).hex size
 
 

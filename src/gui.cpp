@@ -40,7 +40,7 @@ void gui::interface::render(size_t n)
     {
         n = len;
     }
-    for(int i=0; i<n; i++)
+    for(size_t i=0; i<n; i++)
     {
         buttons[i].render(screen);
     }
