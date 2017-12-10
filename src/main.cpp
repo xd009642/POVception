@@ -112,7 +112,7 @@ int main()
             inner_buffer.swap();
             inner_col = 0;
         }
-        wait(1);
         motors::update();
+        wait_us(100000);
     }
 }

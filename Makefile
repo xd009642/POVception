@@ -421,6 +421,10 @@ LD_SYS_LIBS :=-Wl,--start-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys -lmbed -
 
 all: $(PROJECT).bin $(PROJECT).hex size
 
+debug: CXXFLAGS += -DDEBUG -g
+debug: CCFLAGS += -DDEBUG -d
+debug: $(PROJECT).bin $(PROJECT).hex size
+
 
 .s.o:
 	+@$(call MAKEDIR,$(dir $@))
