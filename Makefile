@@ -80,8 +80,8 @@ OBJECTS += src/pong.o
 OBJECTS += src/joystick.o
 OBJECTS += src/dotstar.o
 OBJECTS += src/gui.o
+OBJECTS += MATLAB/05_motor_controller_full_pid/bldc_motor_controller_pid_test.o
 OBJECTS += src/motor_control.o
-OBJECTS += MATLAB/04_motor_controller_full_no_exti/bldc_motor_controller_switch.o
 
  SYS_OBJECTS += mbed/TARGET_DISCO_F469NI/TOOLCHAIN_GCC_ARM/stm32f4xx_hal_flash_ramfunc.o
  SYS_OBJECTS += mbed/TARGET_DISCO_F469NI/TOOLCHAIN_GCC_ARM/PeripheralPins.o
@@ -238,7 +238,7 @@ INCLUDE_PATHS += -I../mbed/drivers
 INCLUDE_PATHS += -I../mbed/hal
 INCLUDE_PATHS += -I../mbed/platform
 INCLUDE_PATHS += -I../src
-INCLUDE_PATHS += -I../MATLAB/04_motor_controller_full_no_exti
+INCLUDE_PATHS += -I../MATLAB/05_motor_controller_full_pid
 
 LIBRARY_PATHS := -L../mbed/TARGET_DISCO_F469NI/TOOLCHAIN_GCC_ARM 
 LIBRARIES := -lmbed 
