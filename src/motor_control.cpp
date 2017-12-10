@@ -1,7 +1,7 @@
 #include "motor_control.h"
 #include "mbed.h"
 extern "C" {
-#include "bldc_motor_controller_second.h"
+#include "bldc_motor_controller_full_count.h"
 }
 
 LCD_DISCO_F469NI* mlcd = nullptr;
@@ -27,7 +27,7 @@ void motors::init()
 {
     he1.rise(&h1_trigger);
     he2.rise(&h2_trigger);
-    bldc_motor_controller_second_initialize();
+    bldc_motor_controller_full_count_initialize();
     motor_1.period_us(20'000);
     motor_1.write(0.0f);
 }
@@ -38,11 +38,11 @@ void motors::set_state(const motors::state s)
     switch(s)
     {
         case motors::state::stop: 
-            bldc_motor_controller_second_U.halt_motor_req = true;
+            bldc_motor_controller_full_co_U.halt_motor_req = true;
             break;
         case motors::state::spin:
-            bldc_motor_controller_second_U.arm_motor_req = true;
-            bldc_motor_controller_second_U.halt_motor_req = false;
+            bldc_motor_controller_full_co_U.arm_motor_req = true;
+            bldc_motor_controller_full_co_U.halt_motor_req = false;
             break;
     }
 }
@@ -50,8 +50,8 @@ void motors::set_state(const motors::state s)
 
 void motors::update()
 {
-    bldc_motor_controller_second_step();
-    motor_1.write(bldc_motor_controller_second_Y.motor_pwm);
+    bldc_motor_controller_full_count_step();
+    motor_1.write(bldc_motor_controller_full_co_Y.outer_motor_pwm);
     if(nullptr != mlcd)
     {
         char text[30] = {0};
@@ -63,7 +63,7 @@ void motors::update()
         {
             mlcd->DisplayStringAt(0, LINE(11), (uint8_t*)"         ", RIGHT_MODE);
         }*/
-        sprintf((char*)text, "PWM %lf", bldc_motor_controller_second_Y.motor_pwm);
+        sprintf((char*)text, "PWM %lf", bldc_motor_controller_full_co_Y.outer_motor_pwm);
         mlcd->DisplayStringAt(0, LINE(14), (uint8_t*)text, LEFT_MODE);
     }
     /*if(rtU.hall_effect_trig) {
