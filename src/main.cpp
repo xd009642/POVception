@@ -73,17 +73,16 @@ int main()
     render::framebuffer outer_buffer(OUTER_WIDTH, OUTER_HEIGHT);
     render::framebuffer inner_buffer(INNER_WIDTH, INNER_HEIGHT);
     ds::ring outer(outer_buffer, ds::outer, lcd); 
-    ds::ring inner(inner_buffer, ds::inner, lcd); 
+    ds::ring inner(inner_buffer, ds::inner, lcd);
+  //  while(true)
+    {
+        outer.slow_display(0);
+        inner.slow_display(0);
+    }
     inner_buffer.clear(ds::RED);
     outer_buffer.clear(ds::RED);
     for(size_t i=0; i<INNER_WIDTH; i+=2)
     {
-        /*
-        for(size_t j=0; j<INNER_HEIGHT; j++)
-        {
-            inner_buffer.pixel_at(i, j) = ds::BLUE; 
-        }
-        */
         inner_buffer.pixel_at(i,i) = ds::BLUE;
     }
     int outer_col = 0;

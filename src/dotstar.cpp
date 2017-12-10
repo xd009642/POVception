@@ -8,7 +8,7 @@ SPI outer_ring(SPI_MOSI, SPI_MISO, SPI_SCK);
 // Male connectors on CN12
 SPI inner_ring(PB_5, PB_4, PA_5);
 
-static constexpr uint32_t DOTSTAR_FREQUENCY = 2'000'000;
+static constexpr uint32_t DOTSTAR_FREQUENCY = 1'000'000;
 
 static constexpr size_t HEADER_SIZE = 4;
 static constexpr size_t FOOTER_SIZE = 0;
@@ -73,17 +73,14 @@ void ds::ring::display(const size_t col)
 
 void ds::ring::slow_display(const size_t col)
 {
-    strip.format(32,0);
-    const size_t opposite_col = (col+buffer.n_col()/2)%buffer.n_col();
-    strip.write(0x00);
-    for(size_t i=0; i<buffer.n_row(); i++)
+    uint32_t blank = 0;
+    strip.write((const char*)&blank, sizeof(uint32_t), nullptr, 0);
+    for(int i=0; i<1; i++)
     {
-        lcd.DisplayStringAt(0, LINE(16), (uint8_t*)"SLOW DISPLAY", LEFT_MODE);
-        uint32_t p = buffer.pixel_at(col, i);
-        strip.write(p);
+        strip.write((const char*)&ds::BLUE, sizeof(uint32_t), nullptr, 0);
+        strip.write((const char*)&ds::RED, sizeof(uint32_t), nullptr, 0);
+   //     strip.write((const char*)&ds::GREEN, sizeof(uint32_t), nullptr, 0);
     }
-    for(size_t i=0; i<(buffer.n_row()*15)/16; i++)
-    {
-        strip.write(0xFF);
-    }
+    strip.write((const char*)&blank, sizeof(uint32_t), nullptr, 0);
+    strip.write((const char*)&blank, sizeof(uint32_t), nullptr, 0);
 }
