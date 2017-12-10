@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.100
+ * Model version                  : 1.106
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 16:52:45 2017
+ * C/C++ source code generated on : Sun Dec 10 17:18:46 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,10 +18,10 @@
 
 /* Block parameters (auto storage) */
 P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
-  1196.0,                              /* Mask Parameter: Compare_const
+  1860.0,                              /* Mask Parameter: HaltCompare_const
                                         * Referenced by: '<S10>/Constant'
                                         */
-  1U,                                  /* Mask Parameter: HaltCompare_const
+  1U,                                  /* Mask Parameter: HaltCompare_const_g
                                         * Referenced by: '<S8>/Constant'
                                         */
   0U,                                  /* Mask Parameter: LoadCompare_const
@@ -37,7 +37,7 @@ P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
                                         * Referenced by: '<S7>/Decrement'
                                         */
   0.0,                                 /* Expression: 0
-                                        * Referenced by: '<S7>/zero'
+                                        * Referenced by: '<S7>/Idle'
                                         */
   0.0,                                 /* Expression: 0
                                         * Referenced by: '<S7>/load_var'
@@ -56,9 +56,6 @@ P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
                                         */
   20000.0,                             /* Expression: 20000
                                         * Referenced by: '<S2>/PWM Period us'
-                                        */
-  5.56E-9,                             /* Expression: 5.56*(10^-9)
-                                        * Referenced by: '<S6>/Clock Period Const'
                                         */
   1093.0,                              /* Expression: 1093
                                         * Referenced by: '<S5>/Terminal'
