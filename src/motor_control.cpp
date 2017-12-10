@@ -14,7 +14,7 @@ InterruptIn he2(D2);
 
 void h1_trigger()
 {
-   // rtU.hall_effect_trig = true;
+    bldc_motor_controller_full_co_U.hall_effect_trig = true;
 }
 
 void h2_trigger()
@@ -55,20 +55,22 @@ void motors::update()
     if(nullptr != mlcd)
     {
         char text[30] = {0};
-        /*if(rtU.hall_effect_trig) 
+        if(bldc_motor_controller_full_co_U.hall_effect_trig) 
         {
             mlcd->DisplayStringAt(0, LINE(11), (uint8_t*)"TRIGGERED", RIGHT_MODE);
         }
         else 
         {
             mlcd->DisplayStringAt(0, LINE(11), (uint8_t*)"         ", RIGHT_MODE);
-        }*/
+        }
         sprintf((char*)text, "PWM %lf", bldc_motor_controller_full_co_Y.outer_motor_pwm);
         mlcd->DisplayStringAt(0, LINE(14), (uint8_t*)text, LEFT_MODE);
+        sprintf(text, "ring pos %f", bldc_motor_controller_full_co_Y.ring_position_ratio);
+        mlcd->DisplayStringAt(0, LINE(15), (uint8_t*)text, LEFT_MODE);
     }
-    /*if(rtU.hall_effect_trig) {
-        rtU.hall_effect_trig = false;
-    }*/
+    if(bldc_motor_controller_full_co_U.hall_effect_trig) {
+        bldc_motor_controller_full_co_U.hall_effect_trig = false;
+    }
 }
     
 void motors::set_lcd(LCD_DISCO_F469NI* lcd_)
