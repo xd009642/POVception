@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_second'.
  *
- * Model version                  : 1.59
+ * Model version                  : 1.64
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sat Dec 09 16:29:33 2017
+ * C/C++ source code generated on : Sun Dec 10 15:13:37 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,10 +18,10 @@
 
 /* Block parameters (auto storage) */
 P_bldc_motor_controller_secon_T bldc_motor_controller_second_P = {
-  -1.0,                                /* Expression: -1
+  -100.0,                              /* Expression: -100
                                         * Referenced by: '<S1>/Decrement'
                                         */
-  1.0,                                 /* Expression: 1
+  100.0,                               /* Expression: 100
                                         * Referenced by: '<S1>/Increment'
                                         */
   0.0,                                 /* Expression: 0
@@ -33,7 +33,7 @@ P_bldc_motor_controller_secon_T bldc_motor_controller_second_P = {
   0.0,                                 /* Expression: 0
                                         * Referenced by: '<S1>/X'
                                         */
-  1070.0,                              /* Expression: 1070
+  1196.0,                              /* Expression: 1196
                                         * Referenced by: '<Root>/Saturation'
                                         */
   0.0,                                 /* Expression: 0
