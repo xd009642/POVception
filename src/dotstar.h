@@ -37,6 +37,7 @@ namespace ds
         render::framebuffer& buffer;
         size_t payload_length;
         size_t length;
+        size_t footer;
         uint32_t* ring_buffer;
         bool ready;
         SPI strip;

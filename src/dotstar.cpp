@@ -10,7 +10,7 @@ SPI inner_ring(PB_5, PB_4, PA_5);
 
 static constexpr uint32_t DOTSTAR_FREQUENCY = 2'000'000;
 
-static constexpr size_t HEADER_SIZE = 2;
+static constexpr size_t HEADER_SIZE = 4;
 static constexpr size_t FOOTER_SIZE = 0;
 
 // Force it to be full brightness at the same time.
@@ -23,13 +23,17 @@ ds::ring::ring(render::framebuffer& buffer, const ds::strip_cfg& cfg, LCD_DISCO_
     lcd(l)
 {
     strip.frequency(DOTSTAR_FREQUENCY);
-    size_t footer = 4;
     payload_length = buffer.n_row() * 2;
+    footer = payload_length/16;
+    if(footer<4)
+    {
+        footer = 4;
+    }
     length = HEADER_SIZE + payload_length + footer;
     ring_buffer = new uint32_t[length];
-    for(size_t i=0; i<HEADER_SIZE+payload_length; i++)
+    for(size_t i=0; i<length; i++)
     {
-        if(i>=HEADER_SIZE)
+        if(i>=HEADER_SIZE && i<HEADER_SIZE+payload_length)
         {
             ring_buffer[i] = 0xFF000000;
         }
