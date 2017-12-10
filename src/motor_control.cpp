@@ -64,7 +64,7 @@ void motors::update()
 
     bldc_motor_controller_full_count_step();
     motor_1.write(bldc_motor_controller_full_co_Y.outer_motor_pwm);
-    motor_1.write(bldc_motor_controller_full_co_Y.inner_motor_pwm);
+    motor_2.write(bldc_motor_controller_full_co_Y.inner_motor_pwm);
     
     if(nullptr != mlcd)
     {
