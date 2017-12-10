@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.66
+ * Model version                  : 1.81
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 15:57:56 2017
+ * C/C++ source code generated on : Sun Dec 10 16:08:08 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -48,9 +48,6 @@ P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
   0.0,                                 /* Expression: 0
                                         * Referenced by: '<S7>/Load'
                                         */
-  0.0,                                 /* Expression: 0
-                                        * Referenced by: '<S1>/X'
-                                        */
   1.0,                                 /* Expression: 1
                                         * Referenced by: '<S7>/Increment'
                                         */
@@ -66,7 +63,16 @@ P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
   5.56E-9,                             /* Expression: 5.56*(10^-9)
                                         * Referenced by: '<S6>/Clock Period Const'
                                         */
-  1093.0                               /* Expression: 1093
+  0U,                                  /* Computed Parameter: X_InitialCondition_h
+                                        * Referenced by: '<S1>/X'
+                                        */
+  1196U,                               /* Computed Parameter: Saturation_UpperSat
+                                        * Referenced by: '<S5>/Saturation'
+                                        */
+  0U,                                  /* Computed Parameter: Saturation_LowerSat
+                                        * Referenced by: '<S5>/Saturation'
+                                        */
+  1093U                                /* Computed Parameter: Terminal_Value
                                         * Referenced by: '<S5>/Terminal'
                                         */
 };

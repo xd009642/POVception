@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.66
+ * Model version                  : 1.81
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 15:57:56 2017
+ * C/C++ source code generated on : Sun Dec 10 16:08:08 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -45,8 +45,9 @@ RT_MODEL_bldc_motor_controlle_T *const bldc_motor_controller_full_c_M =
 /* Model step function */
 void bldc_motor_controller_full_count_step(void)
 {
-  real_T rtb_Switch_p;
   real_T rtb_Sum;
+  real_T rtb_Switch_p;
+  uint16_T rtb_Saturation;
   real_T Sum;
 
   /* Sum: '<S7>/Sum' incorporates:
@@ -54,7 +55,7 @@ void bldc_motor_controller_full_count_step(void)
    *  UnitDelay: '<S7>/X'
    */
   Sum = bldc_motor_controller_full_co_P.Increment_Value_p +
-    bldc_motor_controller_full_c_DW.X_d;
+    bldc_motor_controller_full_c_DW.X;
 
   /* Chart: '<S1>/Motor Controller' incorporates:
    *  Inport: '<Root>/arm_motor_req'
@@ -126,7 +127,7 @@ void bldc_motor_controller_full_count_step(void)
       /* '<S3>:26:1' sf_internal_predicateOutput = ... */
       /* '<S3>:26:1' halt_motor_req == 0 && count_in <= 1060; */
       if ((!bldc_motor_controller_full_co_U.halt_motor_req) &&
-          (bldc_motor_controller_full_c_DW.X <= 1060.0)) {
+          (bldc_motor_controller_full_c_DW.X_i <= 1060)) {
         /* Transition: '<S3>:26' */
         bldc_motor_controller_full_c_DW.is_c3_bldc_motor_controller_ful =
           bldc_motor_controller_f_IN_idle;
@@ -231,11 +232,22 @@ void bldc_motor_controller_full_count_step(void)
    */
   rtb_Sum += bldc_motor_controller_full_c_DW.X_m;
 
+  /* Saturate: '<S5>/Saturation' */
+  if (rtb_Sum >= bldc_motor_controller_full_co_P.Saturation_UpperSat) {
+    rtb_Saturation = bldc_motor_controller_full_co_P.Saturation_UpperSat;
+  } else if (rtb_Sum <= bldc_motor_controller_full_co_P.Saturation_LowerSat) {
+    rtb_Saturation = bldc_motor_controller_full_co_P.Saturation_LowerSat;
+  } else {
+    rtb_Saturation = (uint16_T)((uint16_T)rtb_Sum & 2047);
+  }
+
+  /* End of Saturate: '<S5>/Saturation' */
+
   /* Outport: '<Root>/outer_motor_pwm' incorporates:
    *  Constant: '<S2>/PWM Period us'
    *  Product: '<S2>/Divide'
    */
-  bldc_motor_controller_full_co_Y.outer_motor_pwm = rtb_Sum /
+  bldc_motor_controller_full_co_Y.outer_motor_pwm = (real_T)rtb_Saturation /
     bldc_motor_controller_full_co_P.PWMPeriodus_Value;
 
   /* Product: '<S6>/Divide' incorporates:
@@ -262,21 +274,21 @@ void bldc_motor_controller_full_count_step(void)
    *  RelationalOperator: '<S5>/RelOpt'
    */
   bldc_motor_controller_full_co_Y.motor_speed_flag =
-    (bldc_motor_controller_full_co_P.Terminal_Value <= rtb_Sum);
+    (bldc_motor_controller_full_co_P.Terminal_Value <= rtb_Saturation);
 
   /* Update for UnitDelay: '<S1>/X' */
-  bldc_motor_controller_full_c_DW.X = rtb_Sum;
+  bldc_motor_controller_full_c_DW.X_i = rtb_Saturation;
 
   /* Switch: '<S7>/Switch' */
   if (bldc_motor_controller_full_co_B.count_load) {
     /* Update for UnitDelay: '<S7>/X' incorporates:
      *  Constant: '<S7>/Load'
      */
-    bldc_motor_controller_full_c_DW.X_d =
+    bldc_motor_controller_full_c_DW.X =
       bldc_motor_controller_full_co_P.Load_Value;
   } else {
     /* Update for UnitDelay: '<S7>/X' */
-    bldc_motor_controller_full_c_DW.X_d = Sum;
+    bldc_motor_controller_full_c_DW.X = Sum;
   }
 
   /* End of Switch: '<S7>/Switch' */
@@ -325,12 +337,12 @@ void bldc_motor_controller_full_count_initialize(void)
                 sizeof(ExtY_bldc_motor_controller_fu_T));
 
   /* InitializeConditions for UnitDelay: '<S1>/X' */
-  bldc_motor_controller_full_c_DW.X =
-    bldc_motor_controller_full_co_P.X_InitialCondition;
+  bldc_motor_controller_full_c_DW.X_i =
+    bldc_motor_controller_full_co_P.X_InitialCondition_h;
 
   /* InitializeConditions for UnitDelay: '<S7>/X' */
-  bldc_motor_controller_full_c_DW.X_d =
-    bldc_motor_controller_full_co_P.X_InitialCondition_a;
+  bldc_motor_controller_full_c_DW.X =
+    bldc_motor_controller_full_co_P.X_InitialCondition;
 
   /* InitializeConditions for UnitDelay: '<S8>/X' */
   bldc_motor_controller_full_c_DW.X_m =
