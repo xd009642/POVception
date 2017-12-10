@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.89
+ * Model version                  : 1.100
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 16:31:00 2017
+ * C/C++ source code generated on : Sun Dec 10 16:52:45 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -19,52 +19,34 @@
 /* Block parameters (auto storage) */
 P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
   1196.0,                              /* Mask Parameter: Compare_const
-                                        * Referenced by: '<S11>/Constant'
-                                        */
-  1U,                                  /* Mask Parameter: HaltCompare_const
-                                        * Referenced by: '<S9>/Constant'
-                                        */
-  0U,                                  /* Mask Parameter: LoadCompare_const
                                         * Referenced by: '<S10>/Constant'
                                         */
-  0.0,                                 /* Computed Parameter: motor_speed_err_Y0
-                                        * Referenced by: '<S4>/motor_speed_err'
+  1U,                                  /* Mask Parameter: HaltCompare_const
+                                        * Referenced by: '<S8>/Constant'
                                         */
-  5.56E-9,                             /* Expression: 5.56*(10^-9)
-                                        * Referenced by: '<S4>/Clock Period'
+  0U,                                  /* Mask Parameter: LoadCompare_const
+                                        * Referenced by: '<S9>/Constant'
                                         */
-  60.0,                                /* Expression: 60
-                                        * Referenced by: '<S4>/rps to rpm'
-                                        */
-  0.26666666666666666,                 /* Expression: 16/60
-                                        * Referenced by: '<S4>/Gearing Ratio'
+  0.0,                                 /* Computed Parameter: count_out_Y0
+                                        * Referenced by: '<S4>/count_out'
                                         */
   100.0,                               /* Expression: 100
-                                        * Referenced by: '<S8>/Increment'
+                                        * Referenced by: '<S7>/Increment'
                                         */
   -100.0,                              /* Expression: -100
-                                        * Referenced by: '<S8>/Decrement'
+                                        * Referenced by: '<S7>/Decrement'
                                         */
   0.0,                                 /* Expression: 0
-                                        * Referenced by: '<S8>/zero'
+                                        * Referenced by: '<S7>/zero'
                                         */
   0.0,                                 /* Expression: 0
-                                        * Referenced by: '<S8>/load_var'
-                                        */
-  0.0,                                 /* Expression: 0
-                                        * Referenced by: '<S7>/Load'
+                                        * Referenced by: '<S7>/load_var'
                                         */
   0.0,                                 /* Expression: 0
                                         * Referenced by: '<S1>/X'
                                         */
-  1.0,                                 /* Expression: 1
-                                        * Referenced by: '<S7>/Increment'
-                                        */
   0.0,                                 /* Expression: 0
                                         * Referenced by: '<S7>/X'
-                                        */
-  0.0,                                 /* Expression: 0
-                                        * Referenced by: '<S8>/X'
                                         */
   1196.0,                              /* Expression: 1196
                                         * Referenced by: '<S5>/Saturation'
@@ -82,7 +64,7 @@ P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
                                         * Referenced by: '<S5>/Terminal'
                                         */
   0                                    /* Computed Parameter: X1_InitialCondition
-                                        * Referenced by: '<S8>/X1'
+                                        * Referenced by: '<S7>/X1'
                                         */
 };
 

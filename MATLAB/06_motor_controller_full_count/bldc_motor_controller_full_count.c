@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.89
+ * Model version                  : 1.100
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 16:31:00 2017
+ * C/C++ source code generated on : Sun Dec 10 16:52:45 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -49,15 +49,6 @@ void bldc_motor_controller_full_count_step(void)
   real_T rtb_Saturation;
   real_T rtb_Switch_p;
 
-  /* Outport: '<Root>/rotation_count' incorporates:
-   *  Constant: '<S7>/Increment'
-   *  Sum: '<S7>/Sum'
-   *  UnitDelay: '<S7>/X'
-   */
-  bldc_motor_controller_full_co_Y.rotation_count =
-    bldc_motor_controller_full_co_P.Increment_Value_p +
-    bldc_motor_controller_full_c_DW.X_d;
-
   /* Chart: '<S1>/Motor Controller' incorporates:
    *  Inport: '<Root>/arm_motor_req'
    *  Inport: '<Root>/hall_effect_trig'
@@ -75,9 +66,10 @@ void bldc_motor_controller_full_count_step(void)
     bldc_motor_controller_full_c_DW.is_c3_bldc_motor_controller_ful =
       bldc_motor_controller_f_IN_idle;
 
+    /* Outport: '<Root>/rot_count_load' */
     /* Entry 'idle': '<S3>:15' */
     /* '<S3>:15:1' count_load = true; */
-    bldc_motor_controller_full_co_B.count_load = true;
+    bldc_motor_controller_full_co_Y.rot_count_load = true;
 
     /* '<S3>:15:1' motor_state = 0; */
     bldc_motor_controller_full_co_B.motor_state = 0U;
@@ -98,14 +90,17 @@ void bldc_motor_controller_full_count_step(void)
         /* '<S3>:1:1' motor_state = 3; */
         bldc_motor_controller_full_co_B.motor_state = 3U;
 
+        /* Outport: '<Root>/rot_count_load' */
         /* '<S3>:1:1' count_load = false; */
-        bldc_motor_controller_full_co_B.count_load = false;
+        bldc_motor_controller_full_co_Y.rot_count_load = false;
       }
       break;
 
      case bldc_motor_controller_f_IN_idle:
       bldc_motor_controller_full_co_B.motor_state = 0U;
-      bldc_motor_controller_full_co_B.count_load = true;
+
+      /* Outport: '<Root>/rot_count_load' */
+      bldc_motor_controller_full_co_Y.rot_count_load = true;
 
       /* During 'idle': '<S3>:15' */
       /* '<S3>:19:1' sf_internal_predicateOutput = ... */
@@ -133,9 +128,10 @@ void bldc_motor_controller_full_count_step(void)
         bldc_motor_controller_full_c_DW.is_c3_bldc_motor_controller_ful =
           bldc_motor_controller_f_IN_idle;
 
+        /* Outport: '<Root>/rot_count_load' */
         /* Entry 'idle': '<S3>:15' */
         /* '<S3>:15:1' count_load = true; */
-        bldc_motor_controller_full_co_B.count_load = true;
+        bldc_motor_controller_full_co_Y.rot_count_load = true;
 
         /* '<S3>:15:1' motor_state = 0; */
         bldc_motor_controller_full_co_B.motor_state = 0U;
@@ -148,9 +144,10 @@ void bldc_motor_controller_full_count_step(void)
       bldc_motor_controller_full_c_DW.is_c3_bldc_motor_controller_ful =
         bldc_motor_c_IN_speed_calc_done;
 
+      /* Outport: '<Root>/rot_count_load' */
       /* Entry 'speed_calc_done': '<S3>:10' */
       /* '<S3>:10:1' count_load = true; */
-      bldc_motor_controller_full_co_B.count_load = true;
+      bldc_motor_controller_full_co_Y.rot_count_load = true;
       break;
 
      case bldc_motor_c_IN_speed_calc_done:
@@ -163,13 +160,16 @@ void bldc_motor_controller_full_count_step(void)
       /* '<S3>:1:1' motor_state = 3; */
       bldc_motor_controller_full_co_B.motor_state = 3U;
 
+      /* Outport: '<Root>/rot_count_load' */
       /* '<S3>:1:1' count_load = false; */
-      bldc_motor_controller_full_co_B.count_load = false;
+      bldc_motor_controller_full_co_Y.rot_count_load = false;
       break;
 
      default:
       bldc_motor_controller_full_co_B.motor_state = 3U;
-      bldc_motor_controller_full_co_B.count_load = false;
+
+      /* Outport: '<Root>/rot_count_load' */
+      bldc_motor_controller_full_co_Y.rot_count_load = false;
 
       /* During 'trig_idle': '<S3>:1' */
       /* '<S3>:24:1' sf_internal_predicateOutput = ... */
@@ -192,20 +192,14 @@ void bldc_motor_controller_full_count_step(void)
 
           /* Outputs for Function Call SubSystem: '<S1>/Motor Count Condition' */
           /* Outport: '<Root>/prev_frame_speed' incorporates:
-           *  Constant: '<S4>/rps to rpm'
-           *  Gain: '<S4>/Clock Period'
-           *  Gain: '<S4>/Gearing Ratio'
-           *  Outport: '<Root>/rotation_count'
-           *  Product: '<S4>/Divide'
+           *  Inport: '<Root>/rotation_count_in'
+           *  Inport: '<S4>/count_in'
            */
           /* Entry 'interrupt_trigger': '<S3>:5' */
           /* '<S3>:5:1' trigOut; */
           /* Event: '<S3>:9' */
           bldc_motor_controller_full_co_Y.prev_frame_speed =
-            bldc_motor_controller_full_co_P.rpstorpm_Value /
-            (bldc_motor_controller_full_co_P.ClockPeriod_Gain *
-             bldc_motor_controller_full_co_Y.rotation_count) *
-            bldc_motor_controller_full_co_P.GearingRatio_Gain;
+            bldc_motor_controller_full_co_U.rotation_count_in;
 
           /* End of Outputs for SubSystem: '<S1>/Motor Count Condition' */
         }
@@ -216,30 +210,30 @@ void bldc_motor_controller_full_count_step(void)
 
   /* End of Chart: '<S1>/Motor Controller' */
 
-  /* Switch: '<S8>/Switch2' incorporates:
-   *  Constant: '<S8>/Increment'
-   *  Constant: '<S8>/zero'
-   *  Constant: '<S9>/Constant'
-   *  RelationalOperator: '<S9>/Compare'
-   *  Switch: '<S8>/Switch1'
-   *  UnitDelay: '<S8>/X1'
+  /* Switch: '<S7>/Switch2' incorporates:
+   *  Constant: '<S7>/Increment'
+   *  Constant: '<S7>/zero'
+   *  Constant: '<S8>/Constant'
+   *  RelationalOperator: '<S8>/Compare'
+   *  Switch: '<S7>/Switch1'
+   *  UnitDelay: '<S7>/X1'
    */
   if (bldc_motor_controller_full_c_DW.X_o) {
     rtb_Sum = bldc_motor_controller_full_co_P.zero_Value;
   } else if (bldc_motor_controller_full_co_B.motor_state ==
              bldc_motor_controller_full_co_P.HaltCompare_const) {
-    /* Switch: '<S8>/Switch1' incorporates:
-     *  Constant: '<S8>/Decrement'
+    /* Switch: '<S7>/Switch1' incorporates:
+     *  Constant: '<S7>/Decrement'
      */
     rtb_Sum = bldc_motor_controller_full_co_P.Decrement_Value;
   } else {
     rtb_Sum = bldc_motor_controller_full_co_P.Increment_Value;
   }
 
-  /* End of Switch: '<S8>/Switch2' */
+  /* End of Switch: '<S7>/Switch2' */
 
-  /* Sum: '<S8>/Sum' incorporates:
-   *  UnitDelay: '<S8>/X'
+  /* Sum: '<S7>/Sum' incorporates:
+   *  UnitDelay: '<S7>/X'
    */
   rtb_Sum += bldc_motor_controller_full_c_DW.X_m;
 
@@ -269,20 +263,20 @@ void bldc_motor_controller_full_count_step(void)
     bldc_motor_controller_full_co_P.ClockPeriodConst_Value;
 
   /* Switch: '<S6>/Switch' incorporates:
-   *  Outport: '<Root>/rotation_count'
+   *  Inport: '<Root>/rotation_count_in'
    */
   if (!(rtb_Switch_p != 0.0)) {
-    rtb_Switch_p = bldc_motor_controller_full_co_Y.rotation_count;
+    rtb_Switch_p = bldc_motor_controller_full_co_U.rotation_count_in;
   }
 
   /* End of Switch: '<S6>/Switch' */
 
   /* Outport: '<Root>/ring_position_ratio' incorporates:
-   *  Outport: '<Root>/rotation_count'
+   *  Inport: '<Root>/rotation_count_in'
    *  Product: '<S6>/Divide1'
    */
   bldc_motor_controller_full_co_Y.ring_position_ratio = (real32_T)
-    (bldc_motor_controller_full_co_Y.rotation_count / rtb_Switch_p);
+    (bldc_motor_controller_full_co_U.rotation_count_in / rtb_Switch_p);
 
   /* Outport: '<Root>/motor_speed_flag' incorporates:
    *  Constant: '<S5>/Terminal'
@@ -291,9 +285,9 @@ void bldc_motor_controller_full_count_step(void)
   bldc_motor_controller_full_co_Y.motor_speed_flag =
     (bldc_motor_controller_full_co_P.Terminal_Value <= rtb_Saturation);
 
-  /* Update for UnitDelay: '<S8>/X1' incorporates:
-   *  Constant: '<S11>/Constant'
-   *  RelationalOperator: '<S11>/Compare'
+  /* Update for UnitDelay: '<S7>/X1' incorporates:
+   *  Constant: '<S10>/Constant'
+   *  RelationalOperator: '<S10>/Compare'
    */
   bldc_motor_controller_full_c_DW.X_o = (rtb_Sum >=
     bldc_motor_controller_full_co_P.Compare_const);
@@ -301,40 +295,23 @@ void bldc_motor_controller_full_count_step(void)
   /* Update for UnitDelay: '<S1>/X' */
   bldc_motor_controller_full_c_DW.X = rtb_Saturation;
 
-  /* Switch: '<S7>/Switch' */
-  if (bldc_motor_controller_full_co_B.count_load) {
-    /* Update for UnitDelay: '<S7>/X' incorporates:
-     *  Constant: '<S7>/Load'
-     */
-    bldc_motor_controller_full_c_DW.X_d =
-      bldc_motor_controller_full_co_P.Load_Value;
-  } else {
-    /* Update for UnitDelay: '<S7>/X' incorporates:
-     *  Outport: '<Root>/rotation_count'
-     */
-    bldc_motor_controller_full_c_DW.X_d =
-      bldc_motor_controller_full_co_Y.rotation_count;
-  }
-
-  /* End of Switch: '<S7>/Switch' */
-
-  /* Switch: '<S8>/Switch' incorporates:
-   *  Constant: '<S10>/Constant'
-   *  RelationalOperator: '<S10>/Compare'
+  /* Switch: '<S7>/Switch' incorporates:
+   *  Constant: '<S9>/Constant'
+   *  RelationalOperator: '<S9>/Compare'
    */
   if (bldc_motor_controller_full_co_B.motor_state ==
       bldc_motor_controller_full_co_P.LoadCompare_const) {
-    /* Update for UnitDelay: '<S8>/X' incorporates:
-     *  Constant: '<S8>/load_var'
+    /* Update for UnitDelay: '<S7>/X' incorporates:
+     *  Constant: '<S7>/load_var'
      */
     bldc_motor_controller_full_c_DW.X_m =
       bldc_motor_controller_full_co_P.load_var_Value;
   } else {
-    /* Update for UnitDelay: '<S8>/X' */
+    /* Update for UnitDelay: '<S7>/X' */
     bldc_motor_controller_full_c_DW.X_m = rtb_Sum;
   }
 
-  /* End of Switch: '<S8>/Switch' */
+  /* End of Switch: '<S7>/Switch' */
 }
 
 /* Model initialize function */
@@ -361,7 +338,7 @@ void bldc_motor_controller_full_count_initialize(void)
   (void) memset((void *)&bldc_motor_controller_full_co_Y, 0,
                 sizeof(ExtY_bldc_motor_controller_fu_T));
 
-  /* InitializeConditions for UnitDelay: '<S8>/X1' */
+  /* InitializeConditions for UnitDelay: '<S7>/X1' */
   bldc_motor_controller_full_c_DW.X_o =
     bldc_motor_controller_full_co_P.X1_InitialCondition;
 
@@ -370,10 +347,6 @@ void bldc_motor_controller_full_count_initialize(void)
     bldc_motor_controller_full_co_P.X_InitialCondition;
 
   /* InitializeConditions for UnitDelay: '<S7>/X' */
-  bldc_motor_controller_full_c_DW.X_d =
-    bldc_motor_controller_full_co_P.X_InitialCondition_a;
-
-  /* InitializeConditions for UnitDelay: '<S8>/X' */
   bldc_motor_controller_full_c_DW.X_m =
     bldc_motor_controller_full_co_P.X_InitialCondition_d;
   bldc_motor_controller_full_c_DW.is_active_c3_bldc_motor_control = 0U;
@@ -384,10 +357,10 @@ void bldc_motor_controller_full_count_initialize(void)
    *  SystemInitialize for SubSystem: '<S1>/Motor Count Condition'
    */
   /* SystemInitialize for Outport: '<Root>/prev_frame_speed' incorporates:
-   *  SystemInitialize for Outport: '<S4>/motor_speed_err'
+   *  SystemInitialize for Outport: '<S4>/count_out'
    */
   bldc_motor_controller_full_co_Y.prev_frame_speed =
-    bldc_motor_controller_full_co_P.motor_speed_err_Y0;
+    bldc_motor_controller_full_co_P.count_out_Y0;
 }
 
 /* Model terminate function */
