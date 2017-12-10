@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_second'.
  *
- * Model version                  : 1.59
+ * Model version                  : 1.64
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sat Dec 09 16:29:33 2017
+ * C/C++ source code generated on : Sun Dec 10 15:13:37 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -55,10 +55,10 @@ typedef struct {
 
 /* Parameters (auto storage) */
 struct P_bldc_motor_controller_secon_T_ {
-  real_T Decrement_Value;              /* Expression: -1
+  real_T Decrement_Value;              /* Expression: -100
                                         * Referenced by: '<S1>/Decrement'
                                         */
-  real_T Increment_Value;              /* Expression: 1
+  real_T Increment_Value;              /* Expression: 100
                                         * Referenced by: '<S1>/Increment'
                                         */
   real_T load_var_Value;               /* Expression: 0
@@ -70,7 +70,7 @@ struct P_bldc_motor_controller_secon_T_ {
   real_T X_InitialCondition_l;         /* Expression: 0
                                         * Referenced by: '<S1>/X'
                                         */
-  real_T Saturation_UpperSat;          /* Expression: 1070
+  real_T Saturation_UpperSat;          /* Expression: 1196
                                         * Referenced by: '<Root>/Saturation'
                                         */
   real_T Saturation_LowerSat;          /* Expression: 0
