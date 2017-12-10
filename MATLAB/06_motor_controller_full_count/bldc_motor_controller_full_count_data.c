@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.81
+ * Model version                  : 1.84
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 16:08:08 2017
+ * C/C++ source code generated on : Sun Dec 10 16:20:21 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,7 +18,7 @@
 
 /* Block parameters (auto storage) */
 P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
-  3U,                                  /* Mask Parameter: HaltCompare_const
+  1U,                                  /* Mask Parameter: HaltCompare_const
                                         * Referenced by: '<S9>/Constant'
                                         */
   0U,                                  /* Mask Parameter: LoadCompare_const
