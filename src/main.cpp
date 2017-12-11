@@ -25,6 +25,8 @@ static constexpr uint32_t SCREEN_HEIGHT = 480;
 static constexpr uint32_t BORDER_HEIGHT = 60;
 static constexpr uint32_t BORDER_WIDTH = 120;
 
+std::function<void(void)> application_update;
+
 bool init_sd_card() {
     return sd.disk_initialize() == 0;
 }
@@ -103,6 +105,7 @@ int main()
     inner_buffer.swap();
     gui::interface ui(lcd, 3);
     setup_main_menu(ui);
+    ui.render_all();
     motors::init(); 
     while(1)
     {
@@ -110,7 +113,6 @@ int main()
         int oi_temp = (OUTER_WIDTH-1)*motors::position(motors::motor::outer);
         int ii_temp = (INNER_WIDTH-1)*motors::position(motors::motor::inner);
         ts.GetState(&touch);
-        ui.render_all();
         ui.update(touch);
         outer.display(oi_temp);
         inner.display(ii_temp); 
@@ -122,5 +124,6 @@ int main()
         }
         outer_col = oi_temp;
         inner_col = ii_temp;
+        application_update();
     }
 }
