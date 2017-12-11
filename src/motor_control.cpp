@@ -4,7 +4,6 @@ extern "C" {
 #include "bldc_motor_controller_full_count.h"
 }
 
-LCD_DISCO_F469NI* mlcd = nullptr;
 
 Timer motor_timer;
 Timer inner_timer;
@@ -89,22 +88,6 @@ void motors::update()
     bldc_motor_controller_full_count_step();
     motor_1.write(bldc_motor_controller_full_co_Y.outer_motor_pwm);
     motor_2.write(bldc_motor_controller_full_co_Y.inner_motor_pwm);
-    
-    if(nullptr != mlcd)
-    {
-        if(bldc_motor_controller_full_co_U.outer_hall_effect_trig) 
-        {
-            mlcd->DisplayStringAt(0, LINE(11), (uint8_t*)"TRIGGERED", RIGHT_MODE);
-        }
-        else 
-        {
-            mlcd->DisplayStringAt(0, LINE(11), (uint8_t*)"         ", RIGHT_MODE);
-        }
-        char text[45];
-        sprintf(text, "PWM outer %lf PWM inner %lf", bldc_motor_controller_full_co_Y.outer_motor_pwm,
-                bldc_motor_controller_full_co_Y.inner_motor_pwm);
-        mlcd->DisplayStringAt(0, LINE(15), (uint8_t*)text, LEFT_MODE);
-    }
 
     bldc_motor_controller_full_co_U.inner_hall_effect_trig = false;
     bldc_motor_controller_full_co_U.outer_hall_effect_trig = false;
@@ -115,8 +98,4 @@ void motors::update()
         inner_timer.reset();
     }
 }
-    
-void motors::set_lcd(LCD_DISCO_F469NI* lcd_)
-{
-    mlcd = lcd_;
-}
+

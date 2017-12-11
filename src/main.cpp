@@ -12,11 +12,14 @@
 #include "motor_control.h"
 #include "joystick.h"
 
+void stop_calibration();
+void start_calibration();
 
 LCD_DISCO_F469NI lcd;
 TS_DISCO_F469NI ts;
 SDFileSystem sd("sd");
 Timer t;
+gui::interface ui(lcd, 4);
 
 static constexpr uint32_t BACKGROUND_COLOUR = 0xFFED0000;
 static constexpr uint32_t SCREEN_WIDTH = 800;
@@ -24,6 +27,12 @@ static constexpr uint32_t SCREEN_HEIGHT = 480;
 // These are approximates just to give decent spacing
 static constexpr uint32_t BORDER_HEIGHT = 60;
 static constexpr uint32_t BORDER_WIDTH = 120;
+
+render::framebuffer outer_buffer(OUTER_WIDTH, OUTER_HEIGHT);
+render::framebuffer inner_buffer(INNER_WIDTH, INNER_HEIGHT);
+
+size_t inner_offset = 24;
+size_t outer_offset = 17;
 
 std::function<void(void)> application_update;
 
@@ -47,28 +56,75 @@ void launch_pong()
     lcd.DisplayStringAt(0, LINE(1), (uint8_t*)"PLAYING PONG", RIGHT_MODE);
 }
 
-void halt_motor()
+
+void calibrate()
 {
-    lcd.DisplayStringAt(0, LINE(10), (uint8_t*)"HALTING ", RIGHT_MODE);
-    motors::set_state(motors::state::stop);
+    using namespace app;
+    if(stick_1.x_state() == x_motion::left) 
+    {
+        inner_offset--;
+        if(inner_offset == -1) {
+            inner_offset = INNER_WIDTH-1;
+        } 
+    }
+    else if(stick_1.x_state() == x_motion::right)
+    {
+        inner_offset++;
+        if(inner_offset == INNER_WIDTH) {
+            inner_offset = 0;
+        }
+    }
+    if(stick_2.x_state() == x_motion::left) 
+    {
+        outer_offset--;
+        if(outer_offset == -1) {
+            outer_offset = OUTER_WIDTH-1;
+        }
+    }
+    else if(stick_2.x_state() == x_motion::right)
+    {
+        outer_offset++;
+        if(outer_offset == OUTER_WIDTH)
+            outer_offset = 0;
+    }
 }
 
-
-void spin_up()
+void stop_calibration()
 {
-    lcd.DisplayStringAt(0, LINE(10), (uint8_t*)"SPINNING", RIGHT_MODE);
+    motors::set_state(motors::state::stop);
+    ui.get_button(0).text = "Calib";
+    ui.get_button(0).action = start_calibration;
+    ui.get_button(0).render(lcd);
+    application_update = std::function<void(void)>();
+}
+
+void start_calibration()
+{
+    // Setup calibration pattern
+    outer_buffer.clear(ds::BLACK);
+    inner_buffer.clear(ds::BLACK);
+    outer_buffer.fill_rect(0, 0, 1, outer_buffer.n_row(), ds::BLUE);
+    inner_buffer.fill_rect(0, 0, 1, inner_buffer.n_row(), ds::BLUE);
+
+    // Setup stop calibration button
+
+    application_update = calibrate;
+    ui.get_button(0).text = "Finish";
+    ui.get_button(0).action = stop_calibration;
+    ui.get_button(0).render(lcd);
+    // Spin to win
     motors::set_state(motors::state::spin);
 }
 
 void setup_main_menu(gui::interface& ui)
 {
     // Assume 3 apps and hack out a button
-    ui.get_button(0).text = "PONG";
-    ui.get_button(0).action = launch_pong;
+    ui.get_button(0).text = "Calib";
+    ui.get_button(0).action = start_calibration;
     ui.get_button(1).text = "Spin";
-    ui.get_button(1).action = spin_up;
+    ui.get_button(1).action = [](){motors::set_state(motors::state::spin);};
     ui.get_button(2).text = "Halt";
-    ui.get_button(2).action = halt_motor;
+    ui.get_button(2).action = [](){motors::set_state(motors::state::stop);};
 }
 
 void stripey(render::framebuffer& buffer)
@@ -80,6 +136,7 @@ void stripey(render::framebuffer& buffer)
         buffer.fill_rect(i, 0, 1, buffer.n_row(), ds::RED);
     }
 }
+
 
 int main()
 {
@@ -93,8 +150,6 @@ int main()
     prepare_background();
     // 0 means good, non-zero is error code. 
     lcd.DisplayStringAt(0, LINE(2), (uint8_t *)"XMAS CHALLENGE SPIN", CENTER_MODE);
-    render::framebuffer outer_buffer(OUTER_WIDTH, OUTER_HEIGHT);
-    render::framebuffer inner_buffer(INNER_WIDTH, INNER_HEIGHT);
     ds::ring outer(outer_buffer, ds::outer, lcd); 
     ds::ring inner(inner_buffer, ds::inner, lcd);
     stripey(outer_buffer);
@@ -103,17 +158,26 @@ int main()
     int inner_col = 0;
     outer_buffer.swap();
     inner_buffer.swap();
-    gui::interface ui(lcd, 3);
     setup_main_menu(ui);
     ui.render_all();
-    motors::init(); 
+    motors::init();
+    size_t frame_count = 0;
+    size_t max_frames = 5;
     while(1)
     {
         motors::update();
         int oi_temp = (OUTER_WIDTH-1)*motors::position(motors::motor::outer);
         int ii_temp = (INNER_WIDTH-1)*motors::position(motors::motor::inner);
-        ts.GetState(&touch);
-        ui.update(touch);
+        oi_temp = (oi_temp + outer_offset);
+        if(oi_temp >= OUTER_WIDTH)
+        {
+            oi_temp -= OUTER_WIDTH;
+        }
+        ii_temp = (ii_temp + inner_offset);
+        if(ii_temp >= INNER_WIDTH)
+        {
+            ii_temp -= INNER_WIDTH;
+        }
         outer.display(oi_temp);
         inner.display(ii_temp); 
         if(outer_col > oi_temp) {
@@ -122,8 +186,20 @@ int main()
         if(inner_col > ii_temp) {
             inner_buffer.swap();
         }
+        if(frame_count == 0)
+        {
+            ts.GetState(&touch);
+            ui.update(touch);
+        }
+        if(application_update && (frame_count == 3))
+        {
+            application_update();
+        }
         outer_col = oi_temp;
         inner_col = ii_temp;
-        application_update();
+        frame_count++;
+        if(frame_count == max_frames) { 
+            frame_count = 0;
+        }
     }
 }
