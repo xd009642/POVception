@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.125
+ * Model version                  : 1.151
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Mon Dec 11 19:04:05 2017
+ * C/C++ source code generated on : Mon Dec 11 21:04:47 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -18,11 +18,14 @@
 
 /* Block parameters (auto storage) */
 P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
-  1000.0,                              /* Mask Parameter: HaltCompare1_const
+  200.0,                               /* Mask Parameter: HaltCompare2_const
                                         * Referenced by: '<S24>/Constant'
                                         */
-  1860.0,                              /* Mask Parameter: HaltCompare_const
+  1000.0,                              /* Mask Parameter: HaltCompare1_const
                                         * Referenced by: '<S23>/Constant'
+                                        */
+  1860.0,                              /* Mask Parameter: HaltCompare_const
+                                        * Referenced by: '<S22>/Constant'
                                         */
   1000.0,                              /* Mask Parameter: HaltCompare1_const_k
                                         * Referenced by: '<S14>/Constant'
@@ -33,14 +36,14 @@ P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
   1U,                                  /* Mask Parameter: HaltCompare_const_g
                                         * Referenced by: '<S20>/Constant'
                                         */
+  0U,                                  /* Mask Parameter: LoadCompare_const
+                                        * Referenced by: '<S21>/Constant'
+                                        */
   1U,                                  /* Mask Parameter: HaltCompare_const_n
                                         * Referenced by: '<S10>/Constant'
                                         */
-  0U,                                  /* Mask Parameter: LoadCompare_const
+  0U,                                  /* Mask Parameter: LoadCompare_const_n
                                         * Referenced by: '<S11>/Constant'
-                                        */
-  0U,                                  /* Mask Parameter: LoadCompare_const_i
-                                        * Referenced by: '<S21>/Constant'
                                         */
   100.0,                               /* Expression: 100
                                         * Referenced by: '<S9>/Fast Increment'
@@ -60,13 +63,13 @@ P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
   100.0,                               /* Expression: 100
                                         * Referenced by: '<S19>/Fast Increment'
                                         */
-  1.0,                                 /* Expression: 1
+  10.0,                                /* Expression: 10
                                         * Referenced by: '<S19>/Slow Increment'
                                         */
   -100.0,                              /* Expression: -100
                                         * Referenced by: '<S19>/Fast Decrement'
                                         */
-  -1.0,                                /* Expression: -1
+  -10.0,                               /* Expression: -10
                                         * Referenced by: '<S19>/Slow Decrement'
                                         */
   0.0,                                 /* Expression: 0
@@ -77,9 +80,6 @@ P_bldc_motor_controller_full__T bldc_motor_controller_full_co_P = {
                                         */
   0.0,                                 /* Expression: 0
                                         * Referenced by: '<S19>/X1'
-                                        */
-  0.0,                                 /* Expression: 0
-                                        * Referenced by: '<S22>/Constant'
                                         */
   0.0,                                 /* Expression: 0
                                         * Referenced by: '<S3>/X'

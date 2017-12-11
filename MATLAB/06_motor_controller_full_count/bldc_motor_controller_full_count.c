@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.125
+ * Model version                  : 1.151
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Mon Dec 11 19:04:05 2017
+ * C/C++ source code generated on : Mon Dec 11 21:04:47 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -212,14 +212,15 @@ void bldc_motor_cont_MotorController(real_T rtu_count_in, boolean_T
 void bldc_motor_controller_full_count_step(void)
 {
   boolean_T rtb_Compare;
+  boolean_T rtb_Compare_g;
   real_T rtb_Sum;
   real_T rtb_Saturation;
   real_T rtb_Saturation_k;
   real_T rtb_Switch2_n;
   real_T tmp;
 
-  /* RelationalOperator: '<S24>/Compare' incorporates:
-   *  Constant: '<S24>/Constant'
+  /* RelationalOperator: '<S23>/Compare' incorporates:
+   *  Constant: '<S23>/Constant'
    *  UnitDelay: '<S19>/X1'
    */
   rtb_Compare = (bldc_motor_controller_full_c_DW.X >=
@@ -243,12 +244,19 @@ void bldc_motor_controller_full_count_step(void)
     &bldc_motor_controller_full_co_B.count_in,
     &bldc_motor_controller_full_c_DW.sf_MotorController);
 
+  /* RelationalOperator: '<S21>/Compare' incorporates:
+   *  Constant: '<S21>/Constant'
+   */
+  rtb_Compare_g = (bldc_motor_controller_full_co_B.motor_state ==
+                   bldc_motor_controller_full_co_P.LoadCompare_const);
+
   /* Switch: '<S19>/Switch1' incorporates:
    *  Constant: '<S19>/Fast Increment'
    *  Constant: '<S20>/Constant'
-   *  Constant: '<S23>/Constant'
+   *  Constant: '<S22>/Constant'
+   *  Logic: '<S19>/Logical Operator'
    *  RelationalOperator: '<S20>/Compare'
-   *  RelationalOperator: '<S23>/Compare'
+   *  RelationalOperator: '<S22>/Compare'
    *  Switch: '<S19>/Switch3'
    *  Switch: '<S19>/Switch5'
    *  UnitDelay: '<S19>/X1'
@@ -258,13 +266,13 @@ void bldc_motor_controller_full_count_step(void)
     /* Switch: '<S19>/Switch2' incorporates:
      *  Constant: '<S19>/Fast Decrement'
      *  Constant: '<S19>/Idle'
-     *  Constant: '<S22>/Constant'
-     *  RelationalOperator: '<S22>/Compare'
+     *  Constant: '<S24>/Constant'
+     *  RelationalOperator: '<S24>/Compare'
      *  Switch: '<S19>/Switch4'
      *  UnitDelay: '<S19>/X1'
      */
     if (bldc_motor_controller_full_c_DW.X <=
-        bldc_motor_controller_full_co_P.Constant_Value) {
+        bldc_motor_controller_full_co_P.HaltCompare2_const) {
       tmp = bldc_motor_controller_full_co_P.Idle_Value;
     } else if (rtb_Compare) {
       /* Switch: '<S19>/Switch4' incorporates:
@@ -276,8 +284,9 @@ void bldc_motor_controller_full_count_step(void)
     }
 
     /* End of Switch: '<S19>/Switch2' */
-  } else if (bldc_motor_controller_full_c_DW.X >=
-             bldc_motor_controller_full_co_P.HaltCompare_const) {
+  } else if ((bldc_motor_controller_full_c_DW.X >=
+              bldc_motor_controller_full_co_P.HaltCompare_const) ||
+             rtb_Compare_g) {
     /* Switch: '<S19>/Switch3' incorporates:
      *  Constant: '<S19>/Idle'
      */
@@ -388,7 +397,7 @@ void bldc_motor_controller_full_count_step(void)
      *  UnitDelay: '<S9>/X1'
      */
     if (bldc_motor_controller_full_c_DW.X_h <=
-        bldc_motor_controller_full_co_P.Constant_Value_n) {
+        bldc_motor_controller_full_co_P.Constant_Value) {
       tmp = bldc_motor_controller_full_co_P.Idle_Value_a;
     } else if (rtb_Compare) {
       /* Switch: '<S9>/Switch4' incorporates:
@@ -473,12 +482,8 @@ void bldc_motor_controller_full_count_step(void)
   /* Update for UnitDelay: '<S3>/X' */
   bldc_motor_controller_full_c_DW.X_i = rtb_Saturation;
 
-  /* Switch: '<S19>/Switch' incorporates:
-   *  Constant: '<S21>/Constant'
-   *  RelationalOperator: '<S21>/Compare'
-   */
-  if (bldc_motor_controller_full_co_B.motor_state ==
-      bldc_motor_controller_full_co_P.LoadCompare_const_i) {
+  /* Switch: '<S19>/Switch' */
+  if (rtb_Compare_g) {
     /* Update for UnitDelay: '<S19>/X' incorporates:
      *  Constant: '<S19>/load_var'
      */
@@ -502,7 +507,7 @@ void bldc_motor_controller_full_count_step(void)
    *  RelationalOperator: '<S11>/Compare'
    */
   if (bldc_motor_controller_full_co_B.motor_state_m ==
-      bldc_motor_controller_full_co_P.LoadCompare_const) {
+      bldc_motor_controller_full_co_P.LoadCompare_const_n) {
     /* Update for UnitDelay: '<S9>/X' incorporates:
      *  Constant: '<S9>/load_var'
      */
