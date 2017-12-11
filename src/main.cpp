@@ -59,34 +59,42 @@ void launch_pong()
 
 void calibrate()
 {
+    static bool check_in = false;
     using namespace app;
-    if(stick_1.x_state() == x_motion::left) 
+    if(check_in)
     {
-        inner_offset--;
-        if(inner_offset == -1) {
-            inner_offset = INNER_WIDTH-1;
-        } 
-    }
-    else if(stick_1.x_state() == x_motion::right)
-    {
-        inner_offset++;
-        if(inner_offset == INNER_WIDTH) {
-            inner_offset = 0;
+        if(stick_1.x_state() == x_motion::left) 
+        {
+            inner_offset--;
+            if(inner_offset == -1) {
+                inner_offset = INNER_WIDTH-1;
+            } 
+        }
+        else if(stick_1.x_state() == x_motion::right)
+        {
+            inner_offset++;
+            if(inner_offset == INNER_WIDTH) {
+                inner_offset = 0;
+            }
         }
     }
-    if(stick_2.x_state() == x_motion::left) 
+    else
     {
-        outer_offset--;
-        if(outer_offset == -1) {
-            outer_offset = OUTER_WIDTH-1;
+        if(stick_2.x_state() == x_motion::left) 
+        {
+            outer_offset--;
+            if(outer_offset == -1) {
+                outer_offset = OUTER_WIDTH-1;
+            }
+        }
+        else if(stick_2.x_state() == x_motion::right)
+        {
+            outer_offset++;
+            if(outer_offset == OUTER_WIDTH)
+                outer_offset = 0;
         }
     }
-    else if(stick_2.x_state() == x_motion::right)
-    {
-        outer_offset++;
-        if(outer_offset == OUTER_WIDTH)
-            outer_offset = 0;
-    }
+    check_in = !check_in;
 }
 
 void stop_calibration()
@@ -162,31 +170,37 @@ int main()
     ui.render_all();
     motors::init();
     size_t frame_count = 0;
-    size_t max_frames = 5;
+    size_t max_frames = 8;
+    int oi_temp = 0;
+    int ii_temp = 0;
     while(1)
     {
         motors::update();
-        int oi_temp = (OUTER_WIDTH-1)*motors::position(motors::motor::outer);
-        int ii_temp = (INNER_WIDTH-1)*motors::position(motors::motor::inner);
-        oi_temp = (oi_temp + outer_offset);
-        if(oi_temp >= OUTER_WIDTH)
+        // Stops bad position guesses when not spinning from making display glitch
+        if(motors::is_spinning())
         {
-            oi_temp -= OUTER_WIDTH;
+            oi_temp = (OUTER_WIDTH-1)*motors::position(motors::motor::outer);
+            ii_temp = (INNER_WIDTH-1)*motors::position(motors::motor::inner);
+            oi_temp = (oi_temp + outer_offset);
+            if(oi_temp >= OUTER_WIDTH)
+            {
+                oi_temp -= OUTER_WIDTH;
+            }
+            ii_temp = (ii_temp + inner_offset);
+            if(ii_temp >= INNER_WIDTH)
+            {
+                ii_temp -= INNER_WIDTH;
+            }
+            outer.display(oi_temp);
+            inner.display(ii_temp); 
         }
-        ii_temp = (ii_temp + inner_offset);
-        if(ii_temp >= INNER_WIDTH)
-        {
-            ii_temp -= INNER_WIDTH;
-        }
-        outer.display(oi_temp);
-        inner.display(ii_temp); 
         if(outer_col > oi_temp) {
             outer_buffer.swap();
         }
         if(inner_col > ii_temp) {
             inner_buffer.swap();
         }
-        if(frame_count == 0)
+        if(frame_count == 7)
         {
             ts.GetState(&touch);
             ui.update(touch);

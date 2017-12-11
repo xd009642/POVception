@@ -38,6 +38,10 @@ void motors::init()
     inner_timer.start();
 }
 
+bool motors::is_spinning() 
+{
+    return !bldc_motor_controller_full_co_U.halt_motor_req;
+}
 
 void motors::set_state(const motors::state s)
 {

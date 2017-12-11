@@ -22,6 +22,8 @@ namespace motors
 
     float position(motor m);
 
+    bool is_spinning();
+
 }
 
 
