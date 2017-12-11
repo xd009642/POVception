@@ -1,6 +1,6 @@
 #include "gui.h"
 
-static constexpr uint32_t WIDTH_OFFSET = 50;
+static constexpr uint32_t WIDTH_OFFSET = 40;
 static constexpr uint32_t HEIGHT_OFFSET = 200;
 
 
@@ -68,6 +68,8 @@ gui::button& gui::interface::get_button(const size_t index)
 
 void gui::interface::update(const TS_StateTypeDef& pos)
 {
+    if(pos.touchDetected != 1)
+        return;
     for(size_t i=0; i<len; i++)
     {
         if(buttons[i].poll_event(pos))
