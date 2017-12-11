@@ -11,6 +11,7 @@
 #include "display_settings.h"
 #include "motor_control.h"
 #include "joystick.h"
+#include <functional>
 
 void stop_calibration();
 void start_calibration();
@@ -35,6 +36,13 @@ size_t inner_offset = 24;
 size_t outer_offset = 17;
 
 std::function<void(void)> application_update;
+std::function<void(void)> critical_update;
+
+void critical_run() 
+{
+    // THIS MUST BE GUARANTEED TO BE INITIALISED
+    critical_update();
+}
 
 bool init_sd_card() {
     return sd.disk_initialize() == 0;
@@ -173,8 +181,9 @@ int main()
     size_t max_frames = 8;
     int oi_temp = 0;
     int ii_temp = 0;
-    while(1)
-    {
+
+    Ticker fast_update;
+    critical_update = [&]() {
         motors::update();
         // Stops bad position guesses when not spinning from making display glitch
         if(motors::is_spinning())
@@ -200,6 +209,10 @@ int main()
         if(inner_col > ii_temp) {
             inner_buffer.swap();
         }
+    };
+    fast_update.attach(critical_run, 0.0005f);
+    while(1)
+    {
         if(frame_count == 7)
         {
             ts.GetState(&touch);
