@@ -1,5 +1,5 @@
 #include "pong.h"
-
+#include "dotstar.h"
 
 
 app::pong::pong(render::framebuffer& buffer):graphics(buffer)
@@ -32,7 +32,7 @@ bool app::pong::collides_with_wall()
 
 bool app::pong::ball_out() 
 {
-    return ball.pos.x < 0 || ball.pos.x >static_cast<int16_t>(graphics.get_width());
+    return ball.pos.x < 0 || ball.pos.x >static_cast<int16_t>(graphics.get_width()/2);
 }
 
 void app::pong::update() 
@@ -70,11 +70,11 @@ void app::pong::update_player(app::player_state& player, app::joystick& stick)
     auto state = stick.y_state();
     if(state == app::y_motion::down && player.pos.y>0)
     {
-        player.pos.y++;
+        player.pos.y-=2;
     } 
     else if(state == app::y_motion::up && (player.pos.y+player.paddle_width)<graphics.get_height())
     {
-        player.pos.y--;
+        player.pos.y+=2;
     }
 }
 
@@ -83,7 +83,7 @@ void app::pong::render()
 {
     // Blank where I might be drawing (super simple right now)
     graphics.fill_rect(0, 0, p1.paddle_depth, graphics.get_height(), 0xFF000000);
-    graphics.fill_rect(graphics.get_width()-p2.paddle_depth, 0, p2.paddle_depth, graphics.get_height(), 0xFF000000);
+    graphics.fill_rect((graphics.get_width()/2)-p2.paddle_depth, 0, p2.paddle_depth, graphics.get_height(), 0xFF000000);
 
     // Draw!
     graphics.fill_rect(p1.pos.x, p1.pos.y, 2, p1.paddle_width, 0xFFFFFFFF);
@@ -94,6 +94,7 @@ void app::pong::render()
 
 void app::pong::reset() 
 {
+    graphics.clear(ds::BLACK);
     p1.score = 0;
     p2.score = 0;
     reset_positions();
@@ -103,7 +104,7 @@ void app::pong::reset()
 void app::pong::reset_positions()
 {
     auto y_pos = graphics.get_height()/2;
-    p1.pos.set(0, y_pos);
-    p2.pos.set(graphics.get_width()-p2.paddle_depth, y_pos);
-    ball.pos.set(graphics.get_width()/2, y_pos);
+    p1.pos.set(10, y_pos);
+    p2.pos.set(graphics.get_width()/2-p2.paddle_depth-10, y_pos);
+    ball.pos.set(graphics.get_width()/4, y_pos);
 }

@@ -49,6 +49,7 @@ void motors::set_state(const motors::state s)
     {
         case motors::state::stop: 
             bldc_motor_controller_full_co_U.halt_motor_req = true;
+            bldc_motor_controller_full_co_U.arm_motor_req = false;
             break;
         case motors::state::spin:
             bldc_motor_controller_full_co_U.arm_motor_req = true;
