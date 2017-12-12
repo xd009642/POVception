@@ -37,9 +37,9 @@ inline void write_bit(gpio_t* handle, const bool value)
         ct::delay(120);
     }else {
         gpio_write(handle, 1);
-        ct::delay(940);
+        ct::delay(540);
         gpio_write(handle, 0);
-        ct::delay(460);
+        ct::delay(260);
     }
 }
 
