@@ -47,7 +47,9 @@ namespace app
         player_state p1;
         player_state p2;
         ball_state ball;
-
+        size_t far_left;
+        size_t far_right;
+        size_t centre_column;
     };
 }
 

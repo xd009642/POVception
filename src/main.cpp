@@ -71,15 +71,12 @@ void prepare_background()
 
 void launch_pong()
 {
-    lcd.DisplayStringAt(0, LINE(1), (uint8_t*)"PLAYING PONG", RIGHT_MODE);
-
     motors::set_state(motors::state::spin);
     outer_buffer.clear(ds::BLACK);
     game.reset();
     application_update = [&]() {
         game.update();
     };
-
 }
 
 
@@ -235,7 +232,7 @@ int main()
     };
 
     fast_update.attach(critical_run,    0.0003f);
-    slow_update.attach(application_run, 0.05f);
+    slow_update.attach(application_run, 0.2f);
     while(1)
     {
         if(frame_count == 7)
