@@ -41,6 +41,7 @@ app::snowfall<100> snow(outer_buffer);
 
 size_t inner_offset = 24;
 size_t outer_offset = 17;
+size_t temp_rotation = 0;
 
 std::function<void(void)> application_update;
 std::function<void(void)> critical_update;
@@ -87,42 +88,34 @@ void launch_pong()
 
 void calibrate()
 {
-    static bool check_in = false;
     using namespace app;
-    if(check_in)
+    if(stick_1.x_state() == x_motion::left) 
     {
-        if(stick_1.x_state() == x_motion::left) 
-        {
-            inner_offset--;
-            if(inner_offset == -1) {
-                inner_offset = INNER_WIDTH-1;
-            } 
-        }
-        else if(stick_1.x_state() == x_motion::right)
-        {
-            inner_offset++;
-            if(inner_offset == INNER_WIDTH) {
-                inner_offset = 0;
-            }
+        inner_offset--;
+        if(inner_offset == -1) {
+            inner_offset = INNER_WIDTH-1;
+        } 
+    }
+    else if(stick_1.x_state() == x_motion::right)
+    {
+        inner_offset++;
+        if(inner_offset == INNER_WIDTH) {
+            inner_offset = 0;
         }
     }
-    else
+    if(stick_2.x_state() == x_motion::right) 
     {
-        if(stick_2.x_state() == x_motion::right) 
-        {
-            outer_offset--;
-            if(outer_offset == -1) {
-                outer_offset = OUTER_WIDTH-1;
-            }
-        }
-        else if(stick_2.x_state() == x_motion::left)
-        {
-            outer_offset++;
-            if(outer_offset == OUTER_WIDTH)
-                outer_offset = 0;
+        outer_offset--;
+        if(outer_offset == -1) {
+            outer_offset = OUTER_WIDTH-1;
         }
     }
-    check_in = !check_in;
+    else if(stick_2.x_state() == x_motion::left)
+    {
+        outer_offset++;
+        if(outer_offset == OUTER_WIDTH)
+            outer_offset = 0;
+    }
 }
 
 void stop_calibration()
@@ -134,6 +127,27 @@ void stop_calibration()
     application_update = std::function<void(void)>();
 }
 
+
+void update_earth() 
+{
+
+    if(app::stick_1.x_state() == app::x_motion::left) 
+    {
+        temp_rotation--;
+        if(temp_rotation == -1) {
+            temp_rotation = INNER_WIDTH-1;
+        } 
+    }
+    else if(app::stick_1.x_state() == app::x_motion::right)
+    {
+        temp_rotation++;
+        if(temp_rotation == INNER_WIDTH) {
+            temp_rotation = 0;
+        }
+    }
+    snow.update();
+}
+
 void show_earth() { 
     int i =0;
     for(int c=0; c<INNER_WIDTH; c++) {
@@ -142,12 +156,11 @@ void show_earth() {
             i++;
         }
     }
+    temp_rotation = inner_offset;
     inner_buffer.swap();
     outer_buffer.clear(ds::BLACK);
     snow.init();
-    application_update = [&]() {
-        snow.update();
-    };
+    application_update = update_earth;
     motors::set_state(motors::state::spin);
 }
 
@@ -175,6 +188,7 @@ void setup_main_menu(gui::interface& ui)
         stripey(outer_buffer);
         stripey(inner_buffer);
         motors::set_state(motors::state::spin);
+        application_update = std::function<void(void)>();
     };
     ui.get_button(2).text = "Earth";
     ui.get_button(2).action = show_earth;
@@ -185,6 +199,7 @@ void setup_main_menu(gui::interface& ui)
     ui.get_button(4).action = []() {
         inner_buffer.clear(ds::GREEN);
         outer_buffer.clear(ds::RED);
+        temp_rotation = 0;
         motors::set_state(motors::state::stop);
     };
 }
@@ -240,7 +255,11 @@ int main()
             {
                 oi_temp -= OUTER_WIDTH;
             }
-            ii_temp = (ii_temp + inner_offset);
+            if(temp_rotation != 0) {
+                ii_temp = (ii_temp + temp_rotation);
+            } else {
+                ii_temp = (ii_temp + inner_offset);
+            }
             if(ii_temp >= INNER_WIDTH)
             {
                 ii_temp -= INNER_WIDTH;
