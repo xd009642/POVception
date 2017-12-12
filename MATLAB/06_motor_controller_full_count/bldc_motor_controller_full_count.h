@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.115
+ * Model version                  : 1.208
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 17:36:51 2017
+ * C/C++ source code generated on : Tue Dec 12 17:57:37 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -38,28 +38,28 @@
 
 /* Block states (auto storage) for system '<S1>/Motor Controller' */
 typedef struct {
-  uint8_T is_active_c1_bldc_motor_control;/* '<S1>/Motor Controller' */
-  uint8_T is_c1_bldc_motor_controller_ful;/* '<S1>/Motor Controller' */
+  uint8_T is_active_c3_bldc_motor_control;/* '<S1>/Motor Controller' */
+  uint8_T is_c3_bldc_motor_controller_ful;/* '<S1>/Motor Controller' */
 } DW_MotorController_bldc_motor_T;
 
 /* Block signals (auto storage) */
 typedef struct {
-  real_T count_in;                     /* '<S14>/count_in' */
+  real_T count_in;                     /* '<S17>/count_in' */
   real_T count_in_i;                   /* '<S6>/count_in' */
   uint8_T motor_state;                 /* '<S3>/Motor Controller' */
-  uint8_T motor_state_m;               /* '<S1>/Motor Controller' */
+  uint8_T motor_state_i;               /* '<S1>/Motor Controller' */
 } B_bldc_motor_controller_full__T;
 
 /* Block states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T X;                            /* '<S3>/X' */
-  real_T X_m;                          /* '<S17>/X' */
+  real_T X;                            /* '<S20>/X1' */
+  real_T X_i;                          /* '<S3>/X' */
+  real_T X_f;                          /* '<S20>/X' */
+  real_T X_d;                          /* '<S9>/X1' */
   real_T X_j;                          /* '<S1>/X' */
-  real_T X_e;                          /* '<S9>/X' */
-  boolean_T X_n;                       /* '<S17>/X1' */
-  boolean_T X_h;                       /* '<S9>/X1' */
+  real_T X_fo;                         /* '<S9>/X' */
   DW_MotorController_bldc_motor_T sf_MotorController;/* '<S3>/Motor Controller' */
-  DW_MotorController_bldc_motor_T sf_MotorController_d;/* '<S1>/Motor Controller' */
+  DW_MotorController_bldc_motor_T sf_MotorController_o;/* '<S1>/Motor Controller' */
 } DW_bldc_motor_controller_full_T;
 
 /* External inputs (root inport signals with auto storage) */
@@ -93,73 +93,103 @@ struct P_MotorController_bldc_motor__T_ {
 
 /* Parameters (auto storage) */
 struct P_bldc_motor_controller_full__T_ {
-  real_T HaltCompare_const;            /* Mask Parameter: HaltCompare_const
-                                        * Referenced by: '<S12>/Constant'
+  real_T FastCompare_const;            /* Mask Parameter: FastCompare_const
+                                        * Referenced by: '<S25>/Constant'
                                         */
-  real_T HaltCompare_const_k;          /* Mask Parameter: HaltCompare_const_k
-                                        * Referenced by: '<S20>/Constant'
+  real_T MaxPulseCompare_const;        /* Mask Parameter: MaxPulseCompare_const
+                                        * Referenced by: '<S26>/Constant'
                                         */
-  uint8_T HaltCompare_const_g;         /* Mask Parameter: HaltCompare_const_g
-                                        * Referenced by: '<S18>/Constant'
+  real_T FastCompare_const_c;          /* Mask Parameter: FastCompare_const_c
+                                        * Referenced by: '<S14>/Constant'
+                                        */
+  real_T MaxPulseCompare_const_p;      /* Mask Parameter: MaxPulseCompare_const_p
+                                        * Referenced by: '<S15>/Constant'
+                                        */
+  uint8_T HaltCompare_const;           /* Mask Parameter: HaltCompare_const
+                                        * Referenced by: '<S21>/Constant'
+                                        */
+  uint8_T LoadCompare_const;           /* Mask Parameter: LoadCompare_const
+                                        * Referenced by: '<S22>/Constant'
                                         */
   uint8_T HaltCompare_const_n;         /* Mask Parameter: HaltCompare_const_n
                                         * Referenced by: '<S10>/Constant'
                                         */
-  uint8_T LoadCompare_const;           /* Mask Parameter: LoadCompare_const
+  uint8_T LoadCompare_const_n;         /* Mask Parameter: LoadCompare_const_n
                                         * Referenced by: '<S11>/Constant'
                                         */
-  uint8_T LoadCompare_const_i;         /* Mask Parameter: LoadCompare_const_i
-                                        * Referenced by: '<S19>/Constant'
+  real_T FastIncrement_Value;          /* Expression: 10
+                                        * Referenced by: '<S12>/Fast Increment'
                                         */
-  real_T Increment_Value;              /* Expression: 100
-                                        * Referenced by: '<S9>/Increment'
+  real_T SlowIncrement_Value;          /* Expression: 0.1
+                                        * Referenced by: '<S12>/Slow Increment'
                                         */
-  real_T Decrement_Value;              /* Expression: -100
-                                        * Referenced by: '<S9>/Decrement'
+  real_T FastDecrement_Value;          /* Expression: -10
+                                        * Referenced by: '<S12>/Fast Decrement'
                                         */
-  real_T Idle_Value;                   /* Expression: 0
-                                        * Referenced by: '<S9>/Idle'
+  real_T SlowDecrement_Value;          /* Expression: -0.1
+                                        * Referenced by: '<S12>/Slow Decrement'
                                         */
   real_T load_var_Value;               /* Expression: 0
                                         * Referenced by: '<S9>/load_var'
                                         */
-  real_T Increment_Value_e;            /* Expression: 100
-                                        * Referenced by: '<S17>/Increment'
+  real_T FastIncrement_Value_g;        /* Expression: 10
+                                        * Referenced by: '<S23>/Fast Increment'
                                         */
-  real_T Decrement_Value_m;            /* Expression: -100
-                                        * Referenced by: '<S17>/Decrement'
+  real_T SlowIncrement_Value_e;        /* Expression: 0.1
+                                        * Referenced by: '<S23>/Slow Increment'
                                         */
-  real_T Idle_Value_h;                 /* Expression: 0
-                                        * Referenced by: '<S17>/Idle'
+  real_T FastDecrement_Value_m;        /* Expression: -10
+                                        * Referenced by: '<S23>/Fast Decrement'
                                         */
-  real_T load_var_Value_d;             /* Expression: 0
-                                        * Referenced by: '<S17>/load_var'
+  real_T SlowDecrement_Value_p;        /* Expression: -0.1
+                                        * Referenced by: '<S23>/Slow Decrement'
+                                        */
+  real_T load_var_Value_b;             /* Expression: 0
+                                        * Referenced by: '<S20>/load_var'
+                                        */
+  real_T Idle_Value;                   /* Expression: 0
+                                        * Referenced by: '<S23>/Idle'
+                                        */
+  real_T X1_InitialCondition;          /* Expression: 0
+                                        * Referenced by: '<S20>/X1'
+                                        */
+  real_T Constant_Value;               /* Expression: 0
+                                        * Referenced by: '<S24>/Constant'
                                         */
   real_T X_InitialCondition;           /* Expression: 0
                                         * Referenced by: '<S3>/X'
                                         */
-  real_T X_InitialCondition_d;         /* Expression: 0
-                                        * Referenced by: '<S17>/X'
+  real_T X_InitialCondition_e;         /* Expression: 0
+                                        * Referenced by: '<S20>/X'
                                         */
   real_T Saturation_UpperSat;          /* Expression: 1250
-                                        * Referenced by: '<S15>/Saturation'
+                                        * Referenced by: '<S18>/Saturation'
                                         */
   real_T Saturation_LowerSat;          /* Expression: -0.5
-                                        * Referenced by: '<S15>/Saturation'
+                                        * Referenced by: '<S18>/Saturation'
                                         */
   real_T PWMPeriodus_Value;            /* Expression: 20000
                                         * Referenced by: '<S4>/PWM Period us'
                                         */
   real_T Terminal_Value;               /* Expression: 1093
-                                        * Referenced by: '<S15>/Terminal'
+                                        * Referenced by: '<S18>/Terminal'
                                         */
-  real_T X_InitialCondition_e;         /* Expression: 0
+  real_T Idle_Value_i;                 /* Expression: 0
+                                        * Referenced by: '<S12>/Idle'
+                                        */
+  real_T X1_InitialCondition_l;        /* Expression: 0
+                                        * Referenced by: '<S9>/X1'
+                                        */
+  real_T Constant_Value_o;             /* Expression: 0
+                                        * Referenced by: '<S13>/Constant'
+                                        */
+  real_T X_InitialCondition_ey;        /* Expression: 0
                                         * Referenced by: '<S1>/X'
                                         */
-  real_T X_InitialCondition_c;         /* Expression: 0
+  real_T X_InitialCondition_m;         /* Expression: 0
                                         * Referenced by: '<S9>/X'
                                         */
-  real_T Saturation_UpperSat_k;        /* Expression: 1100
+  real_T Saturation_UpperSat_k;        /* Expression: 1200
                                         * Referenced by: '<S7>/Saturation'
                                         */
   real_T Saturation_LowerSat_f;        /* Expression: -0.5
@@ -171,14 +201,8 @@ struct P_bldc_motor_controller_full__T_ {
   real_T Terminal_Value_f;             /* Expression: 1085
                                         * Referenced by: '<S7>/Terminal'
                                         */
-  boolean_T X1_InitialCondition;       /* Computed Parameter: X1_InitialCondition
-                                        * Referenced by: '<S17>/X1'
-                                        */
-  boolean_T X1_InitialCondition_l;     /* Computed Parameter: X1_InitialCondition_l
-                                        * Referenced by: '<S9>/X1'
-                                        */
   P_MotorController_bldc_motor__T sf_MotorController;/* '<S3>/Motor Controller' */
-  P_MotorController_bldc_motor__T sf_MotorController_d;/* '<S1>/Motor Controller' */
+  P_MotorController_bldc_motor__T sf_MotorController_o;/* '<S1>/Motor Controller' */
 };
 
 /* Real-time Model Data Structure */
@@ -210,6 +234,13 @@ extern void bldc_motor_controller_full_count_terminate(void);
 extern RT_MODEL_bldc_motor_controlle_T *const bldc_motor_controller_full_c_M;
 
 /*-
+ * These blocks were eliminated from the model due to optimizations:
+ *
+ * Block '<S3>/Scope' : Unused code path elimination
+ * Block '<S3>/Scope1' : Unused code path elimination
+ */
+
+/*-
  * The generated code includes comments that allow you to trace directly
  * back to the appropriate location in the model.  The basic format
  * is <system>/block_name, where system is the system number (uniquely
@@ -235,15 +266,21 @@ extern RT_MODEL_bldc_motor_controlle_T *const bldc_motor_controller_full_c_M;
  * '<S9>'   : 'bldc_motor_controller_full_count/Inner Motor Controller/Motor Drive/Counter'
  * '<S10>'  : 'bldc_motor_controller_full_count/Inner Motor Controller/Motor Drive/Halt Compare'
  * '<S11>'  : 'bldc_motor_controller_full_count/Inner Motor Controller/Motor Drive/Load Compare'
- * '<S12>'  : 'bldc_motor_controller_full_count/Inner Motor Controller/Motor Drive/Counter/Halt Compare'
- * '<S13>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Controller'
- * '<S14>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Count Condition'
- * '<S15>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive'
- * '<S16>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Ring Position Calc'
- * '<S17>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter'
- * '<S18>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Halt Compare'
- * '<S19>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Load Compare'
- * '<S20>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Halt Compare'
+ * '<S12>'  : 'bldc_motor_controller_full_count/Inner Motor Controller/Motor Drive/Counter/Count Variation Calc'
+ * '<S13>'  : 'bldc_motor_controller_full_count/Inner Motor Controller/Motor Drive/Counter/Count Variation Calc/Compare To Zero'
+ * '<S14>'  : 'bldc_motor_controller_full_count/Inner Motor Controller/Motor Drive/Counter/Count Variation Calc/Fast Compare'
+ * '<S15>'  : 'bldc_motor_controller_full_count/Inner Motor Controller/Motor Drive/Counter/Count Variation Calc/Max Pulse Compare'
+ * '<S16>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Controller'
+ * '<S17>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Count Condition'
+ * '<S18>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive'
+ * '<S19>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Ring Position Calc'
+ * '<S20>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter'
+ * '<S21>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Halt Compare'
+ * '<S22>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Load Compare'
+ * '<S23>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Count Variation Calc'
+ * '<S24>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Count Variation Calc/Compare To Zero'
+ * '<S25>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Count Variation Calc/Fast Compare'
+ * '<S26>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Count Variation Calc/Max Pulse Compare'
  */
 #endif                                 /* RTW_HEADER_bldc_motor_controller_full_count_h_ */
 

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.115
+ * Model version                  : 1.208
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Sun Dec 10 17:36:51 2017
+ * C/C++ source code generated on : Tue Dec 12 17:57:37 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -30,9 +30,9 @@
 /*=======================================================================*
  * Target hardware information
  *   Device type: ARM Compatible->ARM Cortex
- *   Number of bits:     char:   8    short:   16    int:  32
+ *   Number of bits:     char:   8    short:   16    int:  16
  *                       long:  32
- *                       native word size:  32
+ *                       native word size:  16
  *   Byte ordering: LittleEndian
  *   Signed integer division rounds to: Zero
  *   Shift right on a signed integer as arithmetic shift: on
@@ -46,10 +46,10 @@
  *=======================================================================*/
 typedef signed char int8_T;
 typedef unsigned char uint8_T;
-typedef short int16_T;
-typedef unsigned short uint16_T;
-typedef int int32_T;
-typedef unsigned int uint32_T;
+typedef int int16_T;
+typedef unsigned int uint16_T;
+typedef long int32_T;
+typedef unsigned long uint32_T;
 typedef float real32_T;
 typedef double real64_T;
 
@@ -140,9 +140,9 @@ typedef struct {
 #define MAX_int16_T                    ((int16_T)(32767))
 #define MIN_int16_T                    ((int16_T)(-32768))
 #define MAX_uint16_T                   ((uint16_T)(65535U))
-#define MAX_int32_T                    ((int32_T)(2147483647))
-#define MIN_int32_T                    ((int32_T)(-2147483647-1))
-#define MAX_uint32_T                   ((uint32_T)(0xFFFFFFFFU))
+#define MAX_int32_T                    ((int32_T)(2147483647L))
+#define MIN_int32_T                    ((int32_T)(-2147483647L-1L))
+#define MAX_uint32_T                   ((uint32_T)(0xFFFFFFFFUL))
 
 /* Block D-Work pointer type */
 typedef void * pointer_T;

@@ -22,7 +22,8 @@ namespace motors
 
     float position(motor m);
 
-    void set_lcd(LCD_DISCO_F469NI* lcd);
+    bool is_spinning();
+
 }
 
 

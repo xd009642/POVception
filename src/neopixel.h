@@ -20,9 +20,7 @@ extern "C" {
 #define NP_COLOUR_DEPTH 3u
 
 namespace np {
-
     struct strip;
-
     /**
      * Initialise all Neopixel strips and interrupts
      */
