@@ -1,7 +1,7 @@
 #include "gui.h"
 
 static constexpr uint32_t WIDTH_OFFSET = 40;
-static constexpr uint32_t HEIGHT_OFFSET = 150;
+static constexpr uint32_t HEIGHT_OFFSET = 260;
 static constexpr size_t COLUMN_COUNT = 4;
 
 gui::interface::interface(LCD_DISCO_F469NI& screen, size_t n_buttons):
@@ -18,7 +18,7 @@ gui::interface::interface(LCD_DISCO_F469NI& screen, size_t n_buttons):
         while(i<n_buttons)
         {
             buttons[i].x = WIDTH_OFFSET + c*(150+WIDTH_OFFSET);
-            buttons[i].y = HEIGHT_OFFSET + r*(110);
+            buttons[i].y = HEIGHT_OFFSET - r*(110);
             buttons[i].width = 150;
             buttons[i].height = 100;
             buttons[i].border = LCD_COLOR_GREEN;
