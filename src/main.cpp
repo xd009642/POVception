@@ -14,15 +14,17 @@
 #include <functional>
 #include "pong.h"
 #include "snowfall.h"
+#include "earth.h"
 
 void stop_calibration();
 void start_calibration();
+void stripey(render::framebuffer& buffer);
 
 LCD_DISCO_F469NI lcd;
 TS_DISCO_F469NI ts;
 SDFileSystem sd("sd");
 Timer t;
-gui::interface ui(lcd, 4);
+gui::interface ui(lcd, 5);
 
 static constexpr uint32_t BACKGROUND_COLOUR = 0xFFED0000;
 static constexpr uint32_t SCREEN_WIDTH = 800;
@@ -132,6 +134,23 @@ void stop_calibration()
     application_update = std::function<void(void)>();
 }
 
+void show_earth() { 
+    int i =0;
+    for(int c=0; c<INNER_WIDTH; c++) {
+        for(int r=0; r<INNER_HEIGHT; r++) {
+            inner_buffer.pixel_at(r, c) = EARTH[i];
+            i++;
+        }
+    }
+    inner_buffer.swap();
+    outer_buffer.clear(ds::BLACK);
+    snow.init();
+    application_update = [&]() {
+        snow.update();
+    };
+    motors::set_state(motors::state::spin);
+}
+
 void start_calibration()
 {
     // Setup calibration pattern
@@ -139,13 +158,9 @@ void start_calibration()
     inner_buffer.clear(ds::BLACK);
     outer_buffer.fill_rect(0, 0, 1, outer_buffer.n_row(), ds::BLUE);
     inner_buffer.fill_rect(0, 0, 1, inner_buffer.n_row(), ds::BLUE);
-
     // Setup stop calibration button
 
     application_update = calibrate;
-    ui.get_button(0).text = "Finish";
-    ui.get_button(0).action = stop_calibration;
-    ui.get_button(0).render(lcd);
     // Spin to win
     motors::set_state(motors::state::spin);
 }
@@ -155,19 +170,29 @@ void setup_main_menu(gui::interface& ui)
     // Assume 3 apps and hack out a button
     ui.get_button(0).text = "Calib";
     ui.get_button(0).action = start_calibration;
-    ui.get_button(1).text = "Spin";
-    ui.get_button(1).action = [](){motors::set_state(motors::state::spin);};
-    ui.get_button(2).text = "Halt";
-    ui.get_button(2).action = [](){motors::set_state(motors::state::stop);};
+    ui.get_button(1).text = "Bauble";
+    ui.get_button(1).action = [](){
+        stripey(outer_buffer);
+        stripey(inner_buffer);
+        motors::set_state(motors::state::spin);
+    };
+    ui.get_button(2).text = "Earth";
+    ui.get_button(2).action = show_earth;
     ui.get_button(3).text = "Pong";
     ui.get_button(3).action = launch_pong;
+
+    ui.get_button(4).text = "Stop";
+    ui.get_button(4).action = []() {
+        inner_buffer.clear(ds::GREEN);
+        outer_buffer.clear(ds::RED);
+        motors::set_state(motors::state::stop);
+    };
 }
 
 void stripey(render::framebuffer& buffer)
 {
     buffer.clear(ds::GREEN);
-    buffer.fill_rect(0,0,1,buffer.n_row(), ds::BLUE);
-    for(size_t i=1; i<buffer.n_col(); i+=2)
+    for(size_t i=0; i<buffer.n_col(); i+=2)
     {
         buffer.fill_rect(i, 0, 1, buffer.n_row(), ds::RED);
     }

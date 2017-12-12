@@ -23,6 +23,7 @@ namespace render
         //! Gets mutable pixel at a location. 
         //! Mutable operations happen on processing buffer 
         uint32_t& pixel_at(size_t x, size_t y);
+        uint32_t& raw_index(size_t i);
         void set_pixel(size_t x, size_t y, uint32_t colour);
         const size_t& n_row() const;
         const size_t& n_col() const;
