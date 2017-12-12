@@ -12,6 +12,8 @@
 #include "motor_control.h"
 #include "joystick.h"
 #include <functional>
+#include "pong.h"
+#include "snowfall.h"
 
 void stop_calibration();
 void start_calibration();
@@ -32,6 +34,9 @@ static constexpr uint32_t BORDER_WIDTH = 120;
 render::framebuffer outer_buffer(OUTER_WIDTH, OUTER_HEIGHT);
 render::framebuffer inner_buffer(INNER_WIDTH, INNER_HEIGHT);
 
+app::pong game(inner_buffer);
+app::snowfall<100> snow(outer_buffer);
+
 size_t inner_offset = 24;
 size_t outer_offset = 17;
 
@@ -42,6 +47,12 @@ void critical_run()
 {
     // THIS MUST BE GUARANTEED TO BE INITIALISED
     critical_update();
+}
+
+void application_run()
+{
+    if(application_update)
+        application_update();
 }
 
 bool init_sd_card() {
@@ -61,7 +72,14 @@ void prepare_background()
 
 void launch_pong()
 {
-    lcd.DisplayStringAt(0, LINE(1), (uint8_t*)"PLAYING PONG", RIGHT_MODE);
+    motors::set_state(motors::state::spin);
+    outer_buffer.clear(ds::BLACK);
+    snow.init();
+    game.reset();
+    application_update = [&]() {
+        snow.update();
+        game.update();
+    };
 }
 
 
@@ -88,14 +106,14 @@ void calibrate()
     }
     else
     {
-        if(stick_2.x_state() == x_motion::left) 
+        if(stick_2.x_state() == x_motion::right) 
         {
             outer_offset--;
             if(outer_offset == -1) {
                 outer_offset = OUTER_WIDTH-1;
             }
         }
-        else if(stick_2.x_state() == x_motion::right)
+        else if(stick_2.x_state() == x_motion::left)
         {
             outer_offset++;
             if(outer_offset == OUTER_WIDTH)
@@ -141,6 +159,8 @@ void setup_main_menu(gui::interface& ui)
     ui.get_button(1).action = [](){motors::set_state(motors::state::spin);};
     ui.get_button(2).text = "Halt";
     ui.get_button(2).action = [](){motors::set_state(motors::state::stop);};
+    ui.get_button(3).text = "Pong";
+    ui.get_button(3).action = launch_pong;
 }
 
 void stripey(render::framebuffer& buffer)
@@ -183,6 +203,7 @@ int main()
     int ii_temp = 0;
 
     Ticker fast_update;
+    Ticker slow_update;
     critical_update = [&]() {
         motors::update();
         // Stops bad position guesses when not spinning from making display glitch
@@ -209,8 +230,12 @@ int main()
         if(inner_col > ii_temp) {
             inner_buffer.swap();
         }
+        outer_col = oi_temp;
+        inner_col = ii_temp;
     };
-    fast_update.attach(critical_run, 0.0005f);
+
+    fast_update.attach(critical_run,    0.0003f);
+    slow_update.attach(application_run, 0.2f);
     while(1)
     {
         if(frame_count == 7)
@@ -218,12 +243,6 @@ int main()
             ts.GetState(&touch);
             ui.update(touch);
         }
-        if(application_update && (frame_count == 3))
-        {
-            application_update();
-        }
-        outer_col = oi_temp;
-        inner_col = ii_temp;
         frame_count++;
         if(frame_count == max_frames) { 
             frame_count = 0;
