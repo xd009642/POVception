@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'bldc_motor_controller_full_count'.
  *
- * Model version                  : 1.151
+ * Model version                  : 1.206
  * Simulink Coder version         : 8.12 (R2017a) 16-Feb-2017
- * C/C++ source code generated on : Mon Dec 11 21:04:47 2017
+ * C/C++ source code generated on : Tue Dec 12 16:44:14 2017
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -36,12 +36,6 @@
 
 #define bldc_motor_controller_full_count_M (bldc_motor_controller_full_c_M)
 
-/* Block states (auto storage) for system '<S1>/Motor Controller' */
-typedef struct {
-  uint8_T is_active_c1_bldc_motor_control;/* '<S1>/Motor Controller' */
-  uint8_T is_c1_bldc_motor_controller_ful;/* '<S1>/Motor Controller' */
-} DW_MotorController_bldc_motor_T;
-
 /* Block signals (auto storage) */
 typedef struct {
   real_T count_in;                     /* '<S16>/count_in' */
@@ -58,8 +52,10 @@ typedef struct {
   real_T X_h;                          /* '<S9>/X1' */
   real_T X_j;                          /* '<S1>/X' */
   real_T X_e;                          /* '<S9>/X' */
-  DW_MotorController_bldc_motor_T sf_MotorController;/* '<S3>/Motor Controller' */
-  DW_MotorController_bldc_motor_T sf_MotorController_d;/* '<S1>/Motor Controller' */
+  uint8_T is_active_c2_bldc_motor_control;/* '<S3>/Motor Controller' */
+  uint8_T is_c2_bldc_motor_controller_ful;/* '<S3>/Motor Controller' */
+  uint8_T is_active_c1_bldc_motor_control;/* '<S1>/Motor Controller' */
+  uint8_T is_c1_bldc_motor_controller_ful;/* '<S1>/Motor Controller' */
 } DW_bldc_motor_controller_full_T;
 
 /* External inputs (root inport signals with auto storage) */
@@ -84,28 +80,18 @@ typedef struct {
   boolean_T inner_rot_count_load;      /* '<Root>/inner_rot_count_load' */
 } ExtY_bldc_motor_controller_fu_T;
 
-/* Parameters for system: '<S1>/Motor Controller' */
-struct P_MotorController_bldc_motor__T_ {
-  real_T count_out_Y0;                 /* Computed Parameter: count_out_Y0
-                                        * Referenced by: '<S6>/count_out'
-                                        */
-};
-
 /* Parameters (auto storage) */
 struct P_bldc_motor_controller_full__T_ {
-  real_T HaltCompare2_const;           /* Mask Parameter: HaltCompare2_const
+  real_T FastCompare_const;            /* Mask Parameter: FastCompare_const
                                         * Referenced by: '<S24>/Constant'
                                         */
+  real_T MaxPulseCompare_const;        /* Mask Parameter: MaxPulseCompare_const
+                                        * Referenced by: '<S25>/Constant'
+                                        */
   real_T HaltCompare1_const;           /* Mask Parameter: HaltCompare1_const
-                                        * Referenced by: '<S23>/Constant'
-                                        */
-  real_T HaltCompare_const;            /* Mask Parameter: HaltCompare_const
-                                        * Referenced by: '<S22>/Constant'
-                                        */
-  real_T HaltCompare1_const_k;         /* Mask Parameter: HaltCompare1_const_k
                                         * Referenced by: '<S14>/Constant'
                                         */
-  real_T HaltCompare_const_l;          /* Mask Parameter: HaltCompare_const_l
+  real_T HaltCompare_const;            /* Mask Parameter: HaltCompare_const
                                         * Referenced by: '<S13>/Constant'
                                         */
   uint8_T HaltCompare_const_g;         /* Mask Parameter: HaltCompare_const_g
@@ -119,6 +105,9 @@ struct P_bldc_motor_controller_full__T_ {
                                         */
   uint8_T LoadCompare_const_n;         /* Mask Parameter: LoadCompare_const_n
                                         * Referenced by: '<S11>/Constant'
+                                        */
+  real_T count_out_Y0;                 /* Computed Parameter: count_out_Y0
+                                        * Referenced by: '<S6>/count_out'
                                         */
   real_T FastIncrement_Value;          /* Expression: 100
                                         * Referenced by: '<S9>/Fast Increment'
@@ -135,26 +124,32 @@ struct P_bldc_motor_controller_full__T_ {
   real_T load_var_Value;               /* Expression: 0
                                         * Referenced by: '<S9>/load_var'
                                         */
-  real_T FastIncrement_Value_g;        /* Expression: 100
-                                        * Referenced by: '<S19>/Fast Increment'
+  real_T count_out_Y0_c;               /* Computed Parameter: count_out_Y0_c
+                                        * Referenced by: '<S16>/count_out'
                                         */
-  real_T SlowIncrement_Value_e;        /* Expression: 10
-                                        * Referenced by: '<S19>/Slow Increment'
+  real_T FastIncrement_Value_g;        /* Expression: 10
+                                        * Referenced by: '<S22>/Fast Increment'
                                         */
-  real_T FastDecrement_Value_m;        /* Expression: -100
-                                        * Referenced by: '<S19>/Fast Decrement'
+  real_T SlowIncrement_Value_e;        /* Expression: 0.1
+                                        * Referenced by: '<S22>/Slow Increment'
                                         */
-  real_T SlowDecrement_Value_p;        /* Expression: -10
-                                        * Referenced by: '<S19>/Slow Decrement'
+  real_T FastDecrement_Value_m;        /* Expression: -10
+                                        * Referenced by: '<S22>/Fast Decrement'
+                                        */
+  real_T SlowDecrement_Value_p;        /* Expression: -0.1
+                                        * Referenced by: '<S22>/Slow Decrement'
                                         */
   real_T load_var_Value_b;             /* Expression: 0
                                         * Referenced by: '<S19>/load_var'
                                         */
   real_T Idle_Value;                   /* Expression: 0
-                                        * Referenced by: '<S19>/Idle'
+                                        * Referenced by: '<S22>/Idle'
                                         */
   real_T X1_InitialCondition;          /* Expression: 0
                                         * Referenced by: '<S19>/X1'
+                                        */
+  real_T Constant_Value;               /* Expression: 0
+                                        * Referenced by: '<S23>/Constant'
                                         */
   real_T X_InitialCondition;           /* Expression: 0
                                         * Referenced by: '<S3>/X'
@@ -180,7 +175,7 @@ struct P_bldc_motor_controller_full__T_ {
   real_T X1_InitialCondition_l;        /* Expression: 0
                                         * Referenced by: '<S9>/X1'
                                         */
-  real_T Constant_Value;               /* Expression: 0
+  real_T Constant_Value_n;             /* Expression: 0
                                         * Referenced by: '<S12>/Constant'
                                         */
   real_T X_InitialCondition_ey;        /* Expression: 0
@@ -201,8 +196,6 @@ struct P_bldc_motor_controller_full__T_ {
   real_T Terminal_Value_f;             /* Expression: 1085
                                         * Referenced by: '<S7>/Terminal'
                                         */
-  P_MotorController_bldc_motor__T sf_MotorController;/* '<S3>/Motor Controller' */
-  P_MotorController_bldc_motor__T sf_MotorController_d;/* '<S1>/Motor Controller' */
 };
 
 /* Real-time Model Data Structure */
@@ -232,6 +225,13 @@ extern void bldc_motor_controller_full_count_terminate(void);
 
 /* Real-time Model object */
 extern RT_MODEL_bldc_motor_controlle_T *const bldc_motor_controller_full_c_M;
+
+/*-
+ * These blocks were eliminated from the model due to optimizations:
+ *
+ * Block '<S3>/Scope' : Unused code path elimination
+ * Block '<S3>/Scope1' : Unused code path elimination
+ */
 
 /*-
  * The generated code includes comments that allow you to trace directly
@@ -269,9 +269,10 @@ extern RT_MODEL_bldc_motor_controlle_T *const bldc_motor_controller_full_c_M;
  * '<S19>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter'
  * '<S20>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Halt Compare'
  * '<S21>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Load Compare'
- * '<S22>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Halt Compare'
- * '<S23>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Halt Compare1'
- * '<S24>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Halt Compare2'
+ * '<S22>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Count Variation Calc'
+ * '<S23>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Count Variation Calc/Compare To Zero'
+ * '<S24>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Count Variation Calc/Fast Compare'
+ * '<S25>'  : 'bldc_motor_controller_full_count/Outer Motor Controller/Motor Drive/Counter/Count Variation Calc/Max Pulse Compare'
  */
 #endif                                 /* RTW_HEADER_bldc_motor_controller_full_count_h_ */
 
