@@ -216,6 +216,13 @@ void stripey(render::framebuffer& buffer)
     }
 }
 
+void init_neopixels()
+{
+    np::init_all();
+    uint32_t data[] = {0x00000000, 0x00000000, 0x00000000, 0x00000000};
+    np::render_segment(data, 3);
+}
+
 
 int main()
 {
@@ -227,6 +234,7 @@ int main()
     // not checking status
     ts.Init(lcd.GetXSize(), lcd.GetYSize());
     prepare_background();
+    init_neopixels();
     // 0 means good, non-zero is error code. 
     ds::ring outer(outer_buffer, ds::outer, lcd); 
     ds::ring inner(inner_buffer, ds::inner, lcd);
