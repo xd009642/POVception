@@ -24,7 +24,7 @@ LCD_DISCO_F469NI lcd;
 TS_DISCO_F469NI ts;
 SDFileSystem sd("sd");
 Timer t;
-gui::interface ui(lcd, 5);
+gui::interface ui(lcd, 6);
 
 static constexpr uint32_t BACKGROUND_COLOUR = 0xFFED0000;
 static constexpr uint32_t SCREEN_WIDTH = 800;
@@ -181,27 +181,30 @@ void start_calibration()
 void setup_main_menu(gui::interface& ui)
 {
     // Assume 3 apps and hack out a button
-    ui.get_button(0).text = "Calib";
+    lcd.DrawBitmap(ui.get_button(0).x, ui.get_button(0).y, resources_calib_bmp);
     ui.get_button(0).action = start_calibration;
-    ui.get_button(1).text = "Bauble";
+    lcd.DrawBitmap(ui.get_button(1).x, ui.get_button(1).y, resources_baubles_bmp);
     ui.get_button(1).action = [](){
         stripey(outer_buffer);
         stripey(inner_buffer);
         motors::set_state(motors::state::spin);
         application_update = std::function<void(void)>();
     };
-    ui.get_button(2).text = "Earth";
     ui.get_button(2).action = show_earth;
-    ui.get_button(3).text = "Pong";
+    lcd.DrawBitmap(ui.get_button(2).x, ui.get_button(2).y, resources_globe_bmp);
+ //   ui.get_button(3).text = "Pong";
+    lcd.DrawBitmap(ui.get_button(3).x, ui.get_button(3).y, resources_pong_bmp); 
     ui.get_button(3).action = launch_pong;
 
-    ui.get_button(4).text = "Stop";
+    lcd.DrawBitmap(ui.get_button(4).x, ui.get_button(4).y, resources_stop_bmp);
     ui.get_button(4).action = []() {
         inner_buffer.clear(ds::GREEN);
         outer_buffer.clear(ds::RED);
         temp_rotation = 0;
         motors::set_state(motors::state::stop);
     };
+
+    lcd.DrawBitmap(ui.get_button(5).x, ui.get_button(5).y, resources_leds_bmp);
 }
 
 void stripey(render::framebuffer& buffer)
