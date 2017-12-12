@@ -30,7 +30,7 @@ bool app::pong::collides_with_player()
 
 bool app::pong::collides_with_wall()
 {
-    return ball.pos.y < 1 || ball.pos.y > static_cast<int16_t>(graphics.get_height() -1 );
+    return ball.pos.y < 15 || ball.pos.y > static_cast<int16_t>(graphics.get_height() -1 );
 }
 
 bool app::pong::ball_out() 
@@ -85,14 +85,10 @@ void app::pong::update_player(app::player_state& player, app::joystick& stick)
 void app::pong::render()
 {
     graphics.clear(ds::BLACK);
-    // Blank where I might be drawing (super simple right now)
-    //graphics.fill_rect(far_left-p1.paddle_depth, 0, p1.paddle_depth, graphics.get_height(), ds::BLACK);
-   // graphics.fill_rect(far_right, 0, p2.paddle_depth, graphics.get_height(), ds::BLACK);
-
     // Draw!
-    graphics.fill_rect(p1.pos.x, p1.pos.y, 2, p1.paddle_width, ds::WHITE);
-    graphics.fill_rect(p2.pos.x, p2.pos.y, 2, p2.paddle_width, ds::WHITE);
-    graphics.fill_rect(ball.pos.x, ball.pos.y, ball.size, ball.size, ds::WHITE);
+    graphics.fill_rect(p1.pos.x, p1.pos.y, 2, p1.paddle_width, ds::GREEN);
+    graphics.fill_rect(p2.pos.x, p2.pos.y, 2, p2.paddle_width, ds::RED);
+    graphics.fill_rect(ball.pos.x, ball.pos.y, ball.size, ball.size, ds::YELLOW);
 }
 
 

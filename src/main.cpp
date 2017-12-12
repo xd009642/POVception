@@ -13,7 +13,7 @@
 #include "joystick.h"
 #include <functional>
 #include "pong.h"
-
+#include "snowfall.h"
 
 void stop_calibration();
 void start_calibration();
@@ -35,6 +35,7 @@ render::framebuffer outer_buffer(OUTER_WIDTH, OUTER_HEIGHT);
 render::framebuffer inner_buffer(INNER_WIDTH, INNER_HEIGHT);
 
 app::pong game(inner_buffer);
+app::snowfall<100> snow(outer_buffer);
 
 size_t inner_offset = 24;
 size_t outer_offset = 17;
@@ -73,8 +74,10 @@ void launch_pong()
 {
     motors::set_state(motors::state::spin);
     outer_buffer.clear(ds::BLACK);
+    snow.init();
     game.reset();
     application_update = [&]() {
+        snow.update();
         game.update();
     };
 }
