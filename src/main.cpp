@@ -178,6 +178,14 @@ void start_calibration()
     motors::set_state(motors::state::spin);
 }
 
+void init_neopixels()
+{
+    np::init_all();
+    uint32_t data[] = {0x00000000, 0x00000000, 0x00000000, 0x00000000};
+    np::render_segment(data, 3);
+}
+
+
 void setup_main_menu(gui::interface& ui)
 {
     // Assume 3 apps and hack out a button
@@ -205,6 +213,7 @@ void setup_main_menu(gui::interface& ui)
     };
 
     lcd.DrawBitmap(ui.get_button(5).x, ui.get_button(5).y, resources_leds_bmp);
+    ui.get_button(5).action = init_neopixels;
 }
 
 void stripey(render::framebuffer& buffer)
@@ -217,6 +226,7 @@ void stripey(render::framebuffer& buffer)
 }
 
 
+
 int main()
 {
     TS_StateTypeDef touch;
@@ -227,6 +237,7 @@ int main()
     // not checking status
     ts.Init(lcd.GetXSize(), lcd.GetYSize());
     prepare_background();
+    init_neopixels();
     // 0 means good, non-zero is error code. 
     ds::ring outer(outer_buffer, ds::outer, lcd); 
     ds::ring inner(inner_buffer, ds::inner, lcd);
