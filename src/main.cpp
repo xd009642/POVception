@@ -210,7 +210,6 @@ int main()
     ts.Init(lcd.GetXSize(), lcd.GetYSize());
     prepare_background();
     // 0 means good, non-zero is error code. 
-    lcd.DisplayStringAt(0, LINE(2), (uint8_t *)"XMAS CHALLENGE SPIN", CENTER_MODE);
     ds::ring outer(outer_buffer, ds::outer, lcd); 
     ds::ring inner(inner_buffer, ds::inner, lcd);
     stripey(outer_buffer);
