@@ -75,6 +75,7 @@ void prepare_background()
 
 void launch_pong()
 {
+    temp_rotation = 0;
     motors::set_state(motors::state::spin);
     outer_buffer.clear(ds::BLACK);
     snow.init();
@@ -176,6 +177,7 @@ void start_calibration()
     application_update = calibrate;
     // Spin to win
     motors::set_state(motors::state::spin);
+    temp_rotation = 0;
 }
 
 void init_neopixels()

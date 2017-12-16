@@ -46,7 +46,7 @@ namespace app
         graphics.clear(ds::BLACK);
         for(int i=0; i<F; i++) {
             graphics.pixel_at(flakes[i].x, flakes[i].y) = ds::BLACK;
-            if(flakes[i].y > 0) {
+            if(flakes[i].y > 1) {
                 flakes[i].y -= 2;
                 if(go_left[i]) {
                     flakes[i].x-=2; 
@@ -55,7 +55,7 @@ namespace app
                 }
                 if(flakes[i].x < 0) {
                     flakes[i].x = graphics.n_col() -1;
-                } else if(flakes[i].x == graphics.n_col()) {
+                } else if(flakes[i].x >= graphics.n_col()) {
                     flakes[i].x = 0;
                 }
                 go_left[i] = !go_left[i];
