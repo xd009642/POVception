@@ -75,6 +75,7 @@ void prepare_background()
 
 void launch_pong()
 {
+    temp_rotation = 0;
     motors::set_state(motors::state::spin);
     outer_buffer.clear(ds::BLACK);
     snow.init();
@@ -176,6 +177,7 @@ void start_calibration()
     application_update = calibrate;
     // Spin to win
     motors::set_state(motors::state::spin);
+    temp_rotation = 0;
 }
 
 void init_neopixels()
@@ -268,7 +270,12 @@ int main()
             if(oi_temp >= OUTER_WIDTH)
             {
                 oi_temp -= OUTER_WIDTH;
+            } 
+            else if(oi_temp < 0)
+            {
+                oi_temp += OUTER_WIDTH;
             }
+
             if(temp_rotation != 0) {
                 ii_temp = (ii_temp + temp_rotation);
             } else {
@@ -277,6 +284,10 @@ int main()
             if(ii_temp >= INNER_WIDTH)
             {
                 ii_temp -= INNER_WIDTH;
+            }
+            else if(ii_temp < 0)
+            {
+                ii_temp += INNER_WIDTH;
             }
             outer.display(oi_temp);
             inner.display(ii_temp); 
