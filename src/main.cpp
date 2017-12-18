@@ -270,7 +270,12 @@ int main()
             if(oi_temp >= OUTER_WIDTH)
             {
                 oi_temp -= OUTER_WIDTH;
+            } 
+            else if(oi_temp < 0)
+            {
+                oi_temp += OUTER_WIDTH;
             }
+
             if(temp_rotation != 0) {
                 ii_temp = (ii_temp + temp_rotation);
             } else {
@@ -279,6 +284,10 @@ int main()
             if(ii_temp >= INNER_WIDTH)
             {
                 ii_temp -= INNER_WIDTH;
+            }
+            else if(ii_temp < 0)
+            {
+                ii_temp += INNER_WIDTH;
             }
             outer.display(oi_temp);
             inner.display(ii_temp); 
