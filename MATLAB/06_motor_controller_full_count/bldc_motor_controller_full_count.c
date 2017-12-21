@@ -330,9 +330,10 @@ void bldc_motor_controller_full_count_step(void)
   /* Switch: '<S19>/Switch' incorporates:
    *  Inport: '<Root>/outer_rotation_count_in'
    */
+  tmp = 1.0;
   if (bldc_motor_controller_full_co_B.count_in != 0.0) {
     tmp = bldc_motor_controller_full_co_B.count_in;
-  } else {
+  } else if(bldc_motor_controller_full_co_U.outer_rotation_count_in != 0.0) {
     tmp = bldc_motor_controller_full_co_U.outer_rotation_count_in;
   }
 
@@ -463,9 +464,10 @@ void bldc_motor_controller_full_count_step(void)
   /* Switch: '<S8>/Switch' incorporates:
    *  Inport: '<Root>/inner_rotation_count_in'
    */
+  tmp = 1.0;
   if (bldc_motor_controller_full_co_B.count_in_i != 0.0) {
     tmp = bldc_motor_controller_full_co_B.count_in_i;
-  } else {
+  } else if (bldc_motor_controller_full_co_U.inner_rotation_count_in != 0.0){
     tmp = bldc_motor_controller_full_co_U.inner_rotation_count_in;
   }
 
