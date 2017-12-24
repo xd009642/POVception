@@ -302,7 +302,7 @@ int main()
         inner_col = ii_temp;
     };
 
-    //fast_update.attach(critical_run,    0.0003f);
+    fast_update.attach(critical_run,    0.0003f);
     slow_update.attach(application_run, 0.2f);
     while(1)
     {
