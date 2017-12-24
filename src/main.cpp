@@ -33,8 +33,8 @@ static constexpr uint32_t SCREEN_HEIGHT = 480;
 static constexpr uint32_t BORDER_HEIGHT = 60;
 static constexpr uint32_t BORDER_WIDTH = 120;
 
-render::framebuffer outer_buffer(OUTER_WIDTH, OUTER_HEIGHT);
-render::framebuffer inner_buffer(INNER_WIDTH, INNER_HEIGHT);
+volatile render::framebuffer outer_buffer(OUTER_WIDTH, OUTER_HEIGHT);
+volatile render::framebuffer inner_buffer(INNER_WIDTH, INNER_HEIGHT);
 
 app::pong game(inner_buffer);
 app::snowfall<100> snow(outer_buffer);
@@ -43,8 +43,8 @@ size_t inner_offset = 24;
 size_t outer_offset = 17;
 size_t temp_rotation = 0;
 
-std::function<void(void)> application_update;
-std::function<void(void)> critical_update;
+volatile std::function<void(void)> application_update;
+volatile std::function<void(void)> critical_update;
 
 void critical_run() 
 {
